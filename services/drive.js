@@ -6,15 +6,22 @@ let drive;
 
 function getAuthClient() {
   if (drive) return drive;
-  
-  const credentialsPath = process.env.GOOGLE_DRIVE_CREDENTIALS || './google-credentials.json';
-  
-  if (!fs.existsSync(credentialsPath)) {
-    console.warn('Google Drive credentials not found. Drive integration disabled.');
-    return null;
+
+  let credentials;
+
+  // Option 1: credentials JSON string in env var (for Render / cloud deployments)
+  if (process.env.GOOGLE_CREDENTIALS_JSON) {
+    credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+  } else {
+    // Option 2: credentials file path (for local development)
+    const credentialsPath = process.env.GOOGLE_DRIVE_CREDENTIALS || './google-credentials.json';
+    if (!fs.existsSync(credentialsPath)) {
+      console.warn('Google Drive credentials not found. Drive integration disabled.');
+      return null;
+    }
+    credentials = JSON.parse(fs.readFileSync(credentialsPath));
   }
 
-  const credentials = JSON.parse(fs.readFileSync(credentialsPath));
   const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: ['https://www.googleapis.com/auth/drive']
