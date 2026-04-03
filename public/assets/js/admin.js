@@ -4,11 +4,24 @@ let userRole = '';
 let allClients = [];
 
 const STEP_LABELS = {
-  1: 'רישום', 2: 'ממתין לאישור דרכון', 3: 'ממתין לאישור',
-  4: 'תשלום', 5: 'נוטוריון', 6: 'נוטוריון',
-  7: 'צ\'ק ליסט', 8: 'העלאת מסמכים', 9: 'שליחה',
-  10: 'ממתין למשלוח', 11: 'עו"ד מטפל', 12: 'משוב', 13: 'הושלם'
+  1: 'הרשמה', 2: 'ממתין לאישור דרכון', 3: 'ממתין לאישור',
+  4: 'ממתין לתשלום', 5: 'שלב נוטריון', 6: 'שלב נוטריון',
+  7: 'צ׳ק ליסט', 8: 'העלאת מסמכים', 9: 'ממתין למשלוח',
+  10: 'מסמכים בדרך', 11: 'מסמכים הגיעו', 12: 'חשבון נפתח - משוב', 13: 'הושלם'
 };
+
+const STEP_COLORS = {
+  1: 'badge-muted', 2: 'badge-orange', 3: 'badge-orange',
+  4: 'badge-blue', 5: 'badge-blue', 6: 'badge-blue',
+  7: 'badge-blue', 8: 'badge-blue', 9: 'badge-purple',
+  10: 'badge-purple', 11: 'badge-green', 12: 'badge-green', 13: 'badge-green'
+};
+
+function stepBadge(step) {
+  const label = STEP_LABELS[step] || step;
+  const color = STEP_COLORS[step] || 'badge-gold';
+  return `<span class="badge ${color}">${label}</span>`;
+}
 
 const PASSPORT_LABELS = { pending: 'ממתין', reviewing: 'בבדיקה', approved: '✅ אושר', rejected: '❌ נדחה' };
 const PAYMENT_LABELS = { pending: 'ממתין', paid: '✅ שולם' };
@@ -93,6 +106,8 @@ async function loadClients() {
     renderDashboard();
     renderClientsTable(allClients);
     renderPendingList();
+    renderDocsReviewList();
+    renderShippingList();
     updatePendingCount();
   } catch (e) {
     console.error('Load clients error:', e);
@@ -126,7 +141,7 @@ function renderDashboard() {
     <tr class="client-row" onclick="viewClient(${c.id})">
       <td><strong>${c.first_name || ''} ${c.last_name || ''}</strong></td>
       <td style="direction:ltr;">${c.phone}</td>
-      <td><span class="badge badge-gold">${STEP_LABELS[c.current_step] || c.current_step}</span></td>
+      <td>${stepBadge(c.current_step)}</td>
       <td>${c.preferred_bank || '-'}</td>
       <td>${statusBadge(c.status, c.blocked)}</td>
       <td style="color:var(--text-muted);font-size:0.8rem;">${formatDate(c.created_at)}</td>
@@ -140,7 +155,7 @@ function renderClientsTable(clients) {
     <tr class="client-row" onclick="viewClient(${c.id})">
       <td><strong>${c.first_name || ''} ${c.last_name || ''}</strong></td>
       <td style="direction:ltr;">${c.phone}</td>
-      <td><span class="badge badge-gold">${STEP_LABELS[c.current_step] || c.current_step}</span></td>
+      <td>${stepBadge(c.current_step)}</td>
       <td><span class="badge ${c.passport_status === 'approved' ? 'badge-green' : c.passport_status === 'rejected' ? 'badge-red' : 'badge-blue'}">${PASSPORT_LABELS[c.passport_status] || c.passport_status}</span></td>
       <td><span class="badge ${c.payment_status === 'paid' ? 'badge-green' : 'badge-gold'}">${PAYMENT_LABELS[c.payment_status] || '-'}</span></td>
       <td>${statusBadge(c.status, c.blocked)}</td>
@@ -187,6 +202,68 @@ function renderPendingList() {
   `}).join('');
 }
 
+function renderDocsReviewList() {
+  // Clients who uploaded docs (step 8-9), waiting for lawyer to review
+  const clients = allClients.filter(c => c.current_step >= 8 && c.current_step <= 9);
+  const container = document.getElementById('docs-review-list');
+  const countEl = document.getElementById('docs-review-count');
+  countEl.textContent = clients.length > 0 ? clients.length : '';
+
+  if (clients.length === 0) {
+    container.innerHTML = '<div class="alert alert-info">אין לקוחות הממתינים לבדיקת מסמכים כרגע ✅</div>';
+    return;
+  }
+
+  container.innerHTML = clients.map(c => `
+    <div class="client-detail-panel">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${c.first_name || ''} ${c.last_name || ''}</h3>
+          <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val" style="direction:ltr;">${c.phone}</span></div>
+          <div class="detail-row"><span class="detail-label">שלב:</span><span class="detail-val badge badge-gold">${STEP_LABELS[c.current_step] || c.current_step}</span></div>
+          <div class="detail-row"><span class="detail-label">בנק:</span><span class="detail-val">${c.preferred_bank || '-'}</span></div>
+          <div class="detail-row"><span class="detail-label">נרשם:</span><span class="detail-val">${formatDate(c.created_at)}</span></div>
+        </div>
+        <div>
+          <button class="btn btn-ghost" style="font-size:0.85rem;padding:0.4rem 1rem;" onclick="viewClient(${c.id})">🔍 פרטים ומסמכים</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderShippingList() {
+  // Clients who submitted tracking (step 10) or docs arrived (step 11)
+  const clients = allClients.filter(c => c.current_step >= 10 && c.current_step <= 11);
+  const container = document.getElementById('shipping-list');
+  const countEl = document.getElementById('shipping-count');
+  countEl.textContent = clients.length > 0 ? clients.length : '';
+
+  if (clients.length === 0) {
+    container.innerHTML = '<div class="alert alert-info">אין לקוחות בשלב משלוח כרגע ✅</div>';
+    return;
+  }
+
+  container.innerHTML = clients.map(c => `
+    <div class="client-detail-panel">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${c.first_name || ''} ${c.last_name || ''}</h3>
+          <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val" style="direction:ltr;">${c.phone}</span></div>
+          <div class="detail-row"><span class="detail-label">חברת משלוח:</span><span class="detail-val">${c.shipping_company || '-'}</span></div>
+          <div class="detail-row"><span class="detail-label">מספר מעקב:</span><span class="detail-val" style="direction:ltr;">${c.tracking_number || '-'}</span></div>
+          <div class="detail-row"><span class="detail-label">מסמכים הגיעו:</span><span class="detail-val">${c.docs_received ? '✅ כן' : '⏳ בדרך'}</span></div>
+        </div>
+      </div>
+      <div class="action-btns" style="margin-top:1rem;">
+        ${c.current_step === 10 ? `<button class="btn btn-success" onclick="adminMarkDocsReceived(${c.id})">📬 מסמכים הגיעו</button>` : ''}
+        ${c.current_step === 11 ? `<button class="btn btn-primary" onclick="adminMarkAccountOpened(${c.id})">🎉 החשבון נפתח</button>` : ''}
+        <button class="btn btn-ghost" style="font-size:0.85rem;" onclick="viewClient(${c.id})">🔍 פרטים</button>
+      </div>
+    </div>
+  `).join('');
+}
+
 function renderLawyerList(clients) {
   const container = document.getElementById('lawyer-list');
   if (clients.length === 0) {
@@ -220,7 +297,7 @@ async function viewClient(id) {
     const c = data.client;
     const docs = data.docs || [];
 
-    document.getElementById('detail-name').textContent = `${c.first_name || ''} ${c.last_name || ''}`;
+    document.getElementById('detail-name').innerHTML = `${c.first_name || ''} ${c.last_name || ''} <span style="font-size:0.7em;color:var(--text-muted);font-family:'Assistant',sans-serif;">שלב ${c.current_step}/13</span>`;
 
     document.getElementById('client-detail-content').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
@@ -237,7 +314,7 @@ async function viewClient(id) {
         </div>
         <div class="client-detail-panel">
           <h3 style="color:var(--gold-light);margin-bottom:1rem;">סטטוס תהליך</h3>
-          <div class="detail-row"><span class="detail-label">שלב נוכחי:</span><span class="detail-val badge badge-gold">${STEP_LABELS[c.current_step] || c.current_step}</span></div>
+          <div class="detail-row"><span class="detail-label">שלב נוכחי:</span><span class="detail-val">${stepBadge(c.current_step)}</span></div>
           <div class="detail-row"><span class="detail-label">דרכון:</span><span class="detail-val">${PASSPORT_LABELS[c.passport_status] || '-'}</span></div>
           <div class="detail-row"><span class="detail-label">תשלום:</span><span class="detail-val">${PAYMENT_LABELS[c.payment_status] || '-'}</span></div>
           <div class="detail-row"><span class="detail-label">מסמכים:</span><span class="detail-val">${c.docs_received ? '✅ התקבלו' : '⏳ בדרך'}</span></div>
@@ -364,6 +441,34 @@ async function markAccountOpened(id) {
     const data = await res.json();
     alert(data.message || '🎉 עודכן!');
     loadLawyerClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function adminMarkDocsReceived(id) {
+  if (!confirm('לסמן שהמסמכים הגיעו?')) return;
+  try {
+    const res = await fetch('/api/lawyer/docs-received', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-lawyer-token': adminToken },
+      body: JSON.stringify({ client_id: id })
+    });
+    const data = await res.json();
+    alert(data.message || 'עודכן!');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function adminMarkAccountOpened(id) {
+  if (!confirm('לסמן שהחשבון נפתח? הלקוח יקבל הודעה מיד!')) return;
+  try {
+    const res = await fetch('/api/lawyer/account-opened', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-lawyer-token': adminToken },
+      body: JSON.stringify({ client_id: id })
+    });
+    const data = await res.json();
+    alert(data.message || '🎉 עודכן!');
+    loadClients();
   } catch (e) { alert('שגיאה'); }
 }
 

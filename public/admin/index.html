@@ -25,6 +25,9 @@
     .detail-label { color: var(--text-muted); width: 140px; flex-shrink: 0; }
     .detail-val { color: var(--text-main); }
     .action-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .badge-muted { background: rgba(150,150,150,0.15); color: #999; }
+    .badge-orange { background: rgba(243,156,18,0.15); color: #f39c12; }
+    .badge-purple { background: rgba(155,89,182,0.15); color: #9b59b6; }
     @media (max-width: 768px) {
       .admin-layout { grid-template-columns: 1fr; }
       .sidebar { height: auto; position: relative; }
@@ -75,8 +78,16 @@
           <span class="icon">👥</span> לקוחות
         </div>
         <div class="nav-link" onclick="showPage('page-pending')">
-          <span class="icon">⏳</span> ממתינים לאישור
+          <span class="icon">⏳</span> דרכונים
           <span id="pending-count" class="badge badge-gold" style="margin-right:auto;"></span>
+        </div>
+        <div class="nav-link" onclick="showPage('page-docs-review')">
+          <span class="icon">📄</span> טפסים
+          <span id="docs-review-count" class="badge badge-gold" style="margin-right:auto;"></span>
+        </div>
+        <div class="nav-link" onclick="showPage('page-shipping')">
+          <span class="icon">📦</span> משלוח
+          <span id="shipping-count" class="badge badge-gold" style="margin-right:auto;"></span>
         </div>
       </div>
 
@@ -165,6 +176,18 @@
       <div class="page-section" id="page-pending">
         <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:1.5rem;">ממתינים לאישור דרכון</h2>
         <div id="pending-list"></div>
+      </div>
+
+      <!-- DOCS REVIEW -->
+      <div class="page-section" id="page-docs-review">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:1.5rem;">טפסים — ממתינים לבדיקת עו״ד</h2>
+        <div id="docs-review-list"></div>
+      </div>
+
+      <!-- SHIPPING -->
+      <div class="page-section" id="page-shipping">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:1.5rem;">משלוח — ממתינים להגעת מסמכים</h2>
+        <div id="shipping-list"></div>
       </div>
 
       <!-- CLIENT DETAIL -->

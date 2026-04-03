@@ -37,17 +37,12 @@ function showScreen(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function showProgress(step) {
+function showProgress(visualStep) {
   document.getElementById('progress-bar').style.display = 'block';
-  // Step mapping: visual steps 1-7 map to actual steps
-  const stepMap = {
-    1: 1, 2: 2, 3: 2, 4: 3, 5: 4, 6: 4, 7: 5, 8: 5, 9: 6, 10: 6, 11: 7, 12: 7
-  };
-  const visual = stepMap[step] || 1;
   for (let i = 1; i <= 7; i++) {
     const el = document.getElementById(`ps-${i}`);
     el.classList.remove('active', 'completed');
-    if (i < visual) el.classList.add('completed');
+    if (i < visualStep) el.classList.add('completed');
     else if (i === visual) el.classList.add('active');
   }
 }
@@ -197,19 +192,31 @@ async function submitRegister() {
 
 // ===== PAYMENT =====
 async function goToPayment() {
-  // The payment URL comes from Morning API — for now open a new tab
-  // In production this redirects to Morning payment link
+  // Temporary: skip payment until Morning is configured
   const btn = document.getElementById('btn-pay');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> מחפש קישור תשלום...';
+  btn.innerHTML = '<span class="spinner"></span> מעבד...';
 
-  // Webhook will handle the rest — for manual payment this navigates to Morning
-  // Admin can also manually confirm payment
-  setTimeout(() => {
+  try {
+    const res = await fetch('/api/client/temp-pay', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: clientPhone })
+    });
+    const data = await res.json();
+    if (data.success) {
+      clientData.current_step = data.current_step;
+      renderStep();
+    } else {
+      alert(data.error || 'שגיאה');
+      btn.disabled = false;
+      btn.innerHTML = '➡️ המשך לשלב הבא';
+    }
+  } catch (err) {
+    alert('שגיאת תקשורת');
     btn.disabled = false;
-    btn.innerHTML = '💳 עבור לתשלום מאובטח';
-    showScreen('screen-payment');
-  }, 1500);
+    btn.innerHTML = '➡️ המשך לשלב הבא';
+  }
 }
 
 // ===== NOTARY =====
@@ -221,13 +228,19 @@ async function notaryDone() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: clientPhone })
     });
+    const data = await res.json();
     showLoading(false);
-    showProgress(5);
-    showScreen('screen-checklist');
+    if (data.success) {
+      clientStep = data.current_step;
+      if (clientData) clientData.current_step = data.current_step;
+      showProgress(5);
+      showScreen('screen-checklist');
+    } else {
+      alert(data.error || 'שגיאה');
+    }
   } catch (e) {
     showLoading(false);
-    showProgress(5);
-    showScreen('screen-checklist');
+    alert('שגיאת תקשורת');
   }
 }
 
@@ -237,9 +250,13 @@ function downloadPOA() {
 }
 
 // ===== CHECKLIST =====
-function toggleCheck(id) {
+function toggleCheck(id, ev) {
   const cb = document.getElementById(id);
-  cb.checked = !cb.checked;
+  // When called from the parent div click, manually toggle the checkbox
+  // When called from the checkbox onchange, it already toggled itself
+  if (ev) {
+    cb.checked = !cb.checked;
+  }
   const item = cb.closest('.checklist-item');
   item.classList.toggle('checked', cb.checked);
   updateChecklistProgress();

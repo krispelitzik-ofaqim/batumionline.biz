@@ -240,14 +240,14 @@
     </div>
     <div class="card" style="text-align:center;">
       <div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.5rem;">סכום לתשלום</div>
-      <div style="font-family:'Playfair Display',serif;font-size:3.5rem;color:var(--gold-light);margin-bottom:0.5rem;">₪1,900</div>
+      <div style="font-family:'Playfair Display',serif;font-size:3.5rem;color:var(--gold-light);margin-bottom:0.5rem;" data-he="₪1,900" data-en="$599">₪1,900</div>
       <div style="color:var(--text-muted);font-size:0.9rem;margin-bottom:2rem;">תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק</div>
       <div class="alert alert-info" style="text-align:right;margin-bottom:2rem;">
         ✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה
       </div>
       <div id="payment-link-area">
         <button class="btn btn-primary btn-full" id="btn-pay" onclick="goToPayment()">
-          💳 עבור לתשלום מאובטח
+          ➡️ המשך לשלב הבא
         </button>
       </div>
       <div style="margin-top:1rem;font-size:0.8rem;color:var(--text-muted);">מאובטח על ידי Morning | חשבוניות ישראל</div>
@@ -309,33 +309,33 @@
         ⚠️ <strong>חשוב:</strong> יתקבלו רק קבצי PDF. אם יש לך 3 תלושי שכר — אחד אותם לקובץ אחד.
       </div>
 
-      <div class="checklist-item" onclick="toggleCheck('chk-poa')">
-        <input type="checkbox" id="chk-poa" />
-        <label for="chk-poa"><strong>ייפוי כח נוטוריוני חתום</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">הטופס שקיבלת מאיתנו, חתום ע"י ידך ועל ידי הנוטוריון</span></label>
+      <div class="checklist-item" onclick="toggleCheck('chk-poa', event)">
+        <input type="checkbox" id="chk-poa" onclick="event.stopPropagation()" onchange="toggleCheck('chk-poa')" />
+        <label><strong>ייפוי כח נוטוריוני חתום</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">הטופס שקיבלת מאיתנו, חתום ע"י ידך ועל ידי הנוטוריון</span></label>
       </div>
-      <div class="checklist-item" onclick="toggleCheck('chk-apostille')">
-        <input type="checkbox" id="chk-apostille" />
-        <label for="chk-apostille"><strong>אפוסטיל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">מסמך ייחודי מהנוטוריון — הוכחת זיהוי וחתימה</span></label>
+      <div class="checklist-item" onclick="toggleCheck('chk-apostille', event)">
+        <input type="checkbox" id="chk-apostille" onclick="event.stopPropagation()" onchange="toggleCheck('chk-apostille')" />
+        <label><strong>אפוסטיל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">מסמך ייחודי מהנוטוריון — הוכחת זיהוי וחתימה</span></label>
       </div>
-      <div class="checklist-item" onclick="toggleCheck('chk-payslips')">
-        <input type="checkbox" id="chk-payslips" />
-        <label for="chk-payslips"><strong>שלושה תלושי שכר עדכניים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">סרוקים יחד לקובץ אחד</span></label>
+      <div class="checklist-item" onclick="toggleCheck('chk-payslips', event)">
+        <input type="checkbox" id="chk-payslips" onclick="event.stopPropagation()" onchange="toggleCheck('chk-payslips')" />
+        <label><strong>שלושה תלושי שכר עדכניים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">סרוקים יחד לקובץ אחד</span></label>
       </div>
-      <div class="checklist-item" onclick="toggleCheck('chk-passport')">
-        <input type="checkbox" id="chk-passport" />
-        <label for="chk-passport"><strong>דרכון סרוק צבעוני (עמודים 2-3)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">העלה את המסמך שכבר שלחת לנו קודם</span></label>
+      <div class="checklist-item" onclick="toggleCheck('chk-passport', event)">
+        <input type="checkbox" id="chk-passport" onclick="event.stopPropagation()" onchange="toggleCheck('chk-passport')" />
+        <label><strong>דרכון סרוק צבעוני (עמודים 2-3)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">העלה את המסמך שכבר שלחת לנו קודם</span></label>
       </div>
-      <div class="checklist-item" onclick="toggleCheck('chk-bank-confirm')">
-        <input type="checkbox" id="chk-bank-confirm" />
-        <label for="chk-bank-confirm"><strong>אישור ניהול חשבון בנק (באנגלית)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">כולל חותמת הבנק</span></label>
+      <div class="checklist-item" onclick="toggleCheck('chk-bank-confirm', event)">
+        <input type="checkbox" id="chk-bank-confirm" onclick="event.stopPropagation()" onchange="toggleCheck('chk-bank-confirm')" />
+        <label><strong>אישור ניהול חשבון בנק (באנגלית)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">כולל חותמת הבנק</span></label>
       </div>
-      <div class="checklist-item" onclick="toggleCheck('chk-statements')">
-        <input type="checkbox" id="chk-statements" />
-        <label for="chk-statements"><strong>תדפיסי בנק 6 חודשים אחרונים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">עובר ושב</span></label>
+      <div class="checklist-item" onclick="toggleCheck('chk-statements', event)">
+        <input type="checkbox" id="chk-statements" onclick="event.stopPropagation()" onchange="toggleCheck('chk-statements')" />
+        <label><strong>תדפיסי בנק 6 חודשים אחרונים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">עובר ושב</span></label>
       </div>
-      <div class="checklist-item" onclick="toggleCheck('chk-address')">
-        <input type="checkbox" id="chk-address" />
-        <label for="chk-address"><strong>הוכחת כתובת בישראל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">חשבון חשמל / כבלים / טלפון / ארנונה עם שמך וכתובתך</span></label>
+      <div class="checklist-item" onclick="toggleCheck('chk-address', event)">
+        <input type="checkbox" id="chk-address" onclick="event.stopPropagation()" onchange="toggleCheck('chk-address')" />
+        <label><strong>הוכחת כתובת בישראל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">חשבון חשמל / כבלים / טלפון / ארנונה עם שמך וכתובתך</span></label>
       </div>
 
       <div style="margin-top:1.5rem;">
@@ -543,5 +543,15 @@
   סיוע מנציג
 </a>
 
+<script>
+(function() {
+  var lang = localStorage.getItem('lang');
+  if (lang && lang !== 'he') {
+    document.querySelectorAll('[data-he]').forEach(function(el) {
+      el.innerHTML = el.getAttribute('data-' + lang);
+    });
+  }
+})();
+</script>
 </body>
 </html>

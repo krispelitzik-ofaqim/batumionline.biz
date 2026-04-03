@@ -53,7 +53,7 @@
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
-          <span class="stat-num">₪1,900</span>
+          <span class="stat-num" data-he="₪1,900" data-en="$599">₪1,900</span>
           <span class="stat-label" data-he="עלות כוללת" data-en="Total Cost">עלות כוללת</span>
         </div>
       </div>
@@ -214,20 +214,20 @@
     </div>
     <div class="pricing-compact">
       <div class="pricing-main-row">
-        <div class="pricing-main-label">שירות Batumionline</div>
-        <div class="pricing-main-price">₪1,900</div>
-        <div class="pricing-main-desc">ליווי מלא · ייפוי כח · עו״ד בגאורגיה</div>
+        <div class="pricing-main-label" data-he="שירות Batumionline" data-en="Batumionline Service">שירות Batumionline</div>
+        <div class="pricing-main-price" data-he="₪1,900" data-en="$599">₪1,900</div>
+        <div class="pricing-main-desc" data-he="ליווי מלא · ייפוי כח · עו״ד בגאורגיה" data-en="Full support · Power of attorney · Attorney in Georgia">ליווי מלא · ייפוי כח · עו״ד בגאורגיה</div>
       </div>
       <div class="pricing-extras-row">
         <div class="pricing-extra-item">
-          <span class="pricing-extra-label">נוטוריון</span>
-          <span class="pricing-extra-price">~₪400–600</span>
-          <span class="pricing-extra-note">ישירות לנוטוריון</span>
+          <span class="pricing-extra-label" data-he="נוטוריון" data-en="Notary">נוטוריון</span>
+          <span class="pricing-extra-price" data-he="~₪400–600" data-en="~$120–180">~₪400–600</span>
+          <span class="pricing-extra-note" data-he="ישירות לנוטוריון" data-en="Paid directly to notary">ישירות לנוטוריון</span>
         </div>
         <div class="pricing-extra-divider"></div>
         <div class="pricing-extra-item">
-          <span class="pricing-extra-label">שליחות בינל׳</span>
-          <span class="pricing-extra-price">~₪150–250</span>
+          <span class="pricing-extra-label" data-he="שליחות בינל׳" data-en="Int'l Shipping">שליחות בינל׳</span>
+          <span class="pricing-extra-price" data-he="~₪150–250" data-en="~$45–75">~₪150–250</span>
           <span class="pricing-extra-note">DHL / FedEx</span>
         </div>
       </div>
@@ -262,7 +262,7 @@
         </div>
       </div>
       <div style="color:var(--text-muted);font-size:0.85rem;text-align:center;">
-        © 2025 Batumionline. כל הזכויות שמורות.
+        © 2026 Batumionline. כל הזכויות שמורות.
       </div>
       <div style="display:flex;gap:1rem;align-items:center;">
         <div style="display:flex;gap:0.75rem;align-items:center;">
@@ -279,15 +279,21 @@
 function setLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
-  
+
   const dir = lang === 'he' ? 'rtl' : 'ltr';
   document.documentElement.dir = dir;
   document.documentElement.lang = lang;
-  
+  localStorage.setItem('lang', lang);
+
   document.querySelectorAll('[data-he]').forEach(el => {
     el.innerHTML = el.getAttribute(`data-${lang}`);
   });
 }
+
+(function() {
+  var saved = localStorage.getItem('lang');
+  if (saved && saved !== 'he') setLang(saved);
+})();
 
 function toggleFaq(el) {
   const item = el.parentElement;
@@ -452,12 +458,12 @@ function setViewMode(mode) {
 
 <script>
 var FAQ_DATA = [
-  {q:"למה צריך ייפוי כח נוטוריוני ואפוסטיל?", a:"כדי לפתוח חשבון בנק מרחוק, עורך הדין חייב להציג אישור חוקי המאומת ע"י נוטוריון ומדינה (אפוסטיל). זהו המסמך היחיד שמוכיח לבנק הזר שהפעולה מתבצעת בהסכמתך המלאה."},
+  {q:"למה צריך ייפוי כח נוטוריוני ואפוסטיל?", a:'כדי לפתוח חשבון בנק מרחוק, עורך הדין חייב להציג אישור חוקי המאומת ע"י נוטוריון ומדינה (אפוסטיל). זהו המסמך היחיד שמוכיח לבנק הזר שהפעולה מתבצעת בהסכמתך המלאה.'},
   {q:"איזה סוג חשבון פותחים?", a:"יש שני סוגי חשבון: פרטי ועסקי. כרגע ניתן לפתוח רק חשבון עסקי לאדם פרטי."},
   {q:"האם הכסף שלי בטוח בבנקים בגאורגיה?", a:"בהחלט. הבנקים TBC ו-Bank of Georgia נסחרים בלונדון וכפופים לרגולציה בינלאומית מחמירה."},
   {q:"מה קורה אם הבנק מסרב לפתוח חשבון?", a:"במקרה של סירוב בבדיקת הדרכון, נחזיר 90% מהתשלום. אם התהליך יבוטל לאחר הגעת המסמכים לגאורגיה — יינתן החזר של 50%."},
-  {q:"האם אני צריך לדווח לרשות המיסים?", a:"גאורגיה חתומה על CRS. החזקת החשבון חוקית לחלוטין, אך חובת דיווח קיימת מעל תקרה של כ-450 אלף ש"ח."},
-  {q:"האם ניתן להפקיד צ'קים ישראליים?", a:"לא. המערכת בגאורגיה אינה עובדת עם צ'קים, אלא בהעברות בנקאיות, כרטיסים ומזומן."},
+  {q:"האם אני צריך לדווח לרשות המיסים?", a:'גאורגיה חתומה על CRS. החזקת החשבון חוקית לחלוטין, אך חובת דיווח קיימת מעל תקרה של כ-450 אלף ש"ח.'},
+  {q:"האם ניתן להפקיד צ׳קים ישראליים?", a:"לא. המערכת בגאורגיה אינה עובדת עם צ׳קים, אלא בהעברות בנקאיות, כרטיסים ומזומן."},
   {q:"האם אוכל למשוך כסף בכספומט בישראל?", a:"כן! הכרטיס הוא בינלאומי (Visa/Mastercard) ותקף למשיכות ורכישות בכל מקום בעולם."},
   {q:"מה קורה אם איבדתי את הכרטיס?", a:"מקפיאים את הכרטיס באפליקציה מיידית. אנו נסייע בהזמנת כרטיס חדש ומשלוחו ב-DHL ישירות אליך."},
   {q:"מהן הדרישות לסריקת המסמכים?", a:"חובה לסרוק בסורק מקצועי (לא בנייד) ולשלוח בפורמט PDF בלבד."},
@@ -470,8 +476,11 @@ var botStarted = false;
 function openChatBot() {
   var panel = document.getElementById('chatbot-panel');
   var overlay = document.getElementById('chatbot-overlay');
-  panel.style.display = 'flex';
+  var waFloat = document.getElementById('wa-float');
+  panel.style.cssText = panel.style.cssText.replace('display:none', 'display:flex');
+  if (panel.style.display !== 'flex') panel.style.display = 'flex';
   overlay.style.display = 'block';
+  if (waFloat) waFloat.style.display = 'none';
   if (!botStarted) {
     botStarted = true;
     setTimeout(startBot, 400);
@@ -479,8 +488,12 @@ function openChatBot() {
 }
 
 function closeChatBotBtn() {
-  document.getElementById('chatbot-panel').style.display = 'none';
+  var panel = document.getElementById('chatbot-panel');
+  var waFloat = document.getElementById('wa-float');
+  panel.style.cssText = panel.style.cssText.replace('display:flex', 'display:none');
+  panel.style.display = 'none';
   document.getElementById('chatbot-overlay').style.display = 'none';
+  if (waFloat) waFloat.style.display = 'flex';
 }
 
 function addBotMsg(text, delay) {

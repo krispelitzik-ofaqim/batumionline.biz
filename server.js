@@ -1,8 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+
+// Ensure required directories exist before anything else
+const requiredDirs = [
+  path.join(__dirname, 'data'),
+  path.join(__dirname, 'uploads', 'passports'),
+  path.join(__dirname, 'uploads', 'temp')
+];
+requiredDirs.forEach(dir => fs.mkdirSync(dir, { recursive: true }));
 
 const app = express();
 const PORT = process.env.PORT || 3000;

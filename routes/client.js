@@ -107,6 +107,28 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
   }
 });
 
+// POST /api/client/temp-pay — temporary: skip payment until Morning is configured
+router.post('/temp-pay', async (req, res) => {
+  try {
+    const { phone } = req.body;
+    if (!phone) return res.status(400).json({ error: 'מספר טלפון חסר' });
+
+    const client = clientsDB.findByPhone(phone);
+    if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+
+    const APP_URL = process.env.APP_URL || 'http://localhost:3000';
+    const link = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
+    clientsDB.update(client.id, { payment_status: 'paid', current_step: 5 });
+
+    sendMessage(client.phone, MESSAGES.PAYMENT_RECEIVED(client.first_name, link), client.id).catch(e => console.warn('WA:', e.message));
+
+    res.json({ success: true, message: 'תשלום אושר (זמני)', current_step: 5 });
+  } catch (err) {
+    console.error('Temp-pay error:', err);
+    res.status(500).json({ error: 'שגיאת שרת' });
+  }
+});
+
 // POST /api/client/checklist-start
 router.post('/checklist-start', (req, res) => {
   const { phone } = req.body;
