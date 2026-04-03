@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>פתיחת חשבון בנק בינלאומי בגאורגיה | Batumionline</title>
+  <meta name="description" content="פתח חשבון בנק בגאורגיה מהבית, ללא נסיעה. תהליך פשוט, מהיר ובמחיר הוגן." />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/landing.css" />
+</head>
+<body class="landing-body">
+
+<!-- NAVIGATION -->
+<nav class="landing-nav">
+  <div class="nav-inner">
+    <div class="logo-area">
+      <div class="logo-icon">🏦</div>
+      <div class="logo-text">Batumionline</div>
+    </div>
+    <div style="display:flex;gap:1rem;align-items:center;">
+      <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLang('he')">עברית</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button onclick="openChatBot()" class="btn btn-ghost" style="padding:0.5rem 1.1rem;font-size:0.85rem;color:#25D366;border-color:#25D366;cursor:pointer;">💬 סיוע מנציג</button>
+        <a href="#start" class="btn btn-primary" style="padding:0.6rem 1.5rem;font-size:0.9rem;" data-he="התחל עכשיו" data-en="Start Now">התחל עכשיו</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge" data-he="🇬🇪 שירות מורשה ומאובטח" data-en="🇬🇪 Licensed & Secure Service">🇬🇪 שירות מורשה ומאובטח</div>
+      <h1 class="display-title" data-he="חשבון בנק בגאורגיה<br/>מהסלון שלך" data-en="Open a Georgian Bank Account<br/>From Home">חשבון בנק בגאורגיה<br/>מהסלון שלך</h1>
+      <p class="hero-sub" data-he="פתח חשבון בנק בינלאומי בגאורגיה ללא נסיעה, ללא המתנות ארוכות.<br/>תהליך דיגיטלי פשוט עם ליווי אישי בכל שלב." data-en="Open an international Georgian bank account without travel, without long waits.<br/>A simple digital process with personal guidance at every step.">פתח חשבון בנק בינלאומי בגאורגיה ללא נסיעה, ללא המתנות ארוכות.<br/>תהליך דיגיטלי פשוט עם ליווי אישי בכל שלב.</p>
+      <div class="hero-actions">
+        <a href="#start" class="btn btn-primary btn-lg" data-he="פתח חשבון עכשיו" data-en="Open Account Now">פתח חשבון עכשיו</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">BOG</span>
+          <span class="stat-label" data-he="Bank of Georgia" data-en="Bank of Georgia">Bank of Georgia</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">TBC</span>
+          <span class="stat-label" data-he="TBC Bank" data-en="TBC Bank">TBC Bank</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">₪1,900</span>
+          <span class="stat-label" data-he="עלות כוללת" data-en="Total Cost">עלות כוללת</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="info-section" id="benefits">
+  <div class="container">
+    <div class="section-header">
+      <div class="gold-line"></div>
+      <h2 class="section-title" data-he="מה תקבל?" data-en="What do you get?">מה תקבל?</h2>
+      <p class="section-sub" data-he="כל מה שצריך לניהול כספים בינלאומי" data-en="Everything you need for international money management">כל מה שצריך לניהול כספים בינלאומי</p>
+    </div>
+    <div class="benefits-banners">
+      <div class="benefit-banner">
+        <span class="benefit-banner-icon">💳</span>
+        <div class="benefit-banner-text">
+          <strong>חשבון עובר ושב</strong>
+          <span>חשבון בנק מלא עם IBAN בינלאומי</span>
+        </div>
+      </div>
+      <div class="benefit-banner">
+        <span class="benefit-banner-icon">🌍</span>
+        <div class="benefit-banner-text">
+          <strong>העברות בינלאומיות</strong>
+          <span>קבלה ושליחת כסף לכל העולם בעמלות נמוכות</span>
+        </div>
+      </div>
+      <div class="benefit-banner">
+        <span class="benefit-banner-icon">📱</span>
+        <div class="benefit-banner-text">
+          <strong>אפליקציית בנק מתקדמת</strong>
+          <span>גישה מלאה לחשבון מהסמארטפון בכל שעה</span>
+        </div>
+      </div>
+      <div class="benefit-banner">
+        <span class="benefit-banner-icon">💳</span>
+        <div class="benefit-banner-text">
+          <strong>כרטיס ויזה/מסטרקארד</strong>
+          <span>כרטיס אשראי בינלאומי לשימוש בכל העולם</span>
+        </div>
+      </div>
+      <div class="benefit-banner">
+        <span class="benefit-banner-icon">🔒</span>
+        <div class="benefit-banner-text">
+          <strong>ביטחון ויציבות</strong>
+          <span>בנקים מובילים, רגולציה מחמירה, פיקדון מבוטח</span>
+        </div>
+      </div>
+      <div class="benefit-banner">
+        <span class="benefit-banner-icon">🇮🇱</span>
+        <div class="benefit-banner-text">
+          <strong>ליווי אישי בעברית</strong>
+          <span>תמיכה זמינה לאורך כל התהליך</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="section-header">
+      <div class="gold-line"></div>
+      <h2 class="section-title" data-he="איך זה עובד?" data-en="How does it work?">איך זה עובד?</h2>
+      <p class="section-sub" data-he="תהליך פשוט ב-5 שלבים ראשיים" data-en="A simple 5-step process">תהליך פשוט ב-5 שלבים ראשיים</p>
+    </div>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3 data-he="מילוי פרטים והגשת דרכון" data-en="Fill Details & Submit Passport">מילוי פרטים והגשת דרכון</h3>
+          <p data-he="ממלא פרטים אישיים ומעלה צילום דרכון לבדיקת נאותות" data-en="Fill personal details and upload passport for due diligence">ממלא פרטים אישיים ומעלה צילום דרכון לבדיקת נאותות</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3 data-he="תשלום ושלב הנוטוריון" data-en="Payment & Notary Stage">תשלום ושלב הנוטוריון</h3>
+          <p data-he="לאחר אישור הדרכון, תשלום ייפוי כח נוטוריוני בישראל" data-en="After passport approval, payment and notary power of attorney in Israel">לאחר אישור הדרכון, תשלום וחתימה על ייפוי כח נוטוריוני בישראל</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3 data-he="העלאת מסמכים ושליחה" data-en="Upload & Ship Documents">העלאת מסמכים ושליחה</h3>
+          <p data-he="העלאת מסמכים סרוקים ושליחת המקוריים בדואר מהיר לגאורגיה" data-en="Upload scanned documents and ship originals to Georgia">העלאת מסמכים סרוקים ושליחת המקוריים בדואר מהיר לגאורגיה</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3 data-he="עורך הדין פותח את החשבון" data-en="Attorney Opens the Account">עורך הדין פותח את החשבון</h3>
+          <p data-he="עורך הדין שלנו בבטומי מגיש את המסמכים לבנק ופותח את החשבון" data-en="Our attorney in Batumi submits documents to the bank and opens the account">עורך הדין שלנו בבטומי מגיש את המסמכים לבנק ופותח את החשבון</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h3 data-he="קבלת פרטי החשבון" data-en="Receive Account Details">קבלת פרטי החשבון</h3>
+          <p data-he="הבנק שולח SMS עם פרטי הכניסה, ניתן להוריד את האפליקציה ולהתחיל" data-en="The bank sends SMS with login details, download the app and start">הבנק שולח SMS עם פרטי הכניסה, ניתן להוריד את האפליקציה ולהתחיל</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT TO PREPARE -->
+<section class="prepare-section" id="prepare">
+  <div class="container">
+    <div class="section-header">
+      <div class="gold-line"></div>
+      <h2 class="section-title" data-he="מה צריך להכין?" data-en="What to prepare?">מה צריך להכין?</h2>
+      <p class="section-sub" data-he="מסמכים שתזדקק להם לאורך התהליך" data-en="Documents you'll need throughout the process">מסמכים שתזדקק להם לאורך התהליך</p>
+    </div>
+    <div class="prepare-grid">
+      <div class="prepare-item">
+        <span class="prepare-icon">🛂</span>
+        <span data-he="דרכון ישראלי בתוקף (לפחות 8 חודשים)" data-en="Valid Israeli passport (at least 8 months)">דרכון ישראלי בתוקף (לפחות 8 חודשים)</span>
+      </div>
+      <div class="prepare-item">
+        <span class="prepare-icon">📋</span>
+        <span data-he="ייפוי כח נוטוריוני (נשלח על ידינו לחתימה)" data-en="Notarial power of attorney (we send for signature)">ייפוי כח נוטוריוני (נשלח על ידינו לחתימה)</span>
+      </div>
+      <div class="prepare-item">
+        <span class="prepare-icon">💼</span>
+        <span data-he="3 תלושי שכר אחרונים (סרוקים)" data-en="3 recent pay stubs (scanned)">3 תלושי שכר אחרונים (סרוקים)</span>
+      </div>
+      <div class="prepare-item">
+        <span class="prepare-icon">🏦</span>
+        <span data-he="אישור ניהול חשבון בנק בישראל (באנגלית)" data-en="Israeli bank account management certificate (English)">אישור ניהול חשבון בנק בישראל (באנגלית)</span>
+      </div>
+      <div class="prepare-item">
+        <span class="prepare-icon">📊</span>
+        <span data-he="תדפיסי בנק 6 חודשים אחרונים" data-en="Bank statements for last 6 months">תדפיסי בנק 6 חודשים אחרונים</span>
+      </div>
+      <div class="prepare-item">
+        <span class="prepare-icon">🏠</span>
+        <span data-he="הוכחת כתובת בישראל (חשבון חשמל/ארנונה)" data-en="Proof of address in Israel (electricity/municipal tax bill)">הוכחת כתובת בישראל (חשבון חשמל/ארנונה)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="gold-line"></div>
+      <h2 class="section-title" data-he="עלויות" data-en="Costs">עלויות</h2>
+      <p class="section-sub" data-he="שקיפות מלאה — אין הפתעות" data-en="Full transparency — no surprises">שקיפות מלאה — אין הפתעות</p>
+    </div>
+    <div class="pricing-compact">
+      <div class="pricing-main-row">
+        <div class="pricing-main-label">שירות Batumionline</div>
+        <div class="pricing-main-price">₪1,900</div>
+        <div class="pricing-main-desc">ליווי מלא · ייפוי כח · עו״ד בגאורגיה</div>
+      </div>
+      <div class="pricing-extras-row">
+        <div class="pricing-extra-item">
+          <span class="pricing-extra-label">נוטוריון</span>
+          <span class="pricing-extra-price">~₪400–600</span>
+          <span class="pricing-extra-note">ישירות לנוטוריון</span>
+        </div>
+        <div class="pricing-extra-divider"></div>
+        <div class="pricing-extra-item">
+          <span class="pricing-extra-label">שליחות בינל׳</span>
+          <span class="pricing-extra-price">~₪150–250</span>
+          <span class="pricing-extra-note">DHL / FedEx</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / START -->
+<section class="cta-section" id="start">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-glow"></div>
+      <h2 class="display-title" style="font-size:2.2rem;" data-he="מוכן להתחיל?" data-en="Ready to start?">מוכן להתחיל?</h2>
+      <p class="cta-sub" data-he="הצטרף לתהליך עכשיו — פשוט, בטוח ומהיר" data-en="Join the process now — simple, safe and fast">הצטרף לתהליך עכשיו — פשוט, בטוח ומהיר</p>
+      <a href="/client" class="btn btn-primary btn-lg" data-he="🚀 התחל את התהליך" data-en="🚀 Start the Process">🚀 התחל את התהליך</a>
+      <div class="cta-note" data-he="* ניתן לחזור ולהמשיך בכל שלב עם מספר הטלפון שלך" data-en="* You can return and continue at any stage with your phone number">* ניתן לחזור ולהמשיך בכל שלב עם מספר הטלפון שלך</div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- FOOTER -->
+<footer class="landing-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="logo-area">
+        <div class="logo-icon">🏦</div>
+        <div>
+          <div class="logo-text">Batumionline</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">batumionline.biz</div>
+        </div>
+      </div>
+      <div style="color:var(--text-muted);font-size:0.85rem;text-align:center;">
+        © 2025 Batumionline. כל הזכויות שמורות.
+      </div>
+      <div style="display:flex;gap:1rem;align-items:center;">
+        <div style="display:flex;gap:0.75rem;align-items:center;">
+          <a href="/client" class="btn btn-primary" style="padding:0.5rem 1.25rem;font-size:0.85rem;">🚀 כניסה ללקוחות</a>
+          <span style="color:var(--border);font-size:1.2rem;">|</span>
+          <a href="/admin" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none;opacity:0.6;" title="פאנל ניהול">⚙️ ניהול</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  
+  const dir = lang === 'he' ? 'rtl' : 'ltr';
+  document.documentElement.dir = dir;
+  document.documentElement.lang = lang;
+  
+  document.querySelectorAll('[data-he]').forEach(el => {
+    el.innerHTML = el.getAttribute(`data-${lang}`);
+  });
+}
+
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Animate on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.benefit-card, .step-item, .prepare-item, .pricing-card, .faq-item').forEach(el => {
+  observer.observe(el);
+});
+</script>
+
+<!-- WhatsApp Floating Button -->
+<a href="#" onclick="openChatBot();return false;" id="wa-float"
+   style="
+     position:fixed; bottom:2rem; left:2rem; z-index:9999;
+     background:#25D366; color:white;
+     height:52px; border-radius:50px;
+     display:flex; align-items:center; justify-content:center;
+     gap:0.6rem; padding:0 1.4rem;
+     font-family:'Assistant',sans-serif; font-size:1rem; font-weight:700;
+     text-decoration:none; white-space:nowrap;
+     box-shadow:0 4px 20px rgba(37,211,102,0.45);
+     transition:transform 0.2s, box-shadow 0.2s;
+   "
+   onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(37,211,102,0.6)'"
+   onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 20px rgba(37,211,102,0.45)'"
+>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  סיוע מנציג
+</a>
+
+
+<!-- View Mode Toolbar -->
+<div id="view-toolbar" style="
+  position:fixed; top:1rem; right:50%; transform:translateX(50%);
+  z-index:99999; display:flex; gap:0.4rem;
+  background:rgba(10,10,20,0.85); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:0.4rem 0.6rem; border-radius:50px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);
+">
+  <button onclick="setViewMode('desktop')" id="vm-desktop" title="מחשב" style="
+    background:var(--gold-light,#c9a84c); color:#1a0f00;
+    border:none; border-radius:50px; padding:0.35rem 0.9rem;
+    font-family:'Assistant',sans-serif; font-size:0.8rem; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; gap:0.35rem;
+  ">🖥️ מחשב</button>
+  <button onclick="setViewMode('tablet')" id="vm-tablet" title="אייפד" style="
+    background:transparent; color:rgba(255,255,255,0.7);
+    border:none; border-radius:50px; padding:0.35rem 0.9rem;
+    font-family:'Assistant',sans-serif; font-size:0.8rem; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; gap:0.35rem;
+  ">📱 אייפד</button>
+  <button onclick="setViewMode('mobile')" id="vm-mobile" title="נייד" style="
+    background:transparent; color:rgba(255,255,255,0.7);
+    border:none; border-radius:50px; padding:0.35rem 0.9rem;
+    font-family:'Assistant',sans-serif; font-size:0.8rem; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; gap:0.35rem;
+  ">📲 נייד</button>
+</div>
+
+<div id="view-frame-wrapper" style="display:flex;justify-content:center;transition:all 0.3s ease;">
+<style>
+  #view-frame-wrapper > * { transition: max-width 0.3s ease; }
+  body.vm-tablet #view-frame-wrapper { padding: 1rem; background: #111; min-height:100vh; }
+  body.vm-mobile #view-frame-wrapper { padding: 1rem; background: #111; min-height:100vh; }
+</style>
+</div>
+
+<script>
+let currentMode = 'desktop';
+const vmStyles = {
+  desktop: { maxWidth: '', margin: '' },
+  tablet:  { maxWidth: '768px', margin: '0 auto' },
+  mobile:  { maxWidth: '390px', margin: '0 auto' }
+};
+
+function setViewMode(mode) {
+  currentMode = mode;
+  const wrapper = document.getElementById('view-frame-wrapper');
+  const body = document.body;
+
+  // Remove all vm classes
+  body.classList.remove('vm-desktop','vm-tablet','vm-mobile');
+  body.classList.add('vm-' + mode);
+
+  // Update button styles
+  ['desktop','tablet','mobile'].forEach(m => {
+    const btn = document.getElementById('vm-' + m);
+    if (m === mode) {
+      btn.style.background = 'var(--gold-light, #c9a84c)';
+      btn.style.color = '#000';
+    } else {
+      btn.style.background = 'transparent';
+      btn.style.color = 'rgba(255,255,255,0.7)';
+    }
+  });
+
+  // Apply width to main content wrapper
+  const main = document.querySelector('.landing-nav') || document.body.firstElementChild;
+  const allSections = document.querySelectorAll('nav, section, footer, .landing-hero');
+  allSections.forEach(el => {
+    if (mode === 'desktop') {
+      el.style.maxWidth = '';
+      el.style.margin = '';
+    }
+  });
+
+  if (mode !== 'desktop') {
+    document.body.style.setProperty('--vw-limit', vmStyles[mode].maxWidth);
+  }
+
+  // Simulate width by wrapping body content
+  const html = document.documentElement;
+  if (mode === 'tablet') {
+    html.style.maxWidth = '768px';
+    html.style.margin = '0 auto';
+    html.style.boxShadow = '0 0 40px rgba(0,0,0,0.8)';
+  } else if (mode === 'mobile') {
+    html.style.maxWidth = '390px';
+    html.style.margin = '0 auto';
+    html.style.boxShadow = '0 0 40px rgba(0,0,0,0.8)';
+  } else {
+    html.style.maxWidth = '';
+    html.style.margin = '';
+    html.style.boxShadow = '';
+  }
+}
+</script>
+<!-- ===== CHATBOT ===== -->
+<div id="chatbot-overlay" onclick="closeChatBotBtn()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99990;backdrop-filter:blur(4px);"></div>
+
+<div id="chatbot-panel" style="display:none;position:fixed;bottom:2rem;left:2rem;z-index:99991;width:360px;max-width:calc(100vw - 2rem);background:#0d1b2e;border:1px solid rgba(201,168,76,0.3);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.6);font-family:'Assistant',sans-serif;flex-direction:column;">
+  <div style="background:linear-gradient(135deg,#1a2f4a,#0d1b2e);padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;border-bottom:1px solid rgba(201,168,76,0.2);">
+    <div style="width:40px;height:40px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🏦</div>
+    <div style="flex:1;">
+      <div style="color:#c9a84c;font-weight:700;font-size:0.95rem;">Batumionline</div>
+      <div style="color:#6b9a7f;font-size:0.75rem;">● מחובר</div>
+    </div>
+    <button onclick="closeChatBotBtn()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.3rem;cursor:pointer;">✕</button>
+  </div>
+  <div id="chat-messages" style="height:300px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;scroll-behavior:smooth;"></div>
+  <div id="chat-quick" style="padding:0.6rem 1rem;display:flex;flex-wrap:wrap;gap:0.4rem;border-top:1px solid rgba(255,255,255,0.07);min-height:52px;"></div>
+</div>
+
+<script>
+var FAQ_DATA = [
+  {q:"למה צריך ייפוי כח נוטוריוני ואפוסטיל?", a:"כדי לפתוח חשבון בנק מרחוק, עורך הדין חייב להציג אישור חוקי המאומת ע"י נוטוריון ומדינה (אפוסטיל). זהו המסמך היחיד שמוכיח לבנק הזר שהפעולה מתבצעת בהסכמתך המלאה."},
+  {q:"איזה סוג חשבון פותחים?", a:"יש שני סוגי חשבון: פרטי ועסקי. כרגע ניתן לפתוח רק חשבון עסקי לאדם פרטי."},
+  {q:"האם הכסף שלי בטוח בבנקים בגאורגיה?", a:"בהחלט. הבנקים TBC ו-Bank of Georgia נסחרים בלונדון וכפופים לרגולציה בינלאומית מחמירה."},
+  {q:"מה קורה אם הבנק מסרב לפתוח חשבון?", a:"במקרה של סירוב בבדיקת הדרכון, נחזיר 90% מהתשלום. אם התהליך יבוטל לאחר הגעת המסמכים לגאורגיה — יינתן החזר של 50%."},
+  {q:"האם אני צריך לדווח לרשות המיסים?", a:"גאורגיה חתומה על CRS. החזקת החשבון חוקית לחלוטין, אך חובת דיווח קיימת מעל תקרה של כ-450 אלף ש"ח."},
+  {q:"האם ניתן להפקיד צ'קים ישראליים?", a:"לא. המערכת בגאורגיה אינה עובדת עם צ'קים, אלא בהעברות בנקאיות, כרטיסים ומזומן."},
+  {q:"האם אוכל למשוך כסף בכספומט בישראל?", a:"כן! הכרטיס הוא בינלאומי (Visa/Mastercard) ותקף למשיכות ורכישות בכל מקום בעולם."},
+  {q:"מה קורה אם איבדתי את הכרטיס?", a:"מקפיאים את הכרטיס באפליקציה מיידית. אנו נסייע בהזמנת כרטיס חדש ומשלוחו ב-DHL ישירות אליך."},
+  {q:"מהן הדרישות לסריקת המסמכים?", a:"חובה לסרוק בסורק מקצועי (לא בנייד) ולשלוח בפורמט PDF בלבד."},
+  {q:"טיפים לניהול החשבון", a:"1. בהעברות — ציינו 'Transfer to own account'. 2. בצעו פעולה קטנה כל כמה חודשים למניעת חשבון 'רדום'. 3. הגדירו זיהוי ביומטרי באפליקציה. 4. שמרו עותק סרוק של כל המסמכים."}
+];
+
+var askedFaqs = [];
+var botStarted = false;
+
+function openChatBot() {
+  var panel = document.getElementById('chatbot-panel');
+  var overlay = document.getElementById('chatbot-overlay');
+  panel.style.display = 'flex';
+  overlay.style.display = 'block';
+  if (!botStarted) {
+    botStarted = true;
+    setTimeout(startBot, 400);
+  }
+}
+
+function closeChatBotBtn() {
+  document.getElementById('chatbot-panel').style.display = 'none';
+  document.getElementById('chatbot-overlay').style.display = 'none';
+}
+
+function addBotMsg(text, delay) {
+  return new Promise(function(resolve) {
+    setTimeout(function() {
+      var msgs = document.getElementById('chat-messages');
+      var typing = document.createElement('div');
+      typing.style.cssText = 'display:flex;gap:0.5rem;align-items:flex-end;';
+      typing.innerHTML = '<div style="width:32px;height:32px;background:#c9a84c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🏦</div><div style="background:rgba(255,255,255,0.07);border-radius:14px;padding:0.6rem 0.9rem;color:rgba(255,255,255,0.4);font-size:0.85rem;">...</div>';
+      msgs.appendChild(typing);
+      msgs.scrollTop = msgs.scrollHeight;
+      setTimeout(function() {
+        typing.remove();
+        var msg = document.createElement('div');
+        msg.style.cssText = 'display:flex;gap:0.5rem;align-items:flex-end;';
+        msg.innerHTML = '<div style="width:32px;height:32px;background:#c9a84c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🏦</div><div style="background:rgba(255,255,255,0.09);border-radius:14px 14px 14px 4px;padding:0.65rem 1rem;color:rgba(255,255,255,0.9);font-size:0.88rem;line-height:1.55;max-width:78%;direction:rtl;">' + text + '</div>';
+        msgs.appendChild(msg);
+        msgs.scrollTop = msgs.scrollHeight;
+        resolve();
+      }, 800);
+    }, delay || 0);
+  });
+}
+
+function addUserMsg(text) {
+  var msgs = document.getElementById('chat-messages');
+  var msg = document.createElement('div');
+  msg.style.cssText = 'display:flex;justify-content:flex-end;';
+  msg.innerHTML = '<div style="background:linear-gradient(135deg,#c9a84c,#b8922a);border-radius:14px 14px 4px 14px;padding:0.65rem 1rem;color:#1a0f00;font-size:0.88rem;font-weight:600;max-width:78%;direction:rtl;">' + text + '</div>';
+  msgs.appendChild(msg);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function setQuickReplies(items) {
+  var area = document.getElementById('chat-quick');
+  area.innerHTML = items.map(function(item) {
+    return '<button onclick="handleQuick(\'' + item.label.replace(/'/g, "\\'") + '\',\'' + item.action + '\')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:#c9a84c;border-radius:20px;padding:0.35rem 0.85rem;font-size:0.8rem;font-family:\'Assistant\',sans-serif;cursor:pointer;white-space:nowrap;">' + item.label + '</button>';
+  }).join('');
+}
+
+function startBot() {
+  addBotMsg('שלום! 👋 אני הבוט של Batumionline.<br/>אשמח לענות על שאלות לגבי פתיחת חשבון בנק בגאורגיה.', 0).then(function() {
+    return addBotMsg('על מה תרצה לדעת?', 1000);
+  }).then(function() {
+    showFaqOptions();
+  });
+}
+
+function showFaqOptions() {
+  var remaining = FAQ_DATA.filter(function(f, i) { return askedFaqs.indexOf(i) === -1; });
+  if (remaining.length === 0) {
+    setQuickReplies([
+      {label:'🔄 שאלה נוספת', action:'restart'},
+      {label:'💬 דבר עם נציג', action:'agent'},
+      {label:'🚀 התחל תהליך', action:'start'}
+    ]);
+    return;
+  }
+  var items = remaining.slice(0, 5).map(function(f) {
+    return {label: f.q, action: 'faq_' + FAQ_DATA.indexOf(f)};
+  });
+  items.push({label:'💬 דבר עם נציג', action:'agent'});
+  setQuickReplies(items);
+}
+
+function handleQuick(label, action) {
+  setQuickReplies([]);
+  addUserMsg(label);
+  if (action.indexOf('faq_') === 0) {
+    var idx = parseInt(action.split('_')[1]);
+    askedFaqs.push(idx);
+    addBotMsg(FAQ_DATA[idx].a, 400).then(function() {
+      return addBotMsg('יש לך שאלה נוספת?', 1200);
+    }).then(function() {
+      showFaqOptions();
+    });
+  } else if (action === 'agent') {
+    addBotMsg('מעביר אותך לנציג שלנו בוואטסאפ... 💬', 400).then(function() {
+      setTimeout(function() {
+        window.open('https://wa.me/972502844867?text=' + encodeURIComponent('שלום, אני מעוניין לפתוח חשבון בנק בגאורגיה ויש לי שאלה'), '_blank');
+      }, 1000);
+      setQuickReplies([{label:'🔄 חזור לבוט', action:'restart'}]);
+    });
+  } else if (action === 'restart') {
+    askedFaqs = [];
+    addBotMsg('בסדר! על מה תרצה לדעת?', 400).then(function() {
+      showFaqOptions();
+    });
+  } else if (action === 'start') {
+    closeChatBotBtn();
+    window.location.href = '/client';
+  }
+}
+</script>
+
+</body>

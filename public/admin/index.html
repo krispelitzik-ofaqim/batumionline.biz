@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>פאנל ניהול | Batumionline</title>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <style>
+    body { background: var(--navy); min-height: 100vh; }
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--navy-mid); border-left: 1px solid var(--border); padding: 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .main-content { padding: 2rem; }
+    .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .nav-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius); color: var(--text-muted); cursor: pointer; transition: var(--transition); margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .nav-link:hover, .nav-link.active { background: rgba(201,168,76,0.08); color: var(--gold-light); }
+    .nav-link .icon { font-size: 1.1rem; }
+    .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
+    .stat-card-num { font-family: 'Assistant', sans-serif; font-size: 2rem; color: var(--gold-light); }
+    .stat-card-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+    .client-detail-panel { background: var(--navy-mid); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .detail-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .detail-label { color: var(--text-muted); width: 140px; flex-shrink: 0; }
+    .detail-val { color: var(--text-main); }
+    .action-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .sidebar { height: auto; position: relative; }
+      .stat-cards { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <div style="max-width:400px;width:100%;padding:2rem;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div class="logo-icon" style="margin:0 auto 1rem;width:56px;height:56px;font-size:1.75rem;">🏦</div>
+      <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);">כניסה למערכת</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-top:0.5rem;">Batumionline Admin</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">סיסמה</label>
+        <input type="password" id="login-pass" class="form-control" placeholder="הכנס סיסמה" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <div id="login-error" class="alert alert-error" style="display:none;"></div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">כניסה</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel" style="display:none;">
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon" style="width:36px;height:36px;font-size:1rem;">🏦</div>
+        <div>
+          <div class="logo-text" style="font-size:0.95rem;">Batumionline</div>
+          <div id="role-badge" style="font-size:0.7rem;color:var(--text-muted);">Admin</div>
+        </div>
+      </div>
+
+      <div id="nav-admin-links">
+        <div class="nav-link active" onclick="showPage('page-dashboard')">
+          <span class="icon">📊</span> דשבורד
+        </div>
+        <div class="nav-link" onclick="showPage('page-clients')">
+          <span class="icon">👥</span> לקוחות
+        </div>
+        <div class="nav-link" onclick="showPage('page-pending')">
+          <span class="icon">⏳</span> ממתינים לאישור
+          <span id="pending-count" class="badge badge-gold" style="margin-right:auto;"></span>
+        </div>
+      </div>
+
+      <div id="nav-lawyer-links" style="display:none;">
+        <div class="nav-link active" onclick="showPage('page-lawyer')">
+          <span class="icon">⚖️</span> לקוחות שלי
+        </div>
+      </div>
+
+      <div style="margin-top:auto;padding-top:2rem;border-top:1px solid var(--border);margin-top:2rem;">
+        <a href="/" class="nav-link">
+          <span class="icon">🌐</span> דף ראשי
+        </a>
+        <div class="nav-link" onclick="logout()">
+          <span class="icon">🚪</span> יציאה
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- DASHBOARD -->
+      <div class="page-section active" id="page-dashboard">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:1.5rem;">דשבורד</h2>
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-card-num" id="stat-total">-</div>
+            <div class="stat-card-label">סה"כ לקוחות</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-num" id="stat-pending">-</div>
+            <div class="stat-card-label">ממתינים לאישור</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-num" id="stat-active">-</div>
+            <div class="stat-card-label">בתהליך</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-num" id="stat-completed">-</div>
+            <div class="stat-card-label">הושלמו</div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>שם</th>
+                <th>טלפון</th>
+                <th>שלב</th>
+                <th>בנק</th>
+                <th>סטטוס</th>
+                <th>תאריך</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ALL CLIENTS -->
+      <div class="page-section" id="page-clients">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+          <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);">כל הלקוחות</h2>
+          <input type="text" id="search-input" class="form-control" placeholder="חיפוש לקוח..." style="max-width:250px;" oninput="filterClients()" />
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>שם</th>
+                <th>טלפון</th>
+                <th>שלב</th>
+                <th>דרכון</th>
+                <th>תשלום</th>
+                <th>סטטוס</th>
+                <th>פעולות</th>
+              </tr>
+            </thead>
+            <tbody id="clients-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PENDING APPROVAL -->
+      <div class="page-section" id="page-pending">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:1.5rem;">ממתינים לאישור דרכון</h2>
+        <div id="pending-list"></div>
+      </div>
+
+      <!-- CLIENT DETAIL -->
+      <div class="page-section" id="page-client-detail">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+          <button class="btn btn-ghost" onclick="showPage('page-clients')" style="padding:0.5rem 1rem;">← חזרה</button>
+          <h2 id="detail-name" style="font-family:'Playfair Display',serif;color:var(--gold-light);"></h2>
+        </div>
+        <div id="client-detail-content"></div>
+      </div>
+
+      <!-- LAWYER VIEW -->
+      <div class="page-section" id="page-lawyer">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--gold-light);margin-bottom:1.5rem;">לקוחות בשלב שליחה</h2>
+        <div id="lawyer-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/admin.js"></script>
+</body>
+</html>
