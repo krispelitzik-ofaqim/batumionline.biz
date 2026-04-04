@@ -39,11 +39,12 @@ function showScreen(id) {
 
 function showProgress(visualStep) {
   document.getElementById('progress-bar').style.display = 'block';
+  const allDone = visualStep >= 7;
   for (let i = 1; i <= 7; i++) {
     const el = document.getElementById(`ps-${i}`);
     el.classList.remove('active', 'completed');
-    if (i < visualStep) el.classList.add('completed');
-    else if (i === visual) el.classList.add('active');
+    if (allDone || i < visualStep) el.classList.add('completed');
+    else if (i === visualStep) el.classList.add('active');
   }
 }
 
@@ -71,6 +72,11 @@ async function checkPhone(phone) {
         ניתן לנסות שוב בעוד <strong>${days} ימים</strong>
       `;
       showScreen('screen-blocked');
+      return;
+    }
+
+    if (data.trashed) {
+      showScreen('screen-trashed');
       return;
     }
 
@@ -244,9 +250,17 @@ async function notaryDone() {
   }
 }
 
-function downloadPOA() {
-  // Download the power of attorney PDF
-  window.open('/assets/docs/poa-template.pdf', '_blank');
+async function downloadPOA() {
+  // Try to fetch client's uploaded POA from server
+  try {
+    const res = await fetch(`/api/client/poa?phone=${encodeURIComponent(clientPhone)}`);
+    const data = await res.json();
+    if (data.success && data.url) {
+      window.open(data.url, '_blank');
+      return;
+    }
+  } catch (e) {}
+  alert('ייפוי הכח עדיין לא הועלה. אנא המתן לעדכון מהמנהל.');
 }
 
 // ===== CHECKLIST =====
@@ -430,7 +444,10 @@ async function submitFeedback() {
     });
     const data = await res.json();
     showLoading(false);
-    if (data.success) showScreen('screen-complete');
+    if (data.success) {
+      showProgress(7);
+      showScreen('screen-complete');
+    }
   } catch (e) {
     showLoading(false);
   }

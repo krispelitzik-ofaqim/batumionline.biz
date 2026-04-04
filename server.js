@@ -78,10 +78,33 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Daily cleanup: auto-trash stale clients (steps 2-3 for 60+ days)
+function runDailyCleanup() {
+  const { clientsDB } = require('./database/db');
+  const now = new Date();
+  let count = 0;
+  clientsDB.getAll().forEach(c => {
+    if (c.trashed || c.archived) return;
+    if (c.current_step >= 2 && c.current_step <= 3) {
+      const created = new Date(c.created_at);
+      const daysSince = Math.floor((now - created) / (1000 * 60 * 60 * 24));
+      if (daysSince >= 60) {
+        clientsDB.update(c.id, { trashed: 1, trash_reason: 'אוטומטי — לא התקדם 60 יום' });
+        count++;
+      }
+    }
+  });
+  if (count > 0) console.log(`🗑️ Auto-cleanup: ${count} stale clients moved to trash`);
+}
+
 app.listen(PORT, () => {
   console.log(`\n🏦 Batumionline BIZ Server running on port ${PORT}`);
   console.log(`🌐 http://localhost:${PORT}`);
   console.log(`👤 Client panel: http://localhost:${PORT}/client`);
   console.log(`⚙️  Admin panel:  http://localhost:${PORT}/admin`);
   console.log(`⚖️  Lawyer panel: http://localhost:${PORT}/lawyer\n`);
+
+  // Run cleanup on startup and every 24 hours
+  runDailyCleanup();
+  setInterval(runDailyCleanup, 24 * 60 * 60 * 1000);
 });

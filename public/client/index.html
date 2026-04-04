@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>פורטל לקוח | Batumionline</title>
+  <meta name="theme-color" content="#c9a84c" />
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg" />
+  <link rel="apple-touch-icon" href="/assets/icons/icon.svg" />
   <link rel="stylesheet" href="/assets/css/main.css" />
   <style>
     body { background: var(--navy); }
@@ -31,7 +34,7 @@
 <!-- HEADER -->
 <div class="app-header" style="max-width:680px;">
   <a href="/" class="logo-area" style="text-decoration:none;">
-    <div class="logo-icon">🏦</div>
+    <div class="logo-icon" style="background:#c9a84c;color:#0d1b2e;font-family:'Assistant',sans-serif;font-weight:800;font-size:1.4rem;">B</div>
     <div class="logo-text">Batumionline</div>
   </a>
   <div id="client-phone-display" style="font-size:0.8rem;color:var(--text-muted);"></div>
@@ -80,18 +83,30 @@
     <div class="step-header" style="text-align:center;padding:3rem 0 2rem;">
       <div style="font-size:3rem;margin-bottom:1rem;">🏦</div>
       <h1 class="display-title" style="font-size:2rem;margin-bottom:1rem;">פתיחת חשבון בנק<br/>בינלאומי בגאורגיה</h1>
-      <p style="color:var(--text-muted);line-height:1.7;">ברוך הבא! אם כבר התחלת את התהליך, הכנס את מספר הטלפון שלך וניתב אותך להמשך. אם זו הפעם הראשונה, לחץ על "התחל".</p>
     </div>
-    <div class="card">
-      <div class="form-group">
-        <label class="form-label">מספר טלפון נייד</label>
-        <input type="tel" id="phone-input" class="form-control" placeholder="05X-XXXXXXX" />
+
+    <!-- New client - prominent -->
+    <div class="card" style="text-align:center;padding:2rem;">
+      <div style="font-size:1.2rem;font-weight:700;color:var(--text-main);margin-bottom:0.5rem;">פעם ראשונה כאן? 👋</div>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;">התחל את תהליך פתיחת חשבון הבנק שלך בגאורגיה</p>
+      <button class="btn btn-primary btn-full" style="padding:1rem;font-size:1.1rem;font-weight:700;" onclick="showScreen('screen-register')">🚀 התחל תהליך חדש</button>
+    </div>
+
+    <!-- Divider -->
+    <div style="display:flex;align-items:center;gap:1rem;margin:1.5rem 0;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="color:var(--text-muted);font-size:0.85rem;">או</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+
+    <!-- Returning client - secondary -->
+    <div style="padding:1.25rem;border:1px solid var(--border);border-radius:var(--radius-lg);background:rgba(255,255,255,0.02);">
+      <div style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.75rem;text-align:center;">לקוח ממשיך? הכנס את מספר הטלפון שלך</div>
+      <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+        <input type="tel" id="phone-input" class="form-control" placeholder="05X-XXXXXXX" style="flex:1;" />
+        <button class="btn btn-ghost" style="padding:0.6rem 1.25rem;white-space:nowrap;" onclick="checkPhone()">המשך ←</button>
       </div>
-      <div id="phone-error" class="alert alert-error" style="display:none;"></div>
-      <button class="btn btn-primary btn-full" onclick="checkPhone()">המשך</button>
-      <hr class="divider" />
-      <div style="text-align:center;color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">פעם ראשונה כאן?</div>
-      <button class="btn btn-outline btn-full" onclick="showScreen('screen-register')">✨ התחל תהליך חדש</button>
+      <div id="phone-error" class="alert alert-error" style="display:none;margin-top:0.75rem;"></div>
     </div>
   </div>
 
@@ -103,6 +118,20 @@
       <p style="color:var(--text-muted);line-height:1.7;margin-bottom:1rem;">הגשת הדרכון שלך לא עברה את בדיקת הנאותות.</p>
       <div id="block-info" class="alert alert-error"></div>
       <p style="color:var(--text-muted);font-size:0.9rem;margin-top:1rem;">לשאלות פנה אלינו בוואטסאפ.</p>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN: TRASHED ========== -->
+  <div class="panel-screen" id="screen-trashed">
+    <div style="text-align:center;padding:4rem 0;">
+      <div style="font-size:3.5rem;margin-bottom:1.5rem;">⏸️</div>
+      <h2 style="color:var(--gold-light);margin-bottom:1rem;">התהליך שלך הופסק</h2>
+      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;">התהליך שלך הופסק עקב חוסר התקדמות.<br/>לחידוש התהליך, פנה אלינו בוואטסאפ.</p>
+      <a href="https://wa.me/972502844867?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%9E%D7%A2%D7%95%D7%A0%D7%99%D7%99%D7%9F%20%D7%9C%D7%97%D7%93%D7%A9%20%D7%90%D7%AA%20%D7%94%D7%AA%D7%94%D7%9C%D7%99%D7%9A"
+         target="_blank"
+         class="btn btn-primary" style="padding:0.85rem 2rem;font-size:1rem;display:inline-flex;align-items:center;gap:0.5rem;">
+        💬 פנה אלינו בוואטסאפ
+      </a>
     </div>
   </div>
 
@@ -228,6 +257,10 @@
         <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.5rem;">📱 תקבל עדכון לוואטסאפ</div>
         <div id="waiting-phone" style="font-size:1.1rem;color:var(--gold-light);font-weight:600;"></div>
       </div>
+      <div style="margin-top:1.25rem;padding:1rem 1.25rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);font-size:0.88rem;line-height:1.7;color:var(--text-muted);">
+        <strong style="color:var(--gold-light);">💡 כיצד לחזור?</strong><br/>
+        כנס לאתר <span style="color:var(--gold-light);font-weight:600;">batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך.
+      </div>
     </div>
   </div>
 
@@ -288,6 +321,19 @@
           <span style="color:var(--text-muted);">הנוטוריון ישלים את שני המסמכים עם חותמת</span>
         </div>
       </div>
+      <div style="margin:1.5rem 0;padding:1.25rem 1.5rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:var(--radius-lg);text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;animation:pulse-gentle 2.5s ease-in-out infinite;">&#128336;</div>
+        <div style="color:var(--text-main);font-size:0.95rem;font-weight:600;line-height:1.7;">
+          אנחנו נחכה לך כאן עד להכנת המסמכים
+        </div>
+        <div style="color:var(--text-muted);font-size:0.82rem;margin-top:0.3rem;">קח את הזמן — כשהכל מוכן, לחץ למטה</div>
+      </div>
+      <style>
+        @keyframes pulse-gentle {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.08); }
+        }
+      </style>
       <hr class="divider" />
       <h3 style="font-size:1rem;margin-bottom:1rem;">האם יש בידך 2 מסמכי נוטוריון חתומים?</h3>
       <div style="display:flex;gap:1rem;">
@@ -420,6 +466,10 @@
       <div class="alert alert-info" style="text-align:right;">
         📦 <strong>מעקב משלוח:</strong> <span id="tracking-display" style="color:var(--gold-light);"></span>
       </div>
+      <div style="margin-top:1.25rem;padding:1rem 1.25rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);font-size:0.88rem;line-height:1.7;color:var(--text-muted);">
+        <strong style="color:var(--gold-light);">💡 כיצד לחזור?</strong><br/>
+        כנס לאתר <span style="color:var(--gold-light);font-weight:600;">batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך.
+      </div>
     </div>
   </div>
 
@@ -444,10 +494,10 @@
       <p style="color:var(--text-muted);margin-bottom:0.5rem;">חשבון הבנק שלך בגאורגיה נפתח בהצלחה!</p>
       <div class="gold-line" style="margin:1rem auto;"></div>
     </div>
-    <div class="alert alert-info" style="margin-bottom:1.5rem;">
-      📱 <strong>הבנק ישלח אליך SMS</strong> עם פרטי הכניסה לחשבון.<br/>
-      ניתן להוריד את אפליקציית הבנק ולהתחיל לנהל את חשבונך.<br/><br/>
-      ⚠️ <strong>שים לב:</strong> הכרטיס האשראי שלך ממתין לך בסניף הבנק. לא ניתן לשלוח אותו.
+    <div class="alert alert-info" style="margin-bottom:1.5rem;flex-direction:column;gap:0.5rem;">
+      <div>📱 <strong>הבנק ישלח אליך SMS</strong> עם פרטי הכניסה לחשבון.</div>
+      <div>ניתן להוריד את אפליקציית הבנק ולהתחיל לנהל את חשבונך.</div>
+      <div style="margin-top:0.25rem;">⚠️ <strong>שים לב:</strong> הכרטיס האשראי שלך ממתין לך בסניף הבנק. לא ניתן לשלוח אותו.</div>
     </div>
     <div class="card">
       <h3 style="margin-bottom:1.5rem;color:var(--gold-light);">שאלון משוב קצר (5 שאלות)</h3>

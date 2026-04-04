@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { clientsDB, docsDB, checklistDB, feedbackDB } = require('../database/db');
+const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB } = require('../database/db');
 const { sendMessage, MESSAGES } = require('../services/whatsapp');
 const { uploadFile, createClientFolder } = require('../services/drive');
 
@@ -44,6 +44,10 @@ router.get('/status', (req, res) => {
   const client = clientsDB.findByPhone(phone);
   if (!client) return res.json({ exists: false });
 
+  if (client.trashed) {
+    return res.json({ exists: true, trashed: true });
+  }
+
   return res.json({
     exists: true, blocked: false,
     current_step: client.current_step, status: client.status,
@@ -64,14 +68,22 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
     if (clientsDB.isBlocked(phone))
       return res.status(403).json({ error: 'מספר זה חסום' });
 
+    const demoMode = settingsDB.get('demo_mode') ? true : false;
     let client = clientsDB.findByPhone(phone);
-    if (client)
-      return res.status(409).json({ error: 'מספר טלפון זה כבר רשום במערכת', current_step: client.current_step });
+    if (client) {
+      if (demoMode && client.is_demo) {
+        // In demo mode, delete old demo record to allow re-registration
+        clientsDB.delete(client.id);
+      } else {
+        return res.status(409).json({ error: 'מספר טלפון זה כבר רשום במערכת', current_step: client.current_step });
+      }
+    }
 
     const result = clientsDB.create({
       phone, first_name, last_name, email, id_number, birth_date,
       passport_number, passport_name_en, passport_surname_en,
-      passport_valid: passport_valid === 'true' ? 1 : 0, preferred_bank
+      passport_valid: passport_valid === 'true' ? 1 : 0, preferred_bank,
+      is_demo: demoMode ? 1 : 0
     });
 
     const newClient = clientsDB.findById(result.lastInsertRowid);
@@ -127,6 +139,27 @@ router.post('/temp-pay', async (req, res) => {
     console.error('Temp-pay error:', err);
     res.status(500).json({ error: 'שגיאת שרת' });
   }
+});
+
+// GET /api/client/poa - get POA document for client to download
+router.get('/poa', (req, res) => {
+  const { phone } = req.query;
+  if (!phone) return res.status(400).json({ error: 'מספר טלפון חסר' });
+
+  const client = clientsDB.findByPhone(phone);
+  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+
+  const docs = docsDB.getByClient(client.id);
+  const poaDrive = docs.find(d => d.doc_type === 'poa_to_sign_drive');
+  const poaLocal = docs.find(d => d.doc_type === 'poa_to_sign');
+
+  if (poaDrive && poaDrive.drive_url) {
+    return res.json({ success: true, url: poaDrive.drive_url });
+  }
+  if (poaLocal && poaLocal.drive_url) {
+    return res.json({ success: true, url: poaLocal.drive_url });
+  }
+  res.json({ success: false, error: 'ייפוי כח עדיין לא הועלה' });
 });
 
 // POST /api/client/checklist-start
@@ -225,7 +258,7 @@ router.post('/tracking', (req, res) => {
 });
 
 // POST /api/client/feedback
-router.post('/feedback', (req, res) => {
+router.post('/feedback', async (req, res) => {
   const { phone, account_opened, service_rating, response_rating, accessibility_rating, recommend_rating, comment } = req.body;
   const client = clientsDB.findByPhone(phone);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
@@ -237,7 +270,10 @@ router.post('/feedback', (req, res) => {
   });
 
   clientsDB.update(client.id, { current_step: 13, status: 'completed' });
-  res.json({ success: true, message: 'תודה על המשוב!' });
+
+  sendMessage(client.phone, MESSAGES.CONGRATULATIONS(client.first_name), client.id).catch(e => console.warn('WA:', e.message));
+
+  res.json({ success: true, message: 'תודה על המשוב!', current_step: 13 });
 });
 
 module.exports = router;

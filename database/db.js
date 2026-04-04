@@ -79,6 +79,11 @@ const clientsDB = {
     const until = new Date();
     until.setDate(until.getDate() + days);
     this.update(id, { blocked: 1, block_reason: reason, block_until: until.toISOString().slice(0, 10), status: 'blocked' });
+  },
+  delete(id) {
+    const data = load();
+    data.clients = data.clients.filter(c => c.id != id);
+    save(data);
   }
 };
 
@@ -116,7 +121,8 @@ const feedbackDB = {
     save(data);
     return { lastInsertRowid: id };
   },
-  getByClient(clientId) { return load().feedback.find(f => f.client_id == clientId) || null; }
+  getByClient(clientId) { return load().feedback.find(f => f.client_id == clientId) || null; },
+  getAll() { return load().feedback; }
 };
 
 const whatsappLogDB = {
@@ -128,6 +134,20 @@ const whatsappLogDB = {
   }
 };
 
+const settingsDB = {
+  get(key) {
+    const data = load();
+    if (!data._settings) return null;
+    return data._settings[key] !== undefined ? data._settings[key] : null;
+  },
+  set(key, value) {
+    const data = load();
+    if (!data._settings) data._settings = {};
+    data._settings[key] = value;
+    save(data);
+  }
+};
+
 const db = { pragma: () => {}, exec: () => {} };
 
-module.exports = { db, clientsDB, docsDB, checklistDB, feedbackDB, whatsappLogDB };
+module.exports = { db, clientsDB, docsDB, checklistDB, feedbackDB, whatsappLogDB, settingsDB };

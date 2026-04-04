@@ -22,7 +22,9 @@ const MESSAGES = {
   
   DOCS_ARRIVED: (name, link) => `שלום ${name} 📬\n\nהמסמכים הגיעו לגאורגיה!\nעורך הדין שלנו כעת מטפל בפתיחת החשבון.\nנעדכן אותך ברגע שהחשבון ייפתח.\n\n👉 לצפייה בסטטוס:\n${link}\n\n*Batumionline* 🏦`,
   
-  ACCOUNT_OPENED: (name, link) => `שלום ${name} 🎉\n\nמזל טוב! חשבון הבנק שלך בגאורגיה נפתח בהצלחה!\n\nהבנק ישלח אליך הודעת SMS עם פרטי הכניסה.\nניתן להוריד את אפליקציית הבנק ולנהל את חשבונך.\n\n👉 לחץ להמשך:\n${link}\n\n*Batumionline* 🏦`
+  ACCOUNT_OPENED: (name, link) => `שלום ${name} 🎉\n\nמזל טוב! חשבון הבנק שלך בגאורגיה נפתח בהצלחה!\n\nהבנק ישלח אליך הודעת SMS עם פרטי הכניסה.\nניתן להוריד את אפליקציית הבנק ולנהל את חשבונך.\n\n👉 לחץ להמשך:\n${link}\n\n*Batumionline* 🏦`,
+
+  CONGRATULATIONS: (name) => `🎉 מזל טוב ${name}! תהליך פתיחת חשבון הבנק שלך בגאורגיה הושלם בהצלחה! 🏦\n\nחשבון הבנק שלך פעיל ומוכן לשימוש.\nאנחנו שמחים שבחרת ב-Batumionline ומאחלים לך הצלחה רבה!\n\nלשאלות נוספות — תמיד כאן בשבילך 💛\nצוות Batumionline`
 };
 
 async function sendMessage(phone, message, clientId = null) {

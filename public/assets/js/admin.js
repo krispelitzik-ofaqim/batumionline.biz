@@ -23,6 +23,12 @@ function stepBadge(step) {
   return `<span class="badge ${color}">${label}</span>`;
 }
 
+function clientName(c) {
+  var he = (c.first_name || '') + ' ' + (c.last_name || '');
+  var en = ((c.passport_name_en || '') + ' ' + (c.passport_surname_en || '')).trim();
+  return en ? he + ' <span style="color:var(--text-muted);font-weight:400;font-size:0.85em;">| ' + en + '</span>' : he;
+}
+
 const PASSPORT_LABELS = { pending: 'ממתין', reviewing: 'בבדיקה', approved: '✅ אושר', rejected: '❌ נדחה' };
 const PAYMENT_LABELS = { pending: 'ממתין', paid: '✅ שולם' };
 
@@ -77,6 +83,7 @@ function showPanel() {
     showPage('page-lawyer');
   } else {
     loadClients();
+    loadDemoState();
   }
 }
 
@@ -104,10 +111,12 @@ async function loadClients() {
     const data = await res.json();
     allClients = data.clients || [];
     renderDashboard();
-    renderClientsTable(allClients);
+    renderClientsTable(activeClients());
     renderPendingList();
     renderDocsReviewList();
     renderShippingList();
+    renderArchiveList();
+    renderTrashList();
     updatePendingCount();
   } catch (e) {
     console.error('Load clients error:', e);
@@ -125,11 +134,16 @@ async function loadLawyerClients() {
 }
 
 // ===== DASHBOARD =====
+function activeClients() {
+  return allClients.filter(c => !c.archived && !c.trashed);
+}
+
 function renderDashboard() {
-  const total = allClients.length;
-  const pending = allClients.filter(c => c.passport_status === 'reviewing').length;
-  const active = allClients.filter(c => c.status === 'active' && c.current_step > 2).length;
-  const completed = allClients.filter(c => c.status === 'completed').length;
+  const clients = activeClients();
+  const total = clients.length;
+  const pending = clients.filter(c => c.passport_status === 'reviewing').length;
+  const active = clients.filter(c => c.status === 'active' && c.current_step > 2).length;
+  const completed = clients.filter(c => c.status === 'completed').length;
 
   document.getElementById('stat-total').textContent = total;
   document.getElementById('stat-pending').textContent = pending;
@@ -137,9 +151,9 @@ function renderDashboard() {
   document.getElementById('stat-completed').textContent = completed;
 
   const tbody = document.getElementById('dashboard-table');
-  tbody.innerHTML = allClients.slice(0, 10).map(c => `
+  tbody.innerHTML = clients.slice(0, 10).map(c => `
     <tr class="client-row" onclick="viewClient(${c.id})">
-      <td><strong>${c.first_name || ''} ${c.last_name || ''}</strong></td>
+      <td><strong>${clientName(c)}</strong></td>
       <td style="direction:ltr;">${c.phone}</td>
       <td>${stepBadge(c.current_step)}</td>
       <td>${c.preferred_bank || '-'}</td>
@@ -153,7 +167,7 @@ function renderClientsTable(clients) {
   const tbody = document.getElementById('clients-table');
   tbody.innerHTML = clients.map(c => `
     <tr class="client-row" onclick="viewClient(${c.id})">
-      <td><strong>${c.first_name || ''} ${c.last_name || ''}</strong></td>
+      <td><strong>${clientName(c)}</strong>${c.is_demo ? ' <span class="badge badge-orange" style="font-size:0.65rem;">דמו</span>' : ''}</td>
       <td style="direction:ltr;">${c.phone}</td>
       <td>${stepBadge(c.current_step)}</td>
       <td><span class="badge ${c.passport_status === 'approved' ? 'badge-green' : c.passport_status === 'rejected' ? 'badge-red' : 'badge-blue'}">${PASSPORT_LABELS[c.passport_status] || c.passport_status}</span></td>
@@ -167,7 +181,7 @@ function renderClientsTable(clients) {
 }
 
 function renderPendingList() {
-  const pending = allClients.filter(c => c.passport_status === 'reviewing');
+  const pending = activeClients().filter(c => c.passport_status === 'reviewing');
   const container = document.getElementById('pending-list');
 
   if (pending.length === 0) {
@@ -181,7 +195,7 @@ function renderPendingList() {
     <div class="client-detail-panel">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
         <div>
-          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${c.first_name || ''} ${c.last_name || ''}</h3>
+          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${clientName(c)}</h3>
           <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val" style="direction:ltr;">${c.phone}</span></div>
           <div class="detail-row"><span class="detail-label">דרכון:</span><span class="detail-val">${c.passport_number || '-'} (${c.passport_name_en || ''} ${c.passport_surname_en || ''})</span></div>
           <div class="detail-row"><span class="detail-label">תאריך לידה:</span><span class="detail-val">${c.birth_date || '-'}</span></div>
@@ -204,7 +218,7 @@ function renderPendingList() {
 
 function renderDocsReviewList() {
   // Clients who uploaded docs (step 8-9), waiting for lawyer to review
-  const clients = allClients.filter(c => c.current_step >= 8 && c.current_step <= 9);
+  const clients = activeClients().filter(c => c.current_step >= 8 && c.current_step <= 9);
   const container = document.getElementById('docs-review-list');
   const countEl = document.getElementById('docs-review-count');
   countEl.textContent = clients.length > 0 ? clients.length : '';
@@ -218,7 +232,7 @@ function renderDocsReviewList() {
     <div class="client-detail-panel">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
         <div>
-          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${c.first_name || ''} ${c.last_name || ''}</h3>
+          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${clientName(c)}</h3>
           <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val" style="direction:ltr;">${c.phone}</span></div>
           <div class="detail-row"><span class="detail-label">שלב:</span><span class="detail-val badge badge-gold">${STEP_LABELS[c.current_step] || c.current_step}</span></div>
           <div class="detail-row"><span class="detail-label">בנק:</span><span class="detail-val">${c.preferred_bank || '-'}</span></div>
@@ -234,7 +248,7 @@ function renderDocsReviewList() {
 
 function renderShippingList() {
   // Clients who submitted tracking (step 10) or docs arrived (step 11)
-  const clients = allClients.filter(c => c.current_step >= 10 && c.current_step <= 11);
+  const clients = activeClients().filter(c => c.current_step >= 10 && c.current_step <= 11);
   const container = document.getElementById('shipping-list');
   const countEl = document.getElementById('shipping-count');
   countEl.textContent = clients.length > 0 ? clients.length : '';
@@ -248,7 +262,7 @@ function renderShippingList() {
     <div class="client-detail-panel">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
         <div>
-          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${c.first_name || ''} ${c.last_name || ''}</h3>
+          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${clientName(c)}</h3>
           <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val" style="direction:ltr;">${c.phone}</span></div>
           <div class="detail-row"><span class="detail-label">חברת משלוח:</span><span class="detail-val">${c.shipping_company || '-'}</span></div>
           <div class="detail-row"><span class="detail-label">מספר מעקב:</span><span class="detail-val" style="direction:ltr;">${c.tracking_number || '-'}</span></div>
@@ -273,7 +287,7 @@ function renderLawyerList(clients) {
 
   container.innerHTML = clients.map(c => `
     <div class="client-detail-panel">
-      <h3 style="color:var(--text-main);margin-bottom:0.75rem;">${c.first_name || ''} ${c.last_name || ''}</h3>
+      <h3 style="color:var(--text-main);margin-bottom:0.75rem;">${clientName(c)}</h3>
       <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val">${c.phone}</span></div>
       <div class="detail-row"><span class="detail-label">מספר משלוח:</span><span class="detail-val" style="direction:ltr;">${c.tracking_number || '-'} (${c.shipping_company || ''})</span></div>
       <div class="detail-row"><span class="detail-label">שלב:</span><span class="detail-val badge badge-gold">${STEP_LABELS[c.current_step] || c.current_step}</span></div>
@@ -297,7 +311,7 @@ async function viewClient(id) {
     const c = data.client;
     const docs = data.docs || [];
 
-    document.getElementById('detail-name').innerHTML = `${c.first_name || ''} ${c.last_name || ''} <span style="font-size:0.7em;color:var(--text-muted);font-family:'Assistant',sans-serif;">שלב ${c.current_step}/13</span>`;
+    document.getElementById('detail-name').innerHTML = `${clientName(c)} <span style="font-size:0.7em;color:var(--text-muted);font-family:'Assistant',sans-serif;">שלב ${c.current_step}/13</span>`;
 
     document.getElementById('client-detail-content').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
@@ -349,6 +363,11 @@ async function viewClient(id) {
             <button class="btn btn-primary" onclick="confirmPayment(${c.id})">💳 אשר תשלום ידנית</button>
           ` : ''}
           ${c.blocked ? `<button class="btn btn-ghost" onclick="unblockClient(${c.id})">🔓 שחרר חסימה</button>` : ''}
+          ${c.archived ? `<button class="btn btn-success" onclick="unarchiveClient(${c.id})">♻️ שחזר מארכיון</button>` : `<button class="btn btn-ghost" onclick="archiveClient(${c.id})">📁 העבר לארכיון</button>`}
+          ${c.trashed ? `<button class="btn btn-success" onclick="untrashClient(${c.id})">♻️ שחזר מהפח</button>` : `<button class="btn btn-ghost" style="color:var(--error);" onclick="trashClient(${c.id})">🗑️ העבר לפח</button>`}
+          <label class="btn btn-primary" style="cursor:pointer;margin:0;">📄 העלה ייפוי כח לחתימה
+            <input type="file" accept=".pdf" style="display:none;" onchange="uploadPoa(${c.id}, this)" />
+          </label>
           <a href="/client?phone=${encodeURIComponent(c.phone)}" target="_blank" class="btn btn-ghost">👁 צפה כלקוח</a>
         </div>
       </div>
@@ -444,6 +463,162 @@ async function markAccountOpened(id) {
   } catch (e) { alert('שגיאה'); }
 }
 
+function renderArchiveList() {
+  const archived = allClients.filter(c => c.archived && !c.trashed);
+  const container = document.getElementById('archive-list');
+  const countEl = document.getElementById('archive-count');
+  countEl.textContent = archived.length > 0 ? archived.length : '';
+
+  if (archived.length === 0) {
+    container.innerHTML = '<div class="alert alert-info">אין לקוחות בארכיון ✅</div>';
+    return;
+  }
+
+  container.innerHTML = archived.map(c => `
+    <div class="client-detail-panel">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${clientName(c)}</h3>
+          <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val" style="direction:ltr;">${c.phone}</span></div>
+          <div class="detail-row"><span class="detail-label">שלב אחרון:</span><span class="detail-val">${stepBadge(c.current_step)}</span></div>
+          <div class="detail-row"><span class="detail-label">נרשם:</span><span class="detail-val">${formatDate(c.created_at)}</span></div>
+        </div>
+      </div>
+      <div class="action-btns" style="margin-top:1rem;">
+        <button class="btn btn-success" onclick="unarchiveClient(${c.id})">♻️ שחזר מארכיון</button>
+        <button class="btn btn-ghost" style="font-size:0.85rem;" onclick="viewClient(${c.id})">🔍 פרטים</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function archiveClient(id) {
+  if (!confirm('להעביר לקוח לארכיון?')) return;
+  try {
+    const res = await fetch('/api/admin/archive', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id })
+    });
+    const data = await res.json();
+    alert(data.message || 'הועבר לארכיון');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function unarchiveClient(id) {
+  if (!confirm('לשחזר לקוח מהארכיון?')) return;
+  try {
+    const res = await fetch('/api/admin/unarchive', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id })
+    });
+    const data = await res.json();
+    alert(data.message || 'שוחזר');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+// ===== TRASH =====
+function renderTrashList() {
+  const trashed = allClients.filter(c => c.trashed);
+  const container = document.getElementById('trash-list');
+  const countEl = document.getElementById('trash-count');
+  countEl.textContent = trashed.length > 0 ? trashed.length : '';
+
+  if (trashed.length === 0) {
+    container.innerHTML = '<div class="alert alert-info">פח הזבל ריק ✅</div>';
+    return;
+  }
+
+  container.innerHTML = trashed.map(c => `
+    <div class="client-detail-panel">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <h3 style="color:var(--text-main);margin-bottom:0.5rem;">${clientName(c)}</h3>
+          <div class="detail-row"><span class="detail-label">טלפון:</span><span class="detail-val" style="direction:ltr;">${c.phone}</span></div>
+          <div class="detail-row"><span class="detail-label">נרשם:</span><span class="detail-val">${formatDate(c.created_at)}</span></div>
+          <div class="detail-row"><span class="detail-label">עודכן:</span><span class="detail-val">${formatDate(c.updated_at)}</span></div>
+          <div class="detail-row"><span class="detail-label">שלב אחרון:</span><span class="detail-val">${stepBadge(c.current_step)}</span></div>
+          <div class="detail-row"><span class="detail-label">סיבה:</span><span class="detail-val">${c.trash_reason || 'ידני'}</span></div>
+        </div>
+      </div>
+      <div class="action-btns" style="margin-top:1rem;">
+        <button class="btn btn-success" onclick="untrashClient(${c.id})">♻️ שחזר</button>
+        <button class="btn btn-primary" onclick="resetClient(${c.id})">🔄 אפס ואפשר כניסה מחדש</button>
+        <button class="btn btn-danger" onclick="deleteClient(${c.id})">🗑️ מחק לצמיתות</button>
+        <button class="btn btn-ghost" style="font-size:0.85rem;" onclick="viewClient(${c.id})">🔍 פרטים</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function trashClient(id) {
+  if (!confirm('להעביר לקוח לפח הזבל?')) return;
+  try {
+    const res = await fetch('/api/admin/trash', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id, reason: 'ידני' })
+    });
+    const data = await res.json();
+    alert(data.message || 'הועבר לפח');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function untrashClient(id) {
+  if (!confirm('לשחזר לקוח מפח הזבל?')) return;
+  try {
+    const res = await fetch('/api/admin/untrash', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id })
+    });
+    const data = await res.json();
+    alert(data.message || 'שוחזר');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function resetClient(id) {
+  if (!confirm('לאפס את הלקוח ולאפשר כניסה מחדש? כל ההתקדמות תאופס.')) return;
+  try {
+    const res = await fetch('/api/admin/reset-client', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id })
+    });
+    const data = await res.json();
+    alert(data.message || 'אופס');
+    loadClients();
+    showPage('page-trash');
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function deleteClient(id) {
+  if (!confirm('למחוק את הלקוח לצמיתות? פעולה זו בלתי הפיכה!')) return;
+  if (!confirm('בטוח? הנתונים יימחקו ולא ניתן לשחזר אותם.')) return;
+  try {
+    const res = await fetch('/api/admin/delete', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id })
+    });
+    const data = await res.json();
+    alert(data.message || 'נמחק');
+    loadClients();
+    showPage('page-trash');
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function runAutoCleanup() {
+  if (!confirm('להריץ ניקוי אוטומטי? לקוחות בשלב 2-3 שלא התקדמו 60+ יום יועברו לפח.')) return;
+  try {
+    const res = await fetch('/api/admin/cleanup-stale', {
+      method: 'POST', headers: authHeaders()
+    });
+    const data = await res.json();
+    alert(data.message || 'הושלם');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
 async function adminMarkDocsReceived(id) {
   if (!confirm('לסמן שהמסמכים הגיעו?')) return;
   try {
@@ -472,6 +647,32 @@ async function adminMarkAccountOpened(id) {
   } catch (e) { alert('שגיאה'); }
 }
 
+async function uploadPoa(clientId, input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.type !== 'application/pdf') { alert('רק קבצי PDF מותרים'); return; }
+
+  const formData = new FormData();
+  formData.append('poa_file', file);
+
+  try {
+    const res = await fetch(`/api/admin/upload-poa/${clientId}`, {
+      method: 'POST',
+      headers: { 'x-admin-token': adminToken },
+      body: formData
+    });
+    const data = await res.json();
+    if (data.success) {
+      const link = data.driveUrl || data.localUrl;
+      alert('ייפוי כח הועלה בהצלחה!\n' + (data.driveUrl ? 'קישור: ' + data.driveUrl : ''));
+      viewClient(clientId);
+    } else {
+      alert(data.error || 'שגיאה');
+    }
+  } catch (e) { alert('שגיאת תקשורת'); }
+  input.value = '';
+}
+
 async function viewPassport(id) {
   try {
     const res = await fetch(`/api/admin/client/${id}`, { headers: authHeaders() });
@@ -485,14 +686,14 @@ async function viewPassport(id) {
 // ===== HELPERS =====
 function filterClients() {
   const q = document.getElementById('search-input').value.toLowerCase();
-  const filtered = allClients.filter(c =>
-    `${c.first_name} ${c.last_name} ${c.phone} ${c.email}`.toLowerCase().includes(q)
+  const filtered = activeClients().filter(c =>
+    `${c.first_name} ${c.last_name} ${c.passport_name_en} ${c.passport_surname_en} ${c.phone} ${c.email}`.toLowerCase().includes(q)
   );
   renderClientsTable(filtered);
 }
 
 function updatePendingCount() {
-  const count = allClients.filter(c => c.passport_status === 'reviewing').length;
+  const count = activeClients().filter(c => c.passport_status === 'reviewing').length;
   const el = document.getElementById('pending-count');
   el.textContent = count > 0 ? count : '';
 }
@@ -507,4 +708,194 @@ function statusBadge(status, blocked) {
 function formatDate(dateStr) {
   if (!dateStr) return '-';
   return new Date(dateStr).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// ===== DEMO =====
+var demoModeOn = false;
+
+async function loadDemoState() {
+  try {
+    var res = await fetch('/api/admin/demo-mode', { headers: authHeaders() });
+    var data = await res.json();
+    demoModeOn = data.enabled;
+    updateDemoBtn();
+  } catch (e) {}
+}
+
+function updateDemoBtn() {
+  var sw = document.getElementById('demo-switch');
+  var knob = document.getElementById('demo-knob');
+  var label = document.getElementById('demo-label');
+  if (!sw) return;
+  if (demoModeOn) {
+    sw.style.background = '#f39c12';
+    knob.style.left = '22px';
+    label.textContent = 'ON';
+    label.style.color = '#f39c12';
+  } else {
+    sw.style.background = 'var(--border)';
+    knob.style.left = '2px';
+    label.textContent = 'OFF';
+    label.style.color = 'var(--text-muted)';
+  }
+}
+
+async function toggleDemoMode() {
+  var newState = !demoModeOn;
+  try {
+    var res = await fetch('/api/admin/demo-mode', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ enabled: newState })
+    });
+    var data = await res.json();
+    demoModeOn = data.enabled;
+    updateDemoBtn();
+    alert(data.message);
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function clearDemos() {
+  var count = allClients.filter(function(c) { return c.is_demo; }).length;
+  if (count === 0) { alert('אין לקוחות דמו למחיקה'); return; }
+  if (!confirm('למחוק ' + count + ' לקוחות דמו? מספרי הטלפון שלהם ישוחררו לרישום מחדש.')) return;
+  try {
+    var res = await fetch('/api/admin/clear-demos', { method: 'POST', headers: authHeaders() });
+    var data = await res.json();
+    alert(data.message || 'נמחקו');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+// ===== FEEDBACK =====
+function stars(n) {
+  n = parseInt(n) || 0;
+  return '⭐'.repeat(n) + '☆'.repeat(5 - n);
+}
+
+async function loadFeedback() {
+  try {
+    const res = await fetch('/api/admin/feedback', { headers: authHeaders() });
+    const data = await res.json();
+    const list = data.feedback || [];
+
+    if (list.length === 0) {
+      document.getElementById('feedback-table').innerHTML = '';
+      document.getElementById('feedback-empty').style.display = 'flex';
+      document.getElementById('feedback-averages').innerHTML = '';
+      return;
+    }
+    document.getElementById('feedback-empty').style.display = 'none';
+
+    // Averages
+    var totals = { service: 0, response: 0, accessibility: 0, recommend: 0, count: list.length };
+    list.forEach(function(f) {
+      totals.service += parseInt(f.service_rating) || 0;
+      totals.response += parseInt(f.response_rating) || 0;
+      totals.accessibility += parseInt(f.accessibility_rating) || 0;
+      totals.recommend += parseInt(f.recommend_rating) || 0;
+    });
+
+    document.getElementById('feedback-averages').innerHTML = [
+      { label: 'שירות', avg: totals.service / totals.count },
+      { label: 'מענה', avg: totals.response / totals.count },
+      { label: 'נגישות', avg: totals.accessibility / totals.count },
+      { label: 'המלצה', avg: totals.recommend / totals.count }
+    ].map(function(item) {
+      return '<div class="stat-card" style="text-align:center;">' +
+        '<div class="stat-card-num">' + item.avg.toFixed(1) + '</div>' +
+        '<div style="font-size:0.85rem;margin:0.25rem 0;">' + stars(Math.round(item.avg)) + '</div>' +
+        '<div class="stat-card-label">' + item.label + '</div>' +
+      '</div>';
+    }).join('');
+
+    // Table
+    document.getElementById('feedback-table').innerHTML = list.map(function(f) {
+      return '<tr>' +
+        '<td><strong>' + (f.client_name || '-') + '</strong></td>' +
+        '<td style="direction:ltr;">' + (f.client_phone || '-') + '</td>' +
+        '<td style="font-size:0.8rem;color:var(--text-muted);">' + formatDate(f.submitted_at) + '</td>' +
+        '<td>' + stars(f.service_rating) + '</td>' +
+        '<td>' + stars(f.response_rating) + '</td>' +
+        '<td>' + stars(f.accessibility_rating) + '</td>' +
+        '<td>' + stars(f.recommend_rating) + '</td>' +
+        '<td style="font-size:0.85rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;">' + (f.comment || '-') + '</td>' +
+      '</tr>';
+    }).join('');
+  } catch (e) {
+    console.error('Load feedback error:', e);
+  }
+}
+
+// ===== PASSWORD MANAGEMENT =====
+var verifiedSecret = null;
+
+function resetLockout() {
+  fetch('/api/admin/reset-lockout', { method: 'POST', headers: authHeaders() }).catch(function(){});
+}
+
+async function verifySecret() {
+  resetLockout();
+  var codes = window._secretCodes || {};
+  var c1 = codes.code1 || '';
+  var c2 = codes.code2 || '';
+  var c3 = codes.code3 || '';
+  var errEl = document.getElementById('secret-error');
+  errEl.style.display = 'none';
+
+  if (!c1 || !c2 || !c3) return;
+
+  try {
+    var res = await fetch('/api/admin/verify-secret', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ code1: c1, code2: c2, code3: c3 })
+    });
+    var data = await res.json();
+
+    if (data.success) {
+      verifiedSecret = { code1: c1, code2: c2, code3: c3 };
+      document.getElementById('secret-gate').style.display = 'none';
+      document.getElementById('password-panel').style.display = 'block';
+      document.getElementById('pw-admin').value = data.admin_password || '';
+      document.getElementById('pw-lawyer').value = data.lawyer_password || '';
+    } else {
+      errEl.textContent = data.error || 'קוד שגוי';
+      errEl.style.display = 'flex';
+      // Clear all boxes
+      document.querySelectorAll('.code-box').forEach(function(b){ b.value=''; });
+      var first = document.querySelector('#row1 .code-box');
+      if (first) first.focus();
+    }
+  } catch (e) {
+    errEl.textContent = 'שגיאת תקשורת';
+    errEl.style.display = 'flex';
+  }
+}
+
+async function savePasswords() {
+  if (!verifiedSecret) return;
+  var adminPw = document.getElementById('pw-admin').value.trim();
+  var lawyerPw = document.getElementById('pw-lawyer').value.trim();
+
+  if (!adminPw || !lawyerPw) { alert('יש למלא את שתי הסיסמאות'); return; }
+
+  try {
+    var res = await fetch('/api/admin/change-passwords', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({
+        code1: verifiedSecret.code1, code2: verifiedSecret.code2, code3: verifiedSecret.code3,
+        admin_password: adminPw, lawyer_password: lawyerPw
+      })
+    });
+    var data = await res.json();
+    if (data.success) {
+      var el = document.getElementById('pw-success');
+      el.textContent = 'הסיסמאות עודכנו בהצלחה ✅';
+      el.style.display = 'flex';
+      // Update current session token if admin password changed
+      adminToken = adminPw;
+      sessionStorage.setItem('admin_token', adminToken);
+    } else {
+      alert(data.error || 'שגיאה');
+    }
+  } catch (e) { alert('שגיאת תקשורת'); }
 }
