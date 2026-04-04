@@ -1,19 +1,77 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const { lawyerAuth } = require('../middleware/auth');
 const { clientsDB, docsDB } = require('../database/db');
 const { sendMessage, MESSAGES } = require('../services/whatsapp');
+const { uploadFile, createClientFolder } = require('../services/drive');
 
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
+const poaStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, '..', 'uploads', 'temp');
+    fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, 'poa_' + Date.now() + path.extname(file.originalname));
+  }
+});
+const poaUpload = multer({
+  storage: poaStorage,
+  limits: { fileSize: 20 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') cb(null, true);
+    else cb(new Error('רק קבצי PDF מותרים'));
+  }
+});
+
 router.use(lawyerAuth);
 
-// GET /api/lawyer/clients - get clients in shipping/docs stages
+// GET /api/lawyer/clients - get clients in relevant stages (step 9+)
 router.get('/clients', (req, res) => {
   const allClients = clientsDB.getAll();
-  // Lawyer only sees clients in step 10+ (tracking submitted)
-  const relevantClients = allClients.filter(c => c.current_step >= 10);
+  const relevantClients = allClients.filter(c => c.current_step >= 9 && !c.trashed && !c.archived);
   res.json({ success: true, clients: relevantClients });
+});
+
+// POST /api/lawyer/upload-poa/:clientId - upload POA document
+router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, res) => {
+  try {
+    const client = clientsDB.findById(req.params.clientId);
+    if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+    if (!req.file) return res.status(400).json({ error: 'לא נבחר קובץ' });
+
+    const localDir = path.join(__dirname, '..', 'uploads', 'poa');
+    fs.mkdirSync(localDir, { recursive: true });
+    const savedName = `poa_${client.id}_${Date.now()}.pdf`;
+    const savedPath = path.join(localDir, savedName);
+    fs.renameSync(req.file.path, savedPath);
+    const localUrl = `/uploads/poa/${savedName}`;
+
+    docsDB.add({ client_id: client.id, doc_type: 'poa_to_sign', original_name: req.file.originalname, drive_file_id: null, drive_url: localUrl });
+
+    let driveUrl = null;
+    try {
+      const folderResult = await createClientFolder(`${client.first_name} ${client.last_name}`, client.phone, process.env.DRIVE_FOLDER_POA);
+      if (folderResult.success) {
+        const up = await uploadFile(savedPath, `poa_${client.first_name}_${client.last_name}.pdf`, 'application/pdf', folderResult.folderId);
+        if (up.success) {
+          driveUrl = up.webViewLink;
+          docsDB.add({ client_id: client.id, doc_type: 'poa_to_sign_drive', original_name: req.file.originalname, drive_file_id: up.fileId, drive_url: up.webViewLink });
+        }
+      }
+    } catch (e) { console.warn('Drive POA upload skipped:', e.message); }
+
+    res.json({ success: true, message: 'ייפוי כח הועלה', localUrl, driveUrl });
+  } catch (err) {
+    console.error('POA upload error:', err);
+    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    res.status(500).json({ error: 'שגיאת שרת' });
+  }
 });
 
 // POST /api/lawyer/docs-received - mark docs as received

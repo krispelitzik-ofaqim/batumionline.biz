@@ -369,13 +369,112 @@ async function viewClient(id) {
             <input type="file" accept=".pdf" style="display:none;" onchange="uploadPoa(${c.id}, this)" />
           </label>
           <a href="/client?phone=${encodeURIComponent(c.phone)}" target="_blank" class="btn btn-ghost">👁 צפה כלקוח</a>
+          <button class="btn btn-ghost" style="color:#e67e22;border-color:rgba(230,126,34,0.3);" onclick="showResetPanel(${c.id}, '${(c.first_name||'').replace(/'/g,"\\'")} ${(c.last_name||'').replace(/'/g,"\\'")}')">⚠️ אפס לקוח</button>
         </div>
       </div>
+
     `;
 
     showPage('page-client-detail');
   } catch (e) {
     console.error('View client error:', e);
+  }
+}
+
+// ===== RESET CLIENT (Modal) =====
+var resetModalClientId = null;
+
+function showResetPanel(clientId, clientName) {
+  resetModalClientId = clientId;
+  // Remove existing modal if any
+  var old = document.getElementById('reset-modal');
+  if (old) old.remove();
+
+  var overlay = document.createElement('div');
+  overlay.id = 'reset-modal';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);';
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeResetModal(); });
+
+  var box = document.createElement('div');
+  box.style.cssText = 'background:var(--navy-mid,#1a2a44);border:2px solid #e67e22;border-radius:16px;padding:2rem;width:420px;max-width:90vw;position:relative;';
+
+  box.innerHTML = '<button onclick="closeResetModal()" style="position:absolute;top:0.75rem;left:0.75rem;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>'
+    + '<h3 style="color:#e67e22;margin-bottom:0.75rem;text-align:center;">⚠️ אפס לקוח</h3>'
+    + '<p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:1.25rem;text-align:center;">האם אתה בטוח שאתה רוצה לאפס את הלקוח <strong style="color:#e8e0d0;">' + clientName + '</strong> מהרשימה?</p>'
+    + '<div id="reset-row1" style="display:flex;gap:0.3rem;justify-content:center;margin-bottom:0.6rem;direction:ltr;"></div>'
+    + '<div id="reset-row2" style="display:flex;gap:0.3rem;justify-content:center;margin-bottom:1rem;direction:ltr;"></div>'
+    + '<div id="reset-modal-error" class="alert alert-error" style="display:none;margin:0;"></div>';
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  buildResetBoxes(document.getElementById('reset-row1'), 10);
+  buildResetBoxes(document.getElementById('reset-row2'), 9);
+  document.getElementById('reset-row1').querySelector('input').focus();
+}
+
+function closeResetModal() {
+  var modal = document.getElementById('reset-modal');
+  if (modal) modal.remove();
+  resetModalClientId = null;
+}
+
+function buildResetBoxes(container, count) {
+  for (var i = 0; i < count; i++) {
+    var inp = document.createElement('input');
+    inp.type = 'password'; inp.maxLength = 1;
+    inp.style.cssText = 'width:30px;height:38px;text-align:center;font-size:1rem;font-weight:700;background:rgba(13,27,46,0.8);color:#c9a84c;border:1.5px solid rgba(230,126,34,0.3);border-radius:6px;outline:none;padding:0;font-family:Arial,sans-serif;';
+    inp.addEventListener('input', function(e) {
+      var b = e.target;
+      if (b.value && !/^\d$/.test(b.value)) { b.value = ''; return; }
+      if (b.value) { var next = b.nextElementSibling; if (next) next.focus(); }
+      checkResetAutoVerify();
+    });
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !e.target.value) {
+        var prev = e.target.previousElementSibling;
+        if (prev) { prev.focus(); prev.value = ''; }
+        e.preventDefault();
+      }
+      if (e.key === 'Escape') closeResetModal();
+    });
+    inp.addEventListener('focus', function(e) { e.target.style.borderColor = '#e67e22'; });
+    inp.addEventListener('blur', function(e) { e.target.style.borderColor = 'rgba(230,126,34,0.3)'; });
+    container.appendChild(inp);
+  }
+}
+
+function checkResetAutoVerify() {
+  var r1 = document.getElementById('reset-row1');
+  var r2 = document.getElementById('reset-row2');
+  var v1 = Array.from(r1.querySelectorAll('input')).map(function(b) { return b.value; }).join('');
+  var v2 = Array.from(r2.querySelectorAll('input')).map(function(b) { return b.value; }).join('');
+  if (v1.length === 10 && v2.length === 9) submitResetClient(v1, v2);
+}
+
+async function submitResetClient(code1, code2) {
+  var errEl = document.getElementById('reset-modal-error');
+  errEl.style.display = 'none';
+  try {
+    var res = await fetch('/api/admin/verified-reset-client', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: resetModalClientId, code1: code1, code2: code2 })
+    });
+    var data = await res.json();
+    if (data.success) {
+      closeResetModal();
+      alert(data.message || 'הלקוח אופס בהצלחה');
+      viewClient(resetModalClientId);
+      loadClients();
+    } else {
+      errEl.textContent = data.error || 'קוד שגוי';
+      errEl.style.display = 'flex';
+      document.querySelectorAll('#reset-row1 input, #reset-row2 input').forEach(function(b) { b.value = ''; });
+      document.getElementById('reset-row1').querySelector('input').focus();
+    }
+  } catch (e) {
+    errEl.textContent = 'שגיאת תקשורת';
+    errEl.style.display = 'flex';
   }
 }
 

@@ -7,7 +7,229 @@
   <meta name="theme-color" content="#c9a84c" />
   <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg" />
   <link rel="apple-touch-icon" href="/assets/icons/icon.svg" />
-  <script>window.location.href = '/admin';</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <style>
+    body, body * { font-family: 'Assistant', sans-serif; }
+    body { background: var(--navy); min-height: 100vh; }
+    .lawyer-wrap { max-width: 700px; margin: 0 auto; padding: 1.5rem; }
+    .lawyer-header { text-align: center; padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .lawyer-header h1 { font-family: 'Assistant', sans-serif; font-size: 1.4rem; color: var(--gold-light); margin-top: 0.75rem; }
+    .client-card {
+      background: var(--navy-mid); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.25rem; margin-bottom: 1rem; transition: border-color 0.2s;
+    }
+    .client-card:hover { border-color: rgba(201,168,76,0.3); }
+    .client-name { font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.15rem; }
+    .client-name-en { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .client-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 0.75rem; font-size: 0.82rem; color: var(--text-muted); }
+    .client-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .client-actions .btn { font-size: 0.82rem; padding: 0.4rem 0.9rem; }
+    .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
+    .empty-state div { font-size: 3rem; margin-bottom: 1rem; }
+  </style>
 </head>
-<body></body>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <div style="max-width:360px;width:100%;padding:1.5rem;">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div class="logo-icon" style="margin:0 auto 0.75rem;width:48px;height:48px;background:#c9a84c;color:#0d1b2e;font-family:Arial,sans-serif;font-weight:800;font-size:1.5rem;display:flex;align-items:center;justify-content:center;border-radius:12px;">B</div>
+      <h2 style="color:var(--gold-light);font-size:1.2rem;">פאנל עורך דין</h2>
+      <p style="color:var(--text-muted);font-size:0.85rem;">Batumionline</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <input type="password" id="login-pass" class="form-control" placeholder="סיסמה" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <div id="login-error" class="alert alert-error" style="display:none;"></div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">כניסה</button>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div id="lawyer-panel" style="display:none;">
+  <div class="lawyer-wrap">
+    <div class="lawyer-header">
+      <div class="logo-icon" style="margin:0 auto;width:44px;height:44px;background:#c9a84c;color:#0d1b2e;font-family:Arial,sans-serif;font-weight:800;font-size:1.3rem;display:flex;align-items:center;justify-content:center;border-radius:11px;">B</div>
+      <h1>⚖️ פאנל עורך דין</h1>
+      <p style="color:var(--text-muted);font-size:0.85rem;">לקוחות בשלב שליחה ופתיחת חשבון</p>
+    </div>
+
+    <div id="clients-list"></div>
+
+    <div style="text-align:center;margin-top:2rem;">
+      <button class="btn btn-ghost" style="font-size:0.8rem;" onclick="loadClients()">🔄 רענן</button>
+      <button class="btn btn-ghost" style="font-size:0.8rem;margin-right:0.5rem;" onclick="logout()">🚪 יציאה</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var lawyerToken = '';
+var STEP_LABELS = {
+  9: 'ממתין למשלוח', 10: 'מסמכים בדרך', 11: 'מסמכים הגיעו',
+  12: 'חשבון נפתח', 13: 'הושלם'
+};
+var STEP_COLORS = {
+  9: 'badge-purple', 10: 'badge-purple', 11: 'badge-green',
+  12: 'badge-green', 13: 'badge-green'
+};
+
+// Init
+(function() {
+  var saved = sessionStorage.getItem('lawyer_token');
+  if (saved) { lawyerToken = saved; showPanel(); }
+})();
+
+async function doLogin() {
+  var pass = document.getElementById('login-pass').value;
+  if (!pass) return;
+  try {
+    var res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pass })
+    });
+    var data = await res.json();
+    if (data.success) {
+      lawyerToken = data.token;
+      sessionStorage.setItem('lawyer_token', lawyerToken);
+      showPanel();
+    } else {
+      // Try lawyer login
+      var res2 = await fetch('/api/lawyer/clients', { headers: { 'x-lawyer-token': pass } });
+      if (res2.ok) {
+        lawyerToken = pass;
+        sessionStorage.setItem('lawyer_token', lawyerToken);
+        showPanel();
+      } else {
+        document.getElementById('login-error').textContent = 'סיסמה שגויה';
+        document.getElementById('login-error').style.display = 'flex';
+      }
+    }
+  } catch (e) {
+    document.getElementById('login-error').textContent = 'שגיאת חיבור';
+    document.getElementById('login-error').style.display = 'flex';
+  }
+}
+
+function showPanel() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('lawyer-panel').style.display = 'block';
+  loadClients();
+}
+
+function logout() {
+  sessionStorage.clear();
+  window.location.reload();
+}
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', 'x-lawyer-token': lawyerToken };
+}
+
+async function loadClients() {
+  try {
+    var res = await fetch('/api/lawyer/clients', { headers: { 'x-lawyer-token': lawyerToken } });
+    var data = await res.json();
+    renderClients(data.clients || []);
+  } catch (e) {
+    document.getElementById('clients-list').innerHTML = '<div class="alert alert-error">שגיאת חיבור</div>';
+  }
+}
+
+function renderClients(clients) {
+  var container = document.getElementById('clients-list');
+
+  if (clients.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div>✅</div><p>אין לקוחות בשלב זה כרגע</p></div>';
+    return;
+  }
+
+  container.innerHTML = clients.map(function(c) {
+    var heName = (c.first_name || '') + ' ' + (c.last_name || '');
+    var enName = ((c.passport_name_en || '') + ' ' + (c.passport_surname_en || '')).trim();
+    var stepLabel = STEP_LABELS[c.current_step] || 'שלב ' + c.current_step;
+    var stepColor = STEP_COLORS[c.current_step] || 'badge-gold';
+
+    return '<div class="client-card">'
+      + '<div class="client-name">' + heName + '</div>'
+      + (enName ? '<div class="client-name-en">' + enName + '</div>' : '')
+      + '<div class="client-meta">'
+      +   '<span style="direction:ltr;">' + c.phone + '</span>'
+      +   '<span class="badge ' + stepColor + '">' + stepLabel + '</span>'
+      +   (c.tracking_number ? '<span>📦 ' + c.shipping_company + ' ' + c.tracking_number + '</span>' : '')
+      +   (c.docs_received ? '<span class="badge badge-green">✅ מסמכים התקבלו</span>' : '')
+      +   (c.account_opened ? '<span class="badge badge-green">🏦 חשבון פתוח</span>' : '')
+      + '</div>'
+      + '<div class="client-actions">'
+      +   '<label class="btn btn-primary" style="cursor:pointer;margin:0;">'
+      +     '📄 העלה ייפוי כח'
+      +     '<input type="file" accept=".pdf" style="display:none;" onchange="uploadPoa(' + c.id + ', this)" />'
+      +   '</label>'
+      +   (c.current_step === 10 ? '<button class="btn btn-success" onclick="markDocsReceived(' + c.id + ')">✅ מסמכים הגיעו</button>' : '')
+      +   (c.current_step === 11 ? '<button class="btn btn-primary" onclick="markAccountOpened(' + c.id + ')">🏦 חשבון נפתח</button>' : '')
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+async function uploadPoa(clientId, input) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  if (file.type !== 'application/pdf') { alert('רק קבצי PDF'); return; }
+
+  var formData = new FormData();
+  formData.append('poa_file', file);
+
+  try {
+    var res = await fetch('/api/lawyer/upload-poa/' + clientId, {
+      method: 'POST',
+      headers: { 'x-lawyer-token': lawyerToken },
+      body: formData
+    });
+    var data = await res.json();
+    if (data.success) {
+      alert('ייפוי כח הועלה בהצלחה!' + (data.driveUrl ? '\n' + data.driveUrl : ''));
+      loadClients();
+    } else {
+      alert(data.error || 'שגיאה');
+    }
+  } catch (e) { alert('שגיאת תקשורת'); }
+  input.value = '';
+}
+
+async function markDocsReceived(id) {
+  if (!confirm('לסמן שהמסמכים הגיעו? הלקוח יקבל הודעה.')) return;
+  try {
+    var res = await fetch('/api/lawyer/docs-received', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id })
+    });
+    var data = await res.json();
+    alert(data.message || 'עודכן');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+
+async function markAccountOpened(id) {
+  if (!confirm('לסמן שהחשבון נפתח? הלקוח יקבל הודעה מיד!')) return;
+  try {
+    var res = await fetch('/api/lawyer/account-opened', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ client_id: id })
+    });
+    var data = await res.json();
+    alert(data.message || '🎉 עודכן!');
+    loadClients();
+  } catch (e) { alert('שגיאה'); }
+}
+</script>
+
+</body>
 </html>

@@ -18,7 +18,7 @@
 <nav class="landing-nav">
   <div class="nav-inner">
     <div class="logo-area">
-      <div class="logo-icon" style="background:#c9a84c;color:#0d1b2e;font-family:'Assistant',sans-serif;font-weight:800;font-size:1.4rem;">B</div>
+      <div class="logo-icon" style="background:#c9a84c;color:#0d1b2e;font-family:Arial,Helvetica,sans-serif;font-weight:800;font-size:1.4rem;direction:ltr;unicode-bidi:isolate;">B</div>
       <div class="logo-text">Batumionline</div>
     </div>
     <div class="lang-switch">
@@ -74,43 +74,43 @@
       <div class="benefit-banner">
         <span class="benefit-banner-icon">💳</span>
         <div class="benefit-banner-text">
-          <strong>חשבון עובר ושב</strong>
-          <span>חשבון בנק מלא עם IBAN בינלאומי</span>
+          <strong data-he="חשבון עובר ושב" data-en="Current Account">חשבון עובר ושב</strong>
+          <span data-he="חשבון בנק מלא עם IBAN בינלאומי" data-en="Full bank account with international IBAN">חשבון בנק מלא עם IBAN בינלאומי</span>
         </div>
       </div>
       <div class="benefit-banner">
         <span class="benefit-banner-icon">🌍</span>
         <div class="benefit-banner-text">
-          <strong>העברות בינלאומיות</strong>
-          <span>קבלה ושליחת כסף לכל העולם בעמלות נמוכות</span>
+          <strong data-he="העברות בינלאומיות" data-en="International Transfers">העברות בינלאומיות</strong>
+          <span data-he="קבלה ושליחת כסף לכל העולם בעמלות נמוכות" data-en="Send and receive money worldwide at low fees">קבלה ושליחת כסף לכל העולם בעמלות נמוכות</span>
         </div>
       </div>
       <div class="benefit-banner">
         <span class="benefit-banner-icon">📱</span>
         <div class="benefit-banner-text">
-          <strong>אפליקציית בנק מתקדמת</strong>
-          <span>גישה מלאה לחשבון מהסמארטפון בכל שעה</span>
+          <strong data-he="אפליקציית בנק מתקדמת" data-en="Advanced Banking App">אפליקציית בנק מתקדמת</strong>
+          <span data-he="גישה מלאה לחשבון מהסמארטפון בכל שעה" data-en="Full account access from your smartphone 24/7">גישה מלאה לחשבון מהסמארטפון בכל שעה</span>
         </div>
       </div>
       <div class="benefit-banner">
         <span class="benefit-banner-icon">💳</span>
         <div class="benefit-banner-text">
-          <strong>כרטיס ויזה/מסטרקארד</strong>
-          <span>כרטיס אשראי בינלאומי לשימוש בכל העולם</span>
+          <strong data-he="כרטיס ויזה/מסטרקארד" data-en="Visa/Mastercard Card">כרטיס ויזה/מסטרקארד</strong>
+          <span data-he="כרטיס אשראי בינלאומי לשימוש בכל העולם" data-en="International credit card for use worldwide">כרטיס אשראי בינלאומי לשימוש בכל העולם</span>
         </div>
       </div>
       <div class="benefit-banner">
         <span class="benefit-banner-icon">🔒</span>
         <div class="benefit-banner-text">
-          <strong>ביטחון ויציבות</strong>
-          <span>בנקים מובילים, רגולציה מחמירה, פיקדון מבוטח</span>
+          <strong data-he="ביטחון ויציבות" data-en="Security & Stability">ביטחון ויציבות</strong>
+          <span data-he="בנקים מובילים, רגולציה מחמירה, פיקדון מבוטח" data-en="Leading banks, strict regulation, insured deposits">בנקים מובילים, רגולציה מחמירה, פיקדון מבוטח</span>
         </div>
       </div>
       <div class="benefit-banner">
         <span class="benefit-banner-icon">🇮🇱</span>
         <div class="benefit-banner-text">
-          <strong>ליווי אישי בעברית</strong>
-          <span>תמיכה זמינה לאורך כל התהליך</span>
+          <strong data-he="ליווי אישי בעברית" data-en="Personal Hebrew Support">ליווי אישי בעברית</strong>
+          <span data-he="תמיכה זמינה לאורך כל התהליך" data-en="Available support throughout the entire process">תמיכה זמינה לאורך כל התהליך</span>
         </div>
       </div>
     </div>
@@ -260,7 +260,7 @@
   <div class="container">
     <div class="footer-inner">
       <div class="logo-area">
-        <div class="logo-icon" style="background:#c9a84c;color:#0d1b2e;font-family:'Assistant',sans-serif;font-weight:800;font-size:1.4rem;">B</div>
+        <div class="logo-icon" style="background:#c9a84c;color:#0d1b2e;font-family:Arial,Helvetica,sans-serif;font-weight:800;font-size:1.4rem;direction:ltr;unicode-bidi:isolate;">B</div>
         <div>
           <div class="logo-text">Batumionline</div>
           <div style="font-size:0.75rem;color:var(--text-muted);">batumionline.biz</div>
@@ -283,22 +283,36 @@
 
 <script>
 function setLang(lang) {
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.remove('active');
+    if (b.textContent.trim() === (lang === 'he' ? 'עברית' : 'EN')) {
+      b.classList.add('active');
+    }
+  });
 
-  const dir = lang === 'he' ? 'rtl' : 'ltr';
-  document.documentElement.dir = dir;
+  // Set language (keep RTL layout, only change text content)
   document.documentElement.lang = lang;
   localStorage.setItem('lang', lang);
 
-  document.querySelectorAll('[data-he]').forEach(el => {
-    el.innerHTML = el.getAttribute(`data-${lang}`);
-  });
+  // Translate all elements with data-he/data-en attributes
+  var elements = document.querySelectorAll('[data-' + lang + ']');
+  for (var i = 0; i < elements.length; i++) {
+    var val = elements[i].getAttribute('data-' + lang);
+    if (val !== null) elements[i].innerHTML = val;
+  }
 }
 
 (function() {
   var saved = localStorage.getItem('lang');
-  if (saved && saved !== 'he') setLang(saved);
+  if (saved && saved !== 'he') {
+    // Wait for DOM to be fully ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { setLang(saved); });
+    } else {
+      setLang(saved);
+    }
+  }
 })();
 
 function toggleFaq(el) {

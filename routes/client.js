@@ -34,14 +34,20 @@ router.get('/status', (req, res) => {
   const phone = req.query.phone;
   if (!phone) return res.json({ exists: false });
 
+  const demoMode = settingsDB.get('demo_mode') ? true : false;
+  const client = clientsDB.findByPhone(phone);
+
+  // In demo mode, treat existing clients as non-existent so they can re-register
+  if (demoMode && client) {
+    return res.json({ exists: false });
+  }
+
   if (clientsDB.isBlocked(phone)) {
-    const client = clientsDB.findByPhone(phone);
     const blockUntil = new Date(client.block_until);
     const daysLeft = Math.ceil((blockUntil - new Date()) / (1000 * 60 * 60 * 24));
     return res.json({ exists: true, blocked: true, block_reason: client.block_reason, block_until: client.block_until, days_left: daysLeft });
   }
 
-  const client = clientsDB.findByPhone(phone);
   if (!client) return res.json({ exists: false });
 
   if (client.trashed) {
@@ -65,15 +71,25 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
     if (!phone || !first_name || !last_name)
       return res.status(400).json({ error: 'שדות חובה חסרים' });
 
-    if (clientsDB.isBlocked(phone))
+    const demoMode = settingsDB.get('demo_mode') ? true : false;
+
+    if (!demoMode && clientsDB.isBlocked(phone))
       return res.status(403).json({ error: 'מספר זה חסום' });
 
-    const demoMode = settingsDB.get('demo_mode') ? true : false;
     let client = clientsDB.findByPhone(phone);
     if (client) {
-      if (demoMode && client.is_demo) {
-        // In demo mode, delete old demo record to allow re-registration
-        clientsDB.delete(client.id);
+      if (demoMode) {
+        // In demo mode, delete existing record and all related data
+        const cid = client.id;
+        clientsDB.delete(cid);
+        // Clean up related data
+        const data = require('../database/db');
+        const db = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', 'data', 'batumionline.json'), 'utf8'));
+        db.documents = db.documents.filter(d => d.client_id != cid);
+        db.checklist = db.checklist.filter(c => c.client_id != cid);
+        db.feedback = db.feedback.filter(f => f.client_id != cid);
+        db.whatsapp_log = db.whatsapp_log.filter(w => w.client_id != cid);
+        require('fs').writeFileSync(require('path').join(__dirname, '..', 'data', 'batumionline.json'), JSON.stringify(db, null, 2), 'utf8');
       } else {
         return res.status(409).json({ error: 'מספר טלפון זה כבר רשום במערכת', current_step: client.current_step });
       }

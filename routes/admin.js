@@ -184,6 +184,59 @@ router.post('/reset-client', (req, res) => {
   res.json({ success: true, message: 'הלקוח אופס ויכול להתחיל מחדש' });
 });
 
+// POST /api/admin/verified-reset-client - reset client with secret code verification
+const resetAttempts = {}; // { ip: { count, lockedUntil } }
+router.post('/verified-reset-client', (req, res) => {
+  const ip = req.ip;
+  const now = Date.now();
+  const entry = resetAttempts[ip] || { count: 0, lockedUntil: 0 };
+
+  if (entry.lockedUntil > now) {
+    const minutesLeft = Math.ceil((entry.lockedUntil - now) / 60000);
+    return res.status(429).json({ error: `נחסם. נסה שוב בעוד ${minutesLeft} דקות` });
+  }
+
+  const { client_id, code1, code2 } = req.body;
+  const masterCode = process.env.MASTER_SECRET_CODE || '';
+  const parts = masterCode.split('/');
+
+  if (parts.length < 2 || code1 !== parts[0] || code2 !== parts[1]) {
+    entry.count++;
+    if (entry.count >= 3) {
+      entry.lockedUntil = now + 3 * 60 * 1000;
+      entry.count = 0;
+      resetAttempts[ip] = entry;
+      return res.status(429).json({ error: 'קוד שגוי. נחסם ל-3 דקות' });
+    }
+    resetAttempts[ip] = entry;
+    return res.status(403).json({ error: 'קוד שגוי' });
+  }
+
+  delete resetAttempts[ip];
+
+  const client = clientsDB.findById(client_id);
+  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+
+  clientsDB.update(client.id, {
+    current_step: 1,
+    status: 'active',
+    passport_status: 'pending',
+    payment_status: 'pending',
+    tracking_number: null,
+    shipping_company: null,
+    docs_received: 0,
+    account_opened: 0,
+    trashed: 0,
+    trash_reason: null,
+    archived: 0,
+    blocked: 0,
+    block_until: null,
+    block_reason: null
+  });
+
+  res.json({ success: true, message: 'הלקוח אופס בהצלחה' });
+});
+
 // POST /api/admin/delete - permanently delete client
 router.post('/delete', (req, res) => {
   const { client_id } = req.body;
