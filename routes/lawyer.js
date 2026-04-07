@@ -74,13 +74,26 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
   }
 });
 
+// POST /api/lawyer/mark-step - mark a lawyer step as done
+router.post('/mark-step', (req, res) => {
+  const { client_id, step } = req.body;
+  const client = clientsDB.findById(client_id);
+  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+  if (step < 1 || step > 4) return res.status(400).json({ error: 'שלב לא תקין' });
+
+  const update = {};
+  update['lawyer_step' + step] = 1;
+  clientsDB.update(client.id, update);
+  res.json({ success: true });
+});
+
 // POST /api/lawyer/docs-received - mark docs as received
 router.post('/docs-received', async (req, res) => {
   const { client_id } = req.body;
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
-  clientsDB.update(client.id, { docs_received: 1, current_step: 11 });
+  clientsDB.update(client.id, { docs_received: 1, current_step: 11, lawyer_step3: 1 });
 
   const link = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
   await sendMessage(client.phone, MESSAGES.DOCS_ARRIVED(client.first_name, link), client.id);
@@ -94,7 +107,7 @@ router.post('/account-opened', async (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
-  clientsDB.update(client.id, { account_opened: 1, current_step: 12 });
+  clientsDB.update(client.id, { account_opened: 1, current_step: 12, lawyer_step4: 1 });
 
   const link = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
   await sendMessage(client.phone, MESSAGES.ACCOUNT_OPENED(client.first_name, link), client.id);

@@ -64,4 +64,10 @@ async function sendMessage(phone, message, clientId = null) {
   }
 }
 
-module.exports = { sendMessage, MESSAGES };
+async function sendAdminNotification(message) {
+  const adminPhone = process.env.ADMIN_PHONE;
+  if (!adminPhone) return;
+  return sendMessage(adminPhone, message);
+}
+
+module.exports = { sendMessage, sendAdminNotification, MESSAGES };

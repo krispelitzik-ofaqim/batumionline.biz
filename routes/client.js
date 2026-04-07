@@ -3,8 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB } = require('../database/db');
-const { sendMessage, MESSAGES } = require('../services/whatsapp');
+const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB, backupClient } = require('../database/db');
+const { sendMessage, sendAdminNotification, MESSAGES } = require('../services/whatsapp');
 const { uploadFile, createClientFolder } = require('../services/drive');
 
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
@@ -34,15 +34,9 @@ router.get('/status', (req, res) => {
   const phone = req.query.phone;
   if (!phone) return res.json({ exists: false });
 
-  const demoMode = settingsDB.get('demo_mode') ? true : false;
   const client = clientsDB.findByPhone(phone);
 
-  // In demo mode, treat existing clients as non-existent so they can re-register
-  if (demoMode && client) {
-    return res.json({ exists: false });
-  }
-
-  if (clientsDB.isBlocked(phone)) {
+  if (clientsDB.isBlocked(phone) && client) {
     const blockUntil = new Date(client.block_until);
     const daysLeft = Math.ceil((blockUntil - new Date()) / (1000 * 60 * 60 * 24));
     return res.json({ exists: true, blocked: true, block_reason: client.block_reason, block_until: client.block_until, days_left: daysLeft });
@@ -79,7 +73,8 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
     let client = clientsDB.findByPhone(phone);
     if (client) {
       if (demoMode) {
-        // In demo mode, delete existing record and all related data
+        // In demo mode, backup then delete existing record and all related data
+        backupClient(client);
         const cid = client.id;
         clientsDB.delete(cid);
         // Clean up related data
@@ -126,6 +121,10 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
 
     clientsDB.update(newClient.id, { current_step: 2, passport_status: 'reviewing' });
     sendMessage(phone, MESSAGES.STEP1_RECEIVED(first_name), newClient.id).catch(e => console.warn('WA:', e.message));
+
+    // Notify admin about new lead
+    const now = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
+    sendAdminNotification(`🔔 ליד חדש!\nשם: ${first_name} ${last_name}\nטלפון: ${phone}\nבנק מועדף: ${preferred_bank || '-'}\nנרשם: ${now}\n\nיש לאשר את הדרכון בפאנל הניהול.`).catch(e => console.warn('Admin WA:', e.message));
 
     return res.json({ success: true, message: 'הפרטים התקבלו', client_id: newClient.id, current_step: 2 });
   } catch (err) {

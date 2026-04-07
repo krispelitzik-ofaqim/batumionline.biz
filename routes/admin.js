@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { adminAuth } = require('../middleware/auth');
-const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB } = require('../database/db');
+const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB, backupClient } = require('../database/db');
 const { sendMessage, MESSAGES } = require('../services/whatsapp');
 const { createPaymentLink } = require('../services/morning');
 const { uploadFile, createClientFolder } = require('../services/drive');
@@ -68,15 +68,11 @@ router.post('/passport/approve', async (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
-  // Create payment link
-  const paymentResult = await createPaymentLink(client);
-  
-  let paymentUrl = paymentResult.success ? paymentResult.paymentUrl : `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}&step=4`;
+  const paymentUrl = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
 
   clientsDB.update(client.id, {
     passport_status: 'approved',
-    current_step: 4,
-    payment_ref: paymentResult.docId || null
+    current_step: 4
   });
 
   // Send WhatsApp
@@ -150,6 +146,7 @@ router.post('/trash', (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
+  backupClient(client);
   clientsDB.update(client.id, { trashed: 1, trash_reason: reason || 'ידני' });
   res.json({ success: true, message: 'הלקוח הועבר לפח' });
 });
@@ -170,6 +167,7 @@ router.post('/reset-client', (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
+  backupClient(client);
   clientsDB.update(client.id, {
     current_step: 1,
     status: 'active',
@@ -217,6 +215,7 @@ router.post('/verified-reset-client', (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
+  backupClient(client);
   clientsDB.update(client.id, {
     current_step: 1,
     status: 'active',
@@ -243,6 +242,7 @@ router.post('/delete', (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
+  backupClient(client);
   clientsDB.delete(client.id);
   res.json({ success: true, message: 'הלקוח נמחק לצמיתות' });
 });
@@ -259,6 +259,7 @@ router.post('/cleanup-stale', (req, res) => {
       const created = new Date(c.created_at);
       const daysSince = Math.floor((now - created) / (1000 * 60 * 60 * 24));
       if (daysSince >= 60) {
+        backupClient(c);
         clientsDB.update(c.id, { trashed: 1, trash_reason: 'אוטומטי — לא התקדם 60 יום' });
         count++;
       }
@@ -356,6 +357,7 @@ router.post('/clear-demos', (req, res) => {
   let count = 0;
   allClients.forEach(c => {
     if (c.is_demo) {
+      backupClient(c);
       clientsDB.delete(c.id);
       count++;
     }

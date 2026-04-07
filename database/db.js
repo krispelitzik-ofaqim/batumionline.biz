@@ -6,6 +6,28 @@ const DB_PATH = path.join(DATA_DIR, 'batumionline.json');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
+const BACKUP_DIR = path.join(DATA_DIR, 'backups');
+if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
+
+function backupClient(client) {
+  if (!client) return;
+  try {
+    const phone = (client.phone || 'unknown').replace(/\D/g, '');
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `backup_${phone}_${ts}.json`;
+    const data = load();
+    const docs = data.documents.filter(d => d.client_id == client.id);
+    const checklist = data.checklist.filter(c => c.client_id == client.id);
+    const feedback = data.feedback.filter(f => f.client_id == client.id);
+    fs.writeFileSync(path.join(BACKUP_DIR, filename), JSON.stringify({ client, docs, checklist, feedback }, null, 2), 'utf8');
+    // Keep only last 30 backups
+    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('backup_')).sort();
+    while (files.length > 30) {
+      fs.unlinkSync(path.join(BACKUP_DIR, files.shift()));
+    }
+  } catch (e) { console.warn('Backup error:', e.message); }
+}
+
 // Create uploads directories
 const uploadsDir = path.join(__dirname, '..', 'uploads', 'passports');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -56,7 +78,11 @@ const clientsDB = {
     return { lastInsertRowid: id };
   },
   findById(id) { return load().clients.find(c => c.id == id) || null; },
-  findByPhone(phone) { return load().clients.find(c => c.phone === phone) || null; },
+  findByPhone(phone) {
+    const norm = (p) => { let n = (p||'').replace(/\D/g,''); if(n.startsWith('972')) return n; if(n.startsWith('0')) return '972'+n.slice(1); return '972'+n; };
+    const target = norm(phone);
+    return load().clients.find(c => norm(c.phone) === target) || null;
+  },
   getAll() { return load().clients; },
   update(id, fields) {
     const data = load();
@@ -150,4 +176,4 @@ const settingsDB = {
 
 const db = { pragma: () => {}, exec: () => {} };
 
-module.exports = { db, clientsDB, docsDB, checklistDB, feedbackDB, whatsappLogDB, settingsDB };
+module.exports = { db, clientsDB, docsDB, checklistDB, feedbackDB, whatsappLogDB, settingsDB, backupClient };

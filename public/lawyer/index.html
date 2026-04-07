@@ -25,8 +25,30 @@
     .client-name { font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.15rem; }
     .client-name-en { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
     .client-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 0.75rem; font-size: 0.82rem; color: var(--text-muted); }
-    .client-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .client-actions .btn { font-size: 0.82rem; padding: 0.4rem 0.9rem; }
+    .client-actions { display: flex; flex-direction: row; gap: 0.5rem; }
+    .step-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex: 1; min-width: 0;
+      padding: 0.6rem 0.4rem; border-radius: 10px; border: 1.5px solid var(--border);
+      background: rgba(255,255,255,0.04); color: var(--text-main);
+      font-family: 'Assistant', sans-serif; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; text-align: center; gap: 0.2rem;
+    }
+    .step-btn:hover:not(:disabled) { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.06); }
+    .step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .step-btn.done { border-color: rgba(46,204,113,0.4); background: rgba(46,204,113,0.08); color: #2ecc71; }
+    .step-btn .step-icon { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; margin-bottom: 0.15rem; }
+    .step-btn.done .step-icon { background: #2ecc71; border-color: #2ecc71; color: #fff; }
+    .step-btn .btn-he { font-size: 0.8rem; font-weight: 700; line-height: 1.2; }
+    .step-btn .btn-en { font-size: 0.65rem; font-weight: 400; color: var(--text-muted); line-height: 1.2; }
+    .step-btn.done .btn-en { color: rgba(46,204,113,0.6); }
+    .step-btn label { cursor: pointer; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+    .step-btn label input[type="file"] { display: none; }
+    .completed-msg { text-align: center; padding: 0.75rem; color: #2ecc71; font-weight: 700; font-size: 0.95rem; }
+    @media (max-width: 500px) {
+      .client-actions { flex-wrap: wrap; }
+      .step-btn { flex: 1 1 45%; }
+    }
     .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
     .empty-state div { font-size: 3rem; margin-bottom: 1rem; }
   </style>
@@ -154,32 +176,70 @@ function renderClients(clients) {
   container.innerHTML = clients.map(function(c) {
     var heName = (c.first_name || '') + ' ' + (c.last_name || '');
     var enName = ((c.passport_name_en || '') + ' ' + (c.passport_surname_en || '')).trim();
-    var stepLabel = STEP_LABELS[c.current_step] || 'שלב ' + c.current_step;
-    var stepColor = STEP_COLORS[c.current_step] || 'badge-gold';
+    var s1 = c.lawyer_step1 ? 1 : 0;
+    var s2 = c.lawyer_step2 ? 1 : 0;
+    var s3 = c.lawyer_step3 ? 1 : 0;
+    var s4 = c.lawyer_step4 ? 1 : 0;
+    var allDone = s1 && s2 && s3 && s4;
 
     return '<div class="client-card">'
       + '<div class="client-name">' + heName + '</div>'
       + (enName ? '<div class="client-name-en">' + enName + '</div>' : '')
       + '<div class="client-meta">'
       +   '<span style="direction:ltr;">' + c.phone + '</span>'
-      +   '<span class="badge ' + stepColor + '">' + stepLabel + '</span>'
-      +   (c.tracking_number ? '<span>📦 ' + c.shipping_company + ' ' + c.tracking_number + '</span>' : '')
-      +   (c.docs_received ? '<span class="badge badge-green">✅ מסמכים התקבלו</span>' : '')
-      +   (c.account_opened ? '<span class="badge badge-green">🏦 חשבון פתוח</span>' : '')
+      +   (c.tracking_number ? '<span>📦 ' + (c.shipping_company || '') + ' ' + c.tracking_number + '</span>' : '')
       + '</div>'
       + '<div class="client-actions">'
-      +   '<label class="btn btn-primary" style="cursor:pointer;margin:0;">'
-      +     '📄 העלה ייפוי כח'
-      +     '<input type="file" accept=".pdf" style="display:none;" onchange="uploadPoa(' + c.id + ', this)" />'
+      // Button 1: View passport
+      +   '<button class="step-btn' + (s1 ? ' done' : '') + '" onclick="doStep1(' + c.id + ')">'
+      +     '<span class="step-icon">' + (s1 ? '✓' : '1') + '</span>'
+      +     '<span class="btn-he">🔍 צפה בדרכון</span>'
+      +     '<span class="btn-en">View Passport</span>'
+      +   '</button>'
+      // Button 2: Upload POA
+      +   '<label class="step-btn' + (s2 ? ' done' : '') + '"' + (!s1 && !s2 ? ' style="pointer-events:none;opacity:0.35;"' : '') + '>'
+      +     '<span class="step-icon">' + (s2 ? '✓' : '2') + '</span>'
+      +     '<span class="btn-he">📄 העלה ייפוי כח</span>'
+      +     '<span class="btn-en">Upload POA</span>'
+      +     '<input type="file" accept=".pdf" onchange="doStep2(' + c.id + ', this)"' + (s2 ? ' disabled' : '') + ' />'
       +   '</label>'
-      +   (c.current_step === 10 ? '<button class="btn btn-success" onclick="markDocsReceived(' + c.id + ')">✅ מסמכים הגיעו</button>' : '')
-      +   (c.current_step === 11 ? '<button class="btn btn-primary" onclick="markAccountOpened(' + c.id + ')">🏦 חשבון נפתח</button>' : '')
+      // Button 3: Docs received
+      +   '<button class="step-btn' + (s3 ? ' done' : '') + '"' + (!s2 ? ' disabled' : '') + ' onclick="doStep3(' + c.id + ')">'
+      +     '<span class="step-icon">' + (s3 ? '✓' : '3') + '</span>'
+      +     '<span class="btn-he">✅ מסמכים הגיעו</span>'
+      +     '<span class="btn-en">Docs Received</span>'
+      +   '</button>'
+      // Button 4: Account opened
+      +   '<button class="step-btn' + (s4 ? ' done' : '') + '"' + (!s3 ? ' disabled' : '') + ' onclick="doStep4(' + c.id + ')">'
+      +     '<span class="step-icon">' + (s4 ? '✓' : '4') + '</span>'
+      +     '<span class="btn-he">🏦 חשבון נפתח</span>'
+      +     '<span class="btn-en">Account Opened</span>'
+      +   '</button>'
       + '</div>'
+      + (allDone ? '<div class="completed-msg">✅ התהליך הושלם</div>' : '')
       + '</div>';
   }).join('');
 }
 
-async function uploadPoa(clientId, input) {
+// Step 1: View passport
+async function doStep1(clientId) {
+  try {
+    var res = await fetch('/api/lawyer/client/' + clientId + '/docs', { headers: { 'x-lawyer-token': lawyerToken } });
+    var data = await res.json();
+    var passport = (data.docs || []).find(function(d) { return d.doc_type === 'passport' || d.doc_type === 'passport_drive'; });
+    if (passport && passport.drive_url) {
+      window.open(passport.drive_url, '_blank');
+      // Mark step 1 as done
+      await fetch('/api/lawyer/mark-step', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ client_id: clientId, step: 1 }) });
+      loadClients();
+    } else {
+      alert('קובץ דרכון לא נמצא');
+    }
+  } catch (e) { alert('שגיאה'); }
+}
+
+// Step 2: Upload POA
+async function doStep2(clientId, input) {
   if (!input.files || !input.files[0]) return;
   var file = input.files[0];
   if (file.type !== 'application/pdf') { alert('רק קבצי PDF'); return; }
@@ -195,7 +255,8 @@ async function uploadPoa(clientId, input) {
     });
     var data = await res.json();
     if (data.success) {
-      alert('ייפוי כח הועלה בהצלחה!' + (data.driveUrl ? '\n' + data.driveUrl : ''));
+      await fetch('/api/lawyer/mark-step', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ client_id: clientId, step: 2 }) });
+      alert('ייפוי כח הועלה בהצלחה!');
       loadClients();
     } else {
       alert(data.error || 'שגיאה');
@@ -204,12 +265,13 @@ async function uploadPoa(clientId, input) {
   input.value = '';
 }
 
-async function markDocsReceived(id) {
+// Step 3: Docs received
+async function doStep3(clientId) {
   if (!confirm('לסמן שהמסמכים הגיעו? הלקוח יקבל הודעה.')) return;
   try {
     var res = await fetch('/api/lawyer/docs-received', {
       method: 'POST', headers: authHeaders(),
-      body: JSON.stringify({ client_id: id })
+      body: JSON.stringify({ client_id: clientId })
     });
     var data = await res.json();
     alert(data.message || 'עודכן');
@@ -217,12 +279,13 @@ async function markDocsReceived(id) {
   } catch (e) { alert('שגיאה'); }
 }
 
-async function markAccountOpened(id) {
+// Step 4: Account opened
+async function doStep4(clientId) {
   if (!confirm('לסמן שהחשבון נפתח? הלקוח יקבל הודעה מיד!')) return;
   try {
     var res = await fetch('/api/lawyer/account-opened', {
       method: 'POST', headers: authHeaders(),
-      body: JSON.stringify({ client_id: id })
+      body: JSON.stringify({ client_id: clientId })
     });
     var data = await res.json();
     alert(data.message || '🎉 עודכן!');

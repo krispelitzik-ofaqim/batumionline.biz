@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const phoneParam = params.get('phone');
 
   if (phoneParam) {
-    clientPhone = phoneParam;
+    clientPhone = formatPhone(phoneParam);
     checkPhone(phoneParam);
   }
 
@@ -99,11 +99,15 @@ function routeToStep(step, data = {}) {
   clientStep = step;
   document.getElementById('client-phone-display').textContent = `📱 ${clientPhone}`;
 
-  if (step <= 2) {
+  if (step <= 2 && data.passport_status === 'approved') {
+    // Passport approved but step not updated — go to payment
+    showProgress(3);
+    showScreen('screen-payment');
+  } else if (step <= 2) {
     showProgress(2);
     document.getElementById('waiting-phone').textContent = clientPhone;
     showScreen('screen-waiting-passport');
-  } else if (step === 4) {
+  } else if (step === 3 || step === 4) {
     showProgress(3);
     showScreen('screen-payment');
   } else if (step === 5 || step === 6) {
@@ -211,17 +215,17 @@ async function goToPayment() {
     });
     const data = await res.json();
     if (data.success) {
-      clientData.current_step = data.current_step;
-      renderStep();
+      showProgress(4);
+      showScreen('screen-notary');
     } else {
       alert(data.error || 'שגיאה');
       btn.disabled = false;
-      btn.innerHTML = '➡️ המשך לשלב הבא';
+      btn.innerHTML = 'דלג לשלב הבא (בדיקות בלבד)';
     }
   } catch (err) {
     alert('שגיאת תקשורת');
     btn.disabled = false;
-    btn.innerHTML = '➡️ המשך לשלב הבא';
+    btn.innerHTML = 'דלג לשלב הבא (בדיקות בלבד)';
   }
 }
 
@@ -496,7 +500,7 @@ function hideError(id) {
 
 function formatPhone(phone) {
   let p = phone.replace(/\D/g, '');
-  if (p.startsWith('0')) p = '972' + p.slice(1);
-  if (!p.startsWith('972')) p = '972' + p;
-  return p;
+  if (p.startsWith('972')) return p;
+  if (p.startsWith('0')) return '972' + p.slice(1);
+  return '972' + p;
 }
