@@ -166,6 +166,11 @@ router.get('/client/:id/download-docs', (req, res) => {
   });
 
   archive.finalize();
+
+  // Mark docs as downloaded
+  const token = req.query.token || req.headers['x-lawyer-token'];
+  const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
+  clientsDB.update(client.id, { docs_downloaded: 1, docs_downloaded_by: actor });
 });
 
 module.exports = router;

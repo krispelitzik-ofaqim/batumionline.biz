@@ -180,6 +180,7 @@ function renderClients(clients) {
     // Determine state from actual data
     var s1 = c.passport_status === 'approved';
     var s2 = c.has_poa;
+    var sDl = c.docs_downloaded ? true : false;
     var s3 = c.docs_received ? true : false;
     var s4 = c.account_opened ? true : false;
     var allDone = s1 && s2 && s3 && s4;
@@ -187,6 +188,7 @@ function renderClients(clients) {
     // Who performed each action
     var s1by = s1 ? (c.passport_approved_by || '') : '';
     var s2by = s2 ? (c.poa_uploaded_by || '') : '';
+    var sDlby = sDl ? (c.docs_downloaded_by || '') : '';
     var s3by = s3 ? (c.docs_received_by || '') : '';
     var s4by = s4 ? (c.account_opened_by || '') : '';
 
@@ -215,9 +217,9 @@ function renderClients(clients) {
       +     (s2 ? '' : '<input type="file" accept=".pdf" onchange="doStep2(' + c.id + ', this)" />')
       +   '</label>'
       // Download all docs
-      +   '<button class="step-btn" onclick="downloadDocs(' + c.id + ')">'
-      +     '<span class="step-icon">📥</span>'
-      +     '<span class="btn-he">📥 הורד מסמכים</span>'
+      +   '<button class="step-btn' + (sDl ? ' done' : '') + '" onclick="downloadDocs(' + c.id + ')">'
+      +     '<span class="step-icon">' + (sDl ? '✓' : '📥') + '</span>'
+      +     '<span class="btn-he">📥 הורד מסמכים' + byLabel(sDlby) + '</span>'
       +     '<span class="btn-en">Download Docs</span>'
       +   '</button>'
       // Button 3: Docs received
@@ -285,6 +287,8 @@ async function doStep2(clientId, input) {
 // Download all docs as ZIP
 function downloadDocs(clientId) {
   window.open('/api/lawyer/client/' + clientId + '/download-docs?token=' + lawyerToken, '_blank');
+  // Refresh after short delay to show green state
+  setTimeout(function() { loadClients(); }, 2000);
 }
 
 // Step 3: Docs received
