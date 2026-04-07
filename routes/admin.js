@@ -6,7 +6,6 @@ const fs = require('fs');
 const { adminAuth } = require('../middleware/auth');
 const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB, backupClient } = require('../database/db');
 const { sendMessage, MESSAGES } = require('../services/whatsapp');
-const { createPaymentLink } = require('../services/morning');
 const { uploadFile, createClientFolder } = require('../services/drive');
 
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
@@ -72,7 +71,8 @@ router.post('/passport/approve', async (req, res) => {
 
   clientsDB.update(client.id, {
     passport_status: 'approved',
-    current_step: 4
+    current_step: 4,
+    passport_approved_by: 'admin'
   });
 
   // Send WhatsApp
@@ -287,7 +287,7 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
     // Save to DB
     docsDB.add({
       client_id: client.id,
-      doc_type: 'poa_to_sign',
+      doc_type: 'poa_to_sign', uploaded_by: 'admin',
       original_name: req.file.originalname,
       drive_file_id: null,
       drive_url: localUrl
@@ -298,7 +298,7 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
     try {
       const folderResult = await createClientFolder(
         `${client.first_name} ${client.last_name}`, client.phone,
-        process.env.DRIVE_FOLDER_POA
+        process.env.DRIVE_FOLDER_CLIENTS
       );
       if (folderResult.success) {
         const up = await uploadFile(savedPath, `poa_${client.first_name}_${client.last_name}.pdf`, 'application/pdf', folderResult.folderId);
@@ -306,7 +306,7 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
           driveUrl = up.webViewLink;
           docsDB.add({
             client_id: client.id,
-            doc_type: 'poa_to_sign_drive',
+            doc_type: 'poa_to_sign_drive', uploaded_by: 'admin',
             original_name: req.file.originalname,
             drive_file_id: up.fileId,
             drive_url: up.webViewLink
@@ -437,6 +437,35 @@ router.post('/change-passwords', (req, res) => {
   }
 
   res.json({ success: true, message: 'הסיסמאות עודכנו בהצלחה' });
+});
+
+// GET /api/admin/client/:id/download-docs - download all docs as ZIP
+router.get('/client/:id/download-docs', (req, res) => {
+  const archiver = require('archiver');
+  const client = clientsDB.findById(req.params.id);
+  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+
+  const docs = docsDB.getByClient(client.id);
+  const localDocs = docs.filter(d => d.drive_url && d.drive_url.startsWith('/uploads/'));
+
+  if (localDocs.length === 0) return res.status(404).json({ error: 'אין מסמכים להורדה' });
+
+  const zipName = `docs_${client.first_name}_${client.last_name}_${client.id}.zip`;
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(zipName)}"`);
+
+  const archive = archiver('zip', { zlib: { level: 9 } });
+  archive.on('error', (err) => res.status(500).send({ error: err.message }));
+  archive.pipe(res);
+
+  localDocs.forEach(d => {
+    const filePath = path.join(__dirname, '..', d.drive_url);
+    if (fs.existsSync(filePath)) {
+      archive.file(filePath, { name: (d.doc_type || 'doc') + '_' + client.id + path.extname(filePath) });
+    }
+  });
+
+  archive.finalize();
 });
 
 module.exports = router;

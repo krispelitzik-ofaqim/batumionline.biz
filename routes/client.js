@@ -77,14 +77,6 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
         backupClient(client);
         const cid = client.id;
         clientsDB.delete(cid);
-        // Clean up related data
-        const data = require('../database/db');
-        const db = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', 'data', 'batumionline.json'), 'utf8'));
-        db.documents = db.documents.filter(d => d.client_id != cid);
-        db.checklist = db.checklist.filter(c => c.client_id != cid);
-        db.feedback = db.feedback.filter(f => f.client_id != cid);
-        db.whatsapp_log = db.whatsapp_log.filter(w => w.client_id != cid);
-        require('fs').writeFileSync(require('path').join(__dirname, '..', 'data', 'batumionline.json'), JSON.stringify(db, null, 2), 'utf8');
       } else {
         return res.status(409).json({ error: 'מספר טלפון זה כבר רשום במערכת', current_step: client.current_step });
       }
@@ -111,7 +103,7 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
 
       // נסה גם Google Drive (אופציונלי)
       try {
-        const folderResult = await createClientFolder(`${first_name} ${last_name}`, phone, process.env.DRIVE_FOLDER_PASSPORT);
+        const folderResult = await createClientFolder(`${first_name} ${last_name}`, phone, process.env.DRIVE_FOLDER_CLIENTS);
         if (folderResult.success) {
           const up = await uploadFile(savedPath, `passport_${first_name}_${last_name}.pdf`, 'application/pdf', folderResult.folderId);
           if (up.success) docsDB.add({ client_id: newClient.id, doc_type: 'passport_drive', original_name: req.file.originalname, drive_file_id: up.fileId, drive_url: up.webViewLink });
@@ -230,7 +222,7 @@ router.post('/upload-docs', upload.fields(docFields), async (req, res) => {
 
     let folderResult = { success: false };
     try {
-      folderResult = await createClientFolder(`${client.first_name} ${client.last_name}`, phone, process.env.DRIVE_FOLDER_DOCUMENTS);
+      folderResult = await createClientFolder(`${client.first_name} ${client.last_name}`, phone, process.env.DRIVE_FOLDER_CLIENTS);
     } catch (e) { console.warn('Drive folder failed:', e.message); }
 
     for (const [fieldName, docType] of Object.entries(docTypeMap)) {
@@ -251,6 +243,8 @@ router.post('/upload-docs', upload.fields(docFields), async (req, res) => {
     clientsDB.updateStep(client.id, 9);
     sendMessage(phone, MESSAGES.DOCS_UPLOADED(client.first_name, 'הכתובת המלאה תימסר בנפרד'), client.id)
       .catch(e => console.warn('WA:', e.message));
+
+    sendAdminNotification(`📄 מסמכים הועלו!\nשם: ${client.first_name} ${client.last_name}\nטלפון: ${phone}\n\nיש להוריד את המסמכים מפאנל הניהול.`).catch(e => console.warn('Admin WA:', e.message));
 
     res.json({ success: true, current_step: 9 });
   } catch (err) {
@@ -278,10 +272,22 @@ router.post('/feedback', async (req, res) => {
   const client = clientsDB.findByPhone(phone);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
+  const ratings = {
+    service_rating: parseInt(service_rating),
+    response_rating: parseInt(response_rating),
+    accessibility_rating: parseInt(accessibility_rating),
+    recommend_rating: parseInt(recommend_rating)
+  };
+
+  for (const [key, val] of Object.entries(ratings)) {
+    if (isNaN(val) || val < 1 || val > 5) {
+      return res.status(400).json({ error: 'דירוג לא תקין' });
+    }
+  }
+
   feedbackDB.add({
     client_id: client.id, account_opened: account_opened ? 1 : 0,
-    service_rating: parseInt(service_rating), response_rating: parseInt(response_rating),
-    accessibility_rating: parseInt(accessibility_rating), recommend_rating: parseInt(recommend_rating), comment
+    ...ratings, comment
   });
 
   clientsDB.update(client.id, { current_step: 13, status: 'completed' });

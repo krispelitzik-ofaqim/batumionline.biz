@@ -368,6 +368,7 @@ async function viewClient(id) {
           <label class="btn btn-primary" style="cursor:pointer;margin:0;">📄 העלה ייפוי כח לחתימה
             <input type="file" accept=".pdf" style="display:none;" onchange="uploadPoa(${c.id}, this)" />
           </label>
+          <a href="/api/admin/client/${c.id}/download-docs?token=${adminToken}" class="btn btn-primary" style="text-decoration:none;">📥 הורד מסמכים</a>
           <a href="/client?phone=${encodeURIComponent(c.phone)}" target="_blank" class="btn btn-ghost">👁 צפה כלקוח</a>
           <button class="btn btn-ghost" style="color:#e67e22;border-color:rgba(230,126,34,0.3);" onclick="showResetPanel(${c.id}, '${(c.first_name||'').replace(/'/g,"\\'")} ${(c.last_name||'').replace(/'/g,"\\'")}')">⚠️ אפס לקוח</button>
         </div>

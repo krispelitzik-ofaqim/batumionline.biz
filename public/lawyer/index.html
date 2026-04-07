@@ -176,43 +176,60 @@ function renderClients(clients) {
   container.innerHTML = clients.map(function(c) {
     var heName = (c.first_name || '') + ' ' + (c.last_name || '');
     var enName = ((c.passport_name_en || '') + ' ' + (c.passport_surname_en || '')).trim();
-    var s1 = c.lawyer_step1 ? 1 : 0;
-    var s2 = c.lawyer_step2 ? 1 : 0;
-    var s3 = c.lawyer_step3 ? 1 : 0;
-    var s4 = c.lawyer_step4 ? 1 : 0;
+
+    // Determine state from actual data
+    var s1 = c.passport_status === 'approved';
+    var s2 = c.has_poa;
+    var s3 = c.docs_received ? true : false;
+    var s4 = c.account_opened ? true : false;
     var allDone = s1 && s2 && s3 && s4;
+
+    // Who performed each action
+    var s1by = s1 ? (c.passport_approved_by || '') : '';
+    var s2by = s2 ? (c.poa_uploaded_by || '') : '';
+    var s3by = s3 ? (c.docs_received_by || '') : '';
+    var s4by = s4 ? (c.account_opened_by || '') : '';
+
+    function byLabel(by) { return by ? ' <span style="font-size:0.55rem;color:' + (by === 'admin' ? '#F4A94E' : '#3DA5C4') + ';">(' + by + ')</span>' : ''; }
 
     return '<div class="client-card">'
       + '<div class="client-name">' + heName + '</div>'
       + (enName ? '<div class="client-name-en">' + enName + '</div>' : '')
       + '<div class="client-meta">'
       +   '<span style="direction:ltr;">' + c.phone + '</span>'
+      +   '<span style="font-size:0.75rem;">שלב ' + c.current_step + '</span>'
       +   (c.tracking_number ? '<span>📦 ' + (c.shipping_company || '') + ' ' + c.tracking_number + '</span>' : '')
       + '</div>'
       + '<div class="client-actions">'
-      // Button 1: View passport
+      // Button 1: Passport approved
       +   '<button class="step-btn' + (s1 ? ' done' : '') + '" onclick="doStep1(' + c.id + ')">'
       +     '<span class="step-icon">' + (s1 ? '✓' : '1') + '</span>'
-      +     '<span class="btn-he">🔍 צפה בדרכון</span>'
+      +     '<span class="btn-he">🔍 צפה בדרכון' + byLabel(s1by) + '</span>'
       +     '<span class="btn-en">View Passport</span>'
       +   '</button>'
-      // Button 2: Upload POA
-      +   '<label class="step-btn' + (s2 ? ' done' : '') + '"' + (!s1 && !s2 ? ' style="pointer-events:none;opacity:0.35;"' : '') + '>'
+      // Button 2: POA uploaded
+      +   '<label class="step-btn' + (s2 ? ' done' : '') + '">'
       +     '<span class="step-icon">' + (s2 ? '✓' : '2') + '</span>'
-      +     '<span class="btn-he">📄 העלה ייפוי כח</span>'
+      +     '<span class="btn-he">📄 העלה ייפוי כח' + byLabel(s2by) + '</span>'
       +     '<span class="btn-en">Upload POA</span>'
-      +     '<input type="file" accept=".pdf" onchange="doStep2(' + c.id + ', this)"' + (s2 ? ' disabled' : '') + ' />'
+      +     (s2 ? '' : '<input type="file" accept=".pdf" onchange="doStep2(' + c.id + ', this)" />')
       +   '</label>'
+      // Download all docs
+      +   '<button class="step-btn" onclick="downloadDocs(' + c.id + ')">'
+      +     '<span class="step-icon">📥</span>'
+      +     '<span class="btn-he">📥 הורד מסמכים</span>'
+      +     '<span class="btn-en">Download Docs</span>'
+      +   '</button>'
       // Button 3: Docs received
-      +   '<button class="step-btn' + (s3 ? ' done' : '') + '"' + (!s2 ? ' disabled' : '') + ' onclick="doStep3(' + c.id + ')">'
+      +   '<button class="step-btn' + (s3 ? ' done' : '') + '"' + (s3 ? ' disabled' : '') + ' onclick="doStep3(' + c.id + ')">'
       +     '<span class="step-icon">' + (s3 ? '✓' : '3') + '</span>'
-      +     '<span class="btn-he">✅ מסמכים הגיעו</span>'
+      +     '<span class="btn-he">✅ מסמכים הגיעו' + byLabel(s3by) + '</span>'
       +     '<span class="btn-en">Docs Received</span>'
       +   '</button>'
       // Button 4: Account opened
-      +   '<button class="step-btn' + (s4 ? ' done' : '') + '"' + (!s3 ? ' disabled' : '') + ' onclick="doStep4(' + c.id + ')">'
+      +   '<button class="step-btn' + (s4 ? ' done' : '') + '"' + (!s3 || s4 ? ' disabled' : '') + ' onclick="doStep4(' + c.id + ')">'
       +     '<span class="step-icon">' + (s4 ? '✓' : '4') + '</span>'
-      +     '<span class="btn-he">🏦 חשבון נפתח</span>'
+      +     '<span class="btn-he">🏦 חשבון נפתח' + byLabel(s4by) + '</span>'
       +     '<span class="btn-en">Account Opened</span>'
       +   '</button>'
       + '</div>'
@@ -263,6 +280,11 @@ async function doStep2(clientId, input) {
     }
   } catch (e) { alert('שגיאת תקשורת'); }
   input.value = '';
+}
+
+// Download all docs as ZIP
+function downloadDocs(clientId) {
+  window.open('/api/lawyer/client/' + clientId + '/download-docs?token=' + lawyerToken, '_blank');
 }
 
 // Step 3: Docs received

@@ -34,8 +34,18 @@ router.use(lawyerAuth);
 // GET /api/lawyer/clients - get clients in relevant stages (step 9+)
 router.get('/clients', (req, res) => {
   const allClients = clientsDB.getAll();
-  const relevantClients = allClients.filter(c => c.current_step >= 9 && !c.trashed && !c.archived);
-  res.json({ success: true, clients: relevantClients });
+  const relevantClients = allClients.filter(c => c.current_step >= 4 && !c.trashed && !c.archived);
+  // Enrich with docs info
+  const enriched = relevantClients.map(c => {
+    const docs = docsDB.getByClient(c.id);
+    const poaDoc = docs.find(d => d.doc_type === 'poa_to_sign' || d.doc_type === 'poa_to_sign_drive');
+    return {
+      ...c,
+      has_poa: poaDoc ? true : false,
+      poa_uploaded_by: poaDoc ? (poaDoc.uploaded_by || '-') : null
+    };
+  });
+  res.json({ success: true, clients: enriched });
 });
 
 // POST /api/lawyer/upload-poa/:clientId - upload POA document
@@ -52,16 +62,16 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
     fs.renameSync(req.file.path, savedPath);
     const localUrl = `/uploads/poa/${savedName}`;
 
-    docsDB.add({ client_id: client.id, doc_type: 'poa_to_sign', original_name: req.file.originalname, drive_file_id: null, drive_url: localUrl });
+    docsDB.add({ client_id: client.id, doc_type: 'poa_to_sign', uploaded_by: 'lawyer', original_name: req.file.originalname, drive_file_id: null, drive_url: localUrl });
 
     let driveUrl = null;
     try {
-      const folderResult = await createClientFolder(`${client.first_name} ${client.last_name}`, client.phone, process.env.DRIVE_FOLDER_POA);
+      const folderResult = await createClientFolder(`${client.first_name} ${client.last_name}`, client.phone, process.env.DRIVE_FOLDER_CLIENTS);
       if (folderResult.success) {
         const up = await uploadFile(savedPath, `poa_${client.first_name}_${client.last_name}.pdf`, 'application/pdf', folderResult.folderId);
         if (up.success) {
           driveUrl = up.webViewLink;
-          docsDB.add({ client_id: client.id, doc_type: 'poa_to_sign_drive', original_name: req.file.originalname, drive_file_id: up.fileId, drive_url: up.webViewLink });
+          docsDB.add({ client_id: client.id, doc_type: 'poa_to_sign_drive', uploaded_by: 'lawyer', original_name: req.file.originalname, drive_file_id: up.fileId, drive_url: up.webViewLink });
         }
       }
     } catch (e) { console.warn('Drive POA upload skipped:', e.message); }
@@ -93,7 +103,9 @@ router.post('/docs-received', async (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
-  clientsDB.update(client.id, { docs_received: 1, current_step: 11, lawyer_step3: 1 });
+  const token = req.headers['x-lawyer-token'];
+  const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
+  clientsDB.update(client.id, { docs_received: 1, current_step: 11, lawyer_step3: 1, docs_received_by: actor });
 
   const link = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
   await sendMessage(client.phone, MESSAGES.DOCS_ARRIVED(client.first_name, link), client.id);
@@ -107,7 +119,9 @@ router.post('/account-opened', async (req, res) => {
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
 
-  clientsDB.update(client.id, { account_opened: 1, current_step: 12, lawyer_step4: 1 });
+  const token = req.headers['x-lawyer-token'];
+  const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
+  clientsDB.update(client.id, { account_opened: 1, current_step: 12, lawyer_step4: 1, account_opened_by: actor });
 
   const link = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
   await sendMessage(client.phone, MESSAGES.ACCOUNT_OPENED(client.first_name, link), client.id);
@@ -119,6 +133,39 @@ router.post('/account-opened', async (req, res) => {
 router.get('/client/:id/docs', (req, res) => {
   const docs = docsDB.getByClient(req.params.id);
   res.json({ success: true, docs });
+});
+
+// GET /api/lawyer/client/:id/download-docs - download all docs as ZIP
+router.get('/client/:id/download-docs', (req, res) => {
+  const archiver = require('archiver');
+  const client = clientsDB.findById(req.params.id);
+  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+
+  const docs = docsDB.getByClient(client.id);
+  const localDocs = docs.filter(d => d.drive_url && d.drive_url.startsWith('/uploads/'));
+
+  if (localDocs.length === 0) {
+    return res.status(404).json({ error: 'אין מסמכים להורדה' });
+  }
+
+  const zipName = `docs_${client.first_name}_${client.last_name}_${client.id}.zip`;
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(zipName)}"`);
+
+  const archive = archiver('zip', { zlib: { level: 9 } });
+  archive.on('error', (err) => { res.status(500).send({ error: err.message }); });
+  archive.pipe(res);
+
+  localDocs.forEach(d => {
+    const filePath = path.join(__dirname, '..', d.drive_url);
+    if (fs.existsSync(filePath)) {
+      const ext = path.extname(filePath);
+      const name = (d.doc_type || 'doc') + '_' + client.id + ext;
+      archive.file(filePath, { name });
+    }
+  });
+
+  archive.finalize();
 });
 
 module.exports = router;

@@ -267,11 +267,11 @@
         </div>
       </div>
       <div style="color:var(--text-muted);font-size:0.85rem;text-align:center;">
-        © 2026 Batumionline. כל הזכויות שמורות.
+        <span data-he="© 2026 Batumionline. כל הזכויות שמורות." data-en="© 2026 Batumionline. All rights reserved.">© 2026 Batumionline. כל הזכויות שמורות.</span>
       </div>
       <div style="display:flex;gap:1rem;align-items:center;">
         <div style="display:flex;gap:0.75rem;align-items:center;">
-          <a href="/client" class="btn btn-primary" style="padding:0.5rem 1.25rem;font-size:0.85rem;">🚀 כניסה ללקוחות</a>
+          <a href="/client" class="btn btn-primary" style="padding:0.5rem 1.25rem;font-size:0.85rem;" data-he="🚀 כניסה ללקוחות" data-en="🚀 Client Portal">🚀 כניסה ללקוחות</a>
           <span style="color:var(--border);font-size:1.2rem;">|</span>
           <a href="/admin" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none;opacity:0.6;" title="פאנל ניהול">⚙️ ניהול</a>
         </div>
@@ -413,13 +413,13 @@ function setViewMode(mode) {
   flex-shrink:0; position:sticky; top:0; z-index:1;
 }
 #chat-messages {
-  flex:1; min-height:0; overflow-y:auto; padding:1rem;
+  flex:1; min-height:100px; max-height:40vh; overflow-y:auto; padding:1rem;
   display:flex; flex-direction:column; gap:0.75rem; scroll-behavior:smooth;
 }
 #chat-quick {
   padding:0.6rem 1rem; display:flex; flex-wrap:wrap; gap:0.4rem;
-  border-top:1px solid rgba(255,255,255,0.07); min-height:52px;
-  flex-shrink:0; overflow-y:auto; max-height:30vh;
+  border-top:1px solid rgba(255,255,255,0.07); min-height:60px;
+  flex-shrink:0; overflow-y:auto; max-height:40vh;
 }
 @media (max-width: 768px) {
   #chatbot-panel {
@@ -444,7 +444,7 @@ function setViewMode(mode) {
 </div>
 
 <script>
-var FAQ_DATA = [
+var FAQ_DATA_HE = [
   {q:"למה צריך ייפוי כח נוטוריוני ואפוסטיל?", a:'כדי לפתוח חשבון בנק מרחוק, עורך הדין חייב להציג אישור חוקי המאומת ע"י נוטוריון ומדינה (אפוסטיל). זהו המסמך היחיד שמוכיח לבנק הזר שהפעולה מתבצעת בהסכמתך המלאה.'},
   {q:"איזה סוג חשבון פותחים?", a:"יש שני סוגי חשבון: פרטי ועסקי. כרגע ניתן לפתוח רק חשבון עסקי לאדם פרטי."},
   {q:"האם הכסף שלי בטוח בבנקים בגאורגיה?", a:"בהחלט. הבנקים TBC ו-Bank of Georgia נסחרים בלונדון וכפופים לרגולציה בינלאומית מחמירה."},
@@ -456,6 +456,21 @@ var FAQ_DATA = [
   {q:"מהן הדרישות לסריקת המסמכים?", a:"חובה לסרוק בסורק מקצועי (לא בנייד) ולשלוח בפורמט PDF בלבד."},
   {q:"טיפים לניהול החשבון", a:"1. בהעברות — ציינו 'Transfer to own account'. 2. בצעו פעולה קטנה כל כמה חודשים למניעת חשבון 'רדום'. 3. הגדירו זיהוי ביומטרי באפליקציה. 4. שמרו עותק סרוק של כל המסמכים."}
 ];
+
+var FAQ_DATA_EN = [
+  {q:"Why do I need a notarized POA and Apostille?", a:"To open a bank account remotely, the attorney must present a legally certified document verified by a notary and the state (Apostille). This is the only document that proves to the foreign bank that the action is carried out with your full consent."},
+  {q:"What type of account is opened?", a:"There are two types of accounts: personal and business. Currently, only a business account for an individual can be opened."},
+  {q:"Is my money safe in Georgian banks?", a:"Absolutely. TBC and Bank of Georgia are listed on the London Stock Exchange and subject to strict international regulation."},
+  {q:"What if the bank refuses to open an account?", a:"In case of passport rejection, we refund 90% of the payment. If the process is cancelled after documents arrive in Georgia — a 50% refund will be issued."},
+  {q:"Do I need to report to the tax authorities?", a:"Georgia is a CRS signatory. Holding the account is completely legal, but reporting is required above a threshold of approximately $120,000."},
+  {q:"Can I deposit Israeli checks?", a:"No. The Georgian banking system does not work with checks — only bank transfers, cards, and cash."},
+  {q:"Can I withdraw cash from ATMs in Israel?", a:"Yes! The card is international (Visa/Mastercard) and valid for withdrawals and purchases anywhere in the world."},
+  {q:"What if I lose my card?", a:"Freeze the card instantly via the app. We will assist in ordering a new card and shipping it to you via DHL."},
+  {q:"What are the document scanning requirements?", a:"Documents must be scanned with a professional scanner (not a phone) and sent in PDF format only."},
+  {q:"Tips for managing your account", a:"1. For transfers — specify 'Transfer to own account'. 2. Make a small transaction every few months to prevent a 'dormant' account. 3. Set up biometric authentication in the app. 4. Keep a scanned copy of all documents."}
+];
+
+var FAQ_DATA = (localStorage.getItem('lang') === 'en') ? FAQ_DATA_EN : FAQ_DATA_HE;
 
 var askedFaqs = [];
 var botStarted = false;
@@ -512,32 +527,37 @@ function addUserMsg(text) {
 function setQuickReplies(items) {
   var area = document.getElementById('chat-quick');
   area.innerHTML = items.map(function(item) {
-    return '<button onclick="handleQuick(\'' + item.label.replace(/'/g, "\\'") + '\',\'' + item.action + '\')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:#c9a84c;border-radius:20px;padding:0.35rem 0.85rem;font-size:0.8rem;font-family:\'Assistant\',sans-serif;cursor:pointer;white-space:nowrap;">' + item.label + '</button>';
+    return '<button onclick="handleQuick(\'' + item.label.replace(/'/g, "\\'") + '\',\'' + item.action + '\')" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:#c9a84c;border-radius:20px;padding:0.35rem 0.85rem;font-size:0.8rem;font-family:\'Assistant\',sans-serif;cursor:pointer;text-align:right;direction:rtl;">' + item.label + '</button>';
   }).join('');
 }
 
 function startBot() {
-  addBotMsg('שלום! 👋 אני הבוט של Batumionline.<br/>אשמח לענות על שאלות לגבי פתיחת חשבון בנק בגאורגיה.', 0).then(function() {
-    return addBotMsg('על מה תרצה לדעת?', 1000);
+  var isEn = localStorage.getItem('lang') === 'en';
+  var greeting = isEn ? 'Hello! 👋 I\'m the Batumionline bot.<br/>I\'d be happy to answer questions about opening a bank account in Georgia.' : 'שלום! 👋 אני הבוט של Batumionline.<br/>אשמח לענות על שאלות לגבי פתיחת חשבון בנק בגאורגיה.';
+  var ask = isEn ? 'What would you like to know?' : 'על מה תרצה לדעת?';
+  addBotMsg(greeting, 0).then(function() {
+    return addBotMsg(ask, 1000);
   }).then(function() {
     showFaqOptions();
   });
 }
 
+var _en = localStorage.getItem('lang') === 'en';
+
 function showFaqOptions() {
   var remaining = FAQ_DATA.filter(function(f, i) { return askedFaqs.indexOf(i) === -1; });
   if (remaining.length === 0) {
     setQuickReplies([
-      {label:'🔄 שאלה נוספת', action:'restart'},
-      {label:'💬 דבר עם נציג', action:'agent'},
-      {label:'🚀 התחל תהליך', action:'start'}
+      {label: _en ? '🔄 Another question' : '🔄 שאלה נוספת', action:'restart'},
+      {label: _en ? '💬 Chat with agent' : '💬 דבר עם נציג', action:'agent'},
+      {label: _en ? '🚀 Start process' : '🚀 התחל תהליך', action:'start'}
     ]);
     return;
   }
   var items = remaining.slice(0, 5).map(function(f) {
     return {label: f.q, action: 'faq_' + FAQ_DATA.indexOf(f)};
   });
-  items.push({label:'💬 דבר עם נציג', action:'agent'});
+  items.push({label: _en ? '💬 Chat with agent' : '💬 דבר עם נציג', action:'agent'});
   setQuickReplies(items);
 }
 
@@ -548,20 +568,20 @@ function handleQuick(label, action) {
     var idx = parseInt(action.split('_')[1]);
     askedFaqs.push(idx);
     addBotMsg(FAQ_DATA[idx].a, 400).then(function() {
-      return addBotMsg('יש לך שאלה נוספת?', 1200);
+      return addBotMsg(_en ? 'Do you have another question?' : 'יש לך שאלה נוספת?', 1200);
     }).then(function() {
       showFaqOptions();
     });
   } else if (action === 'agent') {
-    addBotMsg('מעביר אותך לנציג שלנו בוואטסאפ... 💬', 400).then(function() {
+    addBotMsg(_en ? 'Connecting you to our WhatsApp agent... 💬' : 'מעביר אותך לנציג שלנו בוואטסאפ... 💬', 400).then(function() {
       setTimeout(function() {
-        window.open('https://wa.me/972502844867?text=' + encodeURIComponent('שלום, אני מעוניין לפתוח חשבון בנק בגאורגיה ויש לי שאלה'), '_blank');
+        window.open('https://wa.me/972502844867?text=' + encodeURIComponent(_en ? 'Hello, I am interested in opening a bank account in Georgia' : 'שלום, אני מעוניין לפתוח חשבון בנק בגאורגיה ויש לי שאלה'), '_blank');
       }, 1000);
-      setQuickReplies([{label:'🔄 חזור לבוט', action:'restart'}]);
+      setQuickReplies([{label: _en ? '🔄 Back to bot' : '🔄 חזור לבוט', action:'restart'}]);
     });
   } else if (action === 'restart') {
     askedFaqs = [];
-    addBotMsg('בסדר! על מה תרצה לדעת?', 400).then(function() {
+    addBotMsg(_en ? 'Sure! What would you like to know?' : 'בסדר! על מה תרצה לדעת?', 400).then(function() {
       showFaqOptions();
     });
   } else if (action === 'start') {

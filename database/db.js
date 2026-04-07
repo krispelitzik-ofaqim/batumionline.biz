@@ -109,6 +109,10 @@ const clientsDB = {
   delete(id) {
     const data = load();
     data.clients = data.clients.filter(c => c.id != id);
+    data.documents = data.documents.filter(d => d.client_id != id);
+    data.checklist = data.checklist.filter(c => c.client_id != id);
+    data.feedback = data.feedback.filter(f => f.client_id != id);
+    data.whatsapp_log = data.whatsapp_log.filter(w => w.client_id != id);
     save(data);
   }
 };

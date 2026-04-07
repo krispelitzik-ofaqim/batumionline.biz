@@ -28,7 +28,7 @@
 <!-- Loading Overlay -->
 <div id="loading-overlay" style="display:none;">
   <div class="spinner" style="width:40px;height:40px;border-width:3px;border-color:rgba(201,168,76,0.3);border-top-color:var(--gold);"></div>
-  <div class="loading-text">מעבד...</div>
+  <div class="loading-text" data-he="מעבד..." data-en="Processing...">מעבד...</div>
 </div>
 
 <!-- HEADER -->
@@ -46,31 +46,31 @@
     <div class="progress-steps">
       <div class="progress-step" id="ps-1">
         <div class="step-dot">1</div>
-        <div class="step-label">פרטים</div>
+        <div class="step-label" data-he="פרטים" data-en="Details">פרטים</div>
       </div>
       <div class="progress-step" id="ps-2">
         <div class="step-dot">2</div>
-        <div class="step-label">בדיקה</div>
+        <div class="step-label" data-he="בדיקה" data-en="Review">בדיקה</div>
       </div>
       <div class="progress-step" id="ps-3">
         <div class="step-dot">3</div>
-        <div class="step-label">תשלום</div>
+        <div class="step-label" data-he="תשלום" data-en="Payment">תשלום</div>
       </div>
       <div class="progress-step" id="ps-4">
         <div class="step-dot">4</div>
-        <div class="step-label">נוטוריון</div>
+        <div class="step-label" data-he="נוטוריון" data-en="Notary">נוטוריון</div>
       </div>
       <div class="progress-step" id="ps-5">
         <div class="step-dot">5</div>
-        <div class="step-label">מסמכים</div>
+        <div class="step-label" data-he="מסמכים" data-en="Documents">מסמכים</div>
       </div>
       <div class="progress-step" id="ps-6">
         <div class="step-dot">6</div>
-        <div class="step-label">שליחה</div>
+        <div class="step-label" data-he="שליחה" data-en="Shipping">שליחה</div>
       </div>
       <div class="progress-step" id="ps-7">
         <div class="step-dot">7</div>
-        <div class="step-label">סיום</div>
+        <div class="step-label" data-he="סיום" data-en="Complete">סיום</div>
       </div>
     </div>
   </div>
@@ -82,29 +82,29 @@
   <div class="panel-screen active" id="screen-phone">
     <div class="step-header" style="text-align:center;padding:3rem 0 2rem;">
       <div style="font-size:3rem;margin-bottom:1rem;">🏦</div>
-      <h1 class="display-title" style="font-size:2rem;margin-bottom:1rem;">פתיחת חשבון בנק<br/>בינלאומי בגאורגיה</h1>
+      <h1 class="display-title" style="font-size:2rem;margin-bottom:1rem;" data-he="פתיחת חשבון בנק<br/>בינלאומי בגאורגיה" data-en="Open an International<br/>Bank Account in Georgia">פתיחת חשבון בנק<br/>בינלאומי בגאורגיה</h1>
     </div>
 
     <!-- New client - prominent -->
     <div class="card" style="text-align:center;padding:2rem;">
-      <div style="font-size:1.2rem;font-weight:700;color:var(--text-main);margin-bottom:0.5rem;">פעם ראשונה כאן? 👋</div>
-      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;">התחל את תהליך פתיחת חשבון הבנק שלך בגאורגיה</p>
-      <button class="btn btn-primary btn-full" style="padding:1rem;font-size:1.1rem;font-weight:700;" onclick="showScreen('screen-register')">🚀 התחל תהליך חדש</button>
+      <div style="font-size:1.2rem;font-weight:700;color:var(--text-main);margin-bottom:0.5rem;" data-he="פעם ראשונה כאן? 👋" data-en="First time here? 👋">פעם ראשונה כאן? 👋</div>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;" data-he="התחל את תהליך פתיחת חשבון הבנק שלך בגאורגיה" data-en="Start your Georgian bank account opening process">התחל את תהליך פתיחת חשבון הבנק שלך בגאורגיה</p>
+      <button class="btn btn-primary btn-full" style="padding:1rem;font-size:1.1rem;font-weight:700;" onclick="showScreen('screen-register')" data-he="🚀 התחל תהליך חדש" data-en="🚀 Start New Process">🚀 התחל תהליך חדש</button>
     </div>
 
     <!-- Divider -->
     <div style="display:flex;align-items:center;gap:1rem;margin:1.5rem 0;">
       <div style="flex:1;height:1px;background:var(--border);"></div>
-      <span style="color:var(--text-muted);font-size:0.85rem;">או</span>
+      <span style="color:var(--text-muted);font-size:0.85rem;" data-he="או" data-en="or">או</span>
       <div style="flex:1;height:1px;background:var(--border);"></div>
     </div>
 
     <!-- Returning client - secondary -->
     <div style="padding:1.25rem;border:1px solid var(--border);border-radius:var(--radius-lg);background:rgba(255,255,255,0.02);">
-      <div style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.75rem;text-align:center;">לקוח ממשיך? הכנס את מספר הטלפון שלך</div>
+      <div style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.75rem;text-align:center;" data-he="לקוח ממשיך? הכנס את מספר הטלפון שלך" data-en="Returning client? Enter your phone number">לקוח ממשיך? הכנס את מספר הטלפון שלך</div>
       <div style="display:flex;gap:0.75rem;align-items:flex-start;">
         <input type="tel" id="phone-input" class="form-control" placeholder="05X-XXXXXXX" style="flex:1;" />
-        <button class="btn btn-ghost" style="padding:0.6rem 1.25rem;white-space:nowrap;" onclick="checkPhone()">המשך ←</button>
+        <button class="btn btn-ghost" style="padding:0.6rem 1.25rem;white-space:nowrap;" onclick="checkPhone()" data-he="המשך ←" data-en="Continue ←">המשך ←</button>
       </div>
       <div id="phone-error" class="alert alert-error" style="display:none;margin-top:0.75rem;"></div>
     </div>
@@ -114,10 +114,10 @@
   <div class="panel-screen" id="screen-blocked">
     <div style="text-align:center;padding:4rem 0;">
       <div style="font-size:4rem;margin-bottom:1.5rem;">🚫</div>
-      <h2 style="color:var(--error);margin-bottom:1rem;">הגישה חסומה</h2>
-      <p style="color:var(--text-muted);line-height:1.7;margin-bottom:1rem;">הגשת הדרכון שלך לא עברה את בדיקת הנאותות.</p>
+      <h2 style="color:var(--error);margin-bottom:1rem;" data-he="הגישה חסומה" data-en="Access Blocked">הגישה חסומה</h2>
+      <p style="color:var(--text-muted);line-height:1.7;margin-bottom:1rem;" data-he="הגשת הדרכון שלך לא עברה את בדיקת הנאותות." data-en="Your passport did not pass the due diligence check.">הגשת הדרכון שלך לא עברה את בדיקת הנאותות.</p>
       <div id="block-info" class="alert alert-error"></div>
-      <p style="color:var(--text-muted);font-size:0.9rem;margin-top:1rem;">לשאלות פנה אלינו בוואטסאפ.</p>
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-top:1rem;" data-he="לשאלות פנה אלינו בוואטסאפ." data-en="For questions, contact us on WhatsApp.">לשאלות פנה אלינו בוואטסאפ.</p>
     </div>
   </div>
 
@@ -125,12 +125,12 @@
   <div class="panel-screen" id="screen-trashed">
     <div style="text-align:center;padding:4rem 0;">
       <div style="font-size:3.5rem;margin-bottom:1.5rem;">⏸️</div>
-      <h2 style="color:var(--gold-light);margin-bottom:1rem;">התהליך שלך הופסק</h2>
-      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;">התהליך שלך הופסק עקב חוסר התקדמות.<br/>לחידוש התהליך, פנה אלינו בוואטסאפ.</p>
+      <h2 style="color:var(--gold-light);margin-bottom:1rem;" data-he="התהליך שלך הופסק" data-en="Your Process Has Been Paused">התהליך שלך הופסק</h2>
+      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;" data-he="התהליך שלך הופסק עקב חוסר התקדמות.<br/>לחידוש התהליך, פנה אלינו בוואטסאפ." data-en="Your process was paused due to inactivity.<br/>To resume, contact us on WhatsApp.">התהליך שלך הופסק עקב חוסר התקדמות.<br/>לחידוש התהליך, פנה אלינו בוואטסאפ.</p>
       <a href="https://wa.me/972502844867?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A0%D7%99%20%D7%9E%D7%A2%D7%95%D7%A0%D7%99%D7%99%D7%9F%20%D7%9C%D7%97%D7%93%D7%A9%20%D7%90%D7%AA%20%D7%94%D7%AA%D7%94%D7%9C%D7%99%D7%9A"
          target="_blank"
          class="btn btn-primary" style="padding:0.85rem 2rem;font-size:1rem;display:inline-flex;align-items:center;gap:0.5rem;">
-        💬 פנה אלינו בוואטסאפ
+        <span data-he="💬 פנה אלינו בוואטסאפ" data-en="💬 Contact Us on WhatsApp">💬 פנה אלינו בוואטסאפ</span>
       </a>
     </div>
   </div>
@@ -138,78 +138,78 @@
   <!-- ========== SCREEN: REGISTER (Step 1 + 2) ========== -->
   <div class="panel-screen" id="screen-register">
     <div class="step-header" style="margin-top:1.5rem;">
-      <div class="step-tag">שלב א׳</div>
-      <h2 class="step-title">פרטים אישיים ועלאת דרכון</h2>
-      <p class="step-desc">מלא את הפרטים שלך והעלה צילום של הדרכון. כל הפרטים מאובטחים ומוגנים.</p>
+      <div class="step-tag" data-he="שלב א׳" data-en="Step 1">שלב א׳</div>
+      <h2 class="step-title" data-he="פרטים אישיים ועלאת דרכון" data-en="Personal Details &amp; Passport Upload">פרטים אישיים ועלאת דרכון</h2>
+      <p class="step-desc" data-he="מלא את הפרטים שלך והעלה צילום של הדרכון. כל הפרטים מאובטחים ומוגנים." data-en="Fill in your details and upload a passport scan. All information is secure and protected.">מלא את הפרטים שלך והעלה צילום של הדרכון. כל הפרטים מאובטחים ומוגנים.</p>
     </div>
     <div class="card">
       <div id="register-error" class="alert alert-error" style="display:none;"></div>
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">שם פרטי *</label>
+          <label class="form-label" data-he="שם פרטי *" data-en="First Name *">שם פרטי *</label>
           <input type="text" id="r-fname" class="form-control" placeholder="שם פרטי" />
         </div>
         <div class="form-group">
-          <label class="form-label">שם משפחה *</label>
+          <label class="form-label" data-he="שם משפחה *" data-en="Last Name *">שם משפחה *</label>
           <input type="text" id="r-lname" class="form-control" placeholder="שם משפחה" />
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">First Name (כפי שבדרכון)</label>
+          <label class="form-label" data-he="First Name (כפי שבדרכון)" data-en="First Name (as in passport)">First Name (כפי שבדרכון)</label>
           <input type="text" id="r-fname-en" class="form-control" placeholder="First Name" dir="ltr" />
         </div>
         <div class="form-group">
-          <label class="form-label">Last Name (כפי שבדרכון)</label>
+          <label class="form-label" data-he="Last Name (כפי שבדרכון)" data-en="Last Name (as in passport)">Last Name (כפי שבדרכון)</label>
           <input type="text" id="r-lname-en" class="form-control" placeholder="Last Name" dir="ltr" />
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">כתובת מייל *</label>
+        <label class="form-label" data-he="כתובת מייל *" data-en="Email Address *">כתובת מייל *</label>
         <input type="email" id="r-email" class="form-control" placeholder="your@email.com" dir="ltr" />
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">טלפון נייד *</label>
+          <label class="form-label" data-he="טלפון נייד *" data-en="Mobile Phone *">טלפון נייד *</label>
           <input type="tel" id="r-phone" class="form-control" placeholder="05X-XXXXXXX" />
         </div>
         <div class="form-group">
-          <label class="form-label">מספר ת.ז.</label>
+          <label class="form-label" data-he="מספר ת.ז." data-en="ID Number">מספר ת.ז.</label>
           <input type="text" id="r-id" class="form-control" placeholder="XXXXXXXXX" dir="ltr" />
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">תאריך לידה</label>
+          <label class="form-label" data-he="תאריך לידה" data-en="Date of Birth">תאריך לידה</label>
           <input type="date" id="r-dob" class="form-control" />
         </div>
         <div class="form-group">
-          <label class="form-label">מספר דרכון</label>
+          <label class="form-label" data-he="מספר דרכון" data-en="Passport Number">מספר דרכון</label>
           <input type="text" id="r-passport-num" class="form-control" placeholder="מס׳ דרכון" dir="ltr" />
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">הדרכון שלי בתוקף (לפחות 8 חודשים)</label>
+        <label class="form-label" data-he="הדרכון שלי בתוקף (לפחות 8 חודשים)" data-en="My passport is valid (at least 8 months)">הדרכון שלי בתוקף (לפחות 8 חודשים)</label>
         <div class="radio-group">
           <label class="radio-option" id="valid-yes">
             <input type="radio" name="passport_valid" value="true" onchange="selectRadio('valid-yes','valid-no')" />
-            ✅ כן, הדרכון בתוקף
+            <span data-he="✅ כן, הדרכון בתוקף" data-en="✅ Yes, passport is valid">✅ כן, הדרכון בתוקף</span>
           </label>
           <label class="radio-option" id="valid-no">
             <input type="radio" name="passport_valid" value="false" onchange="selectRadio('valid-no','valid-yes')" />
-            ❌ לא
+            <span data-he="❌ לא" data-en="❌ No">❌ לא</span>
           </label>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">בחר בנק מועדף</label>
+        <label class="form-label" data-he="בחר בנק מועדף" data-en="Choose Preferred Bank">בחר בנק מועדף</label>
         <div class="bank-options">
           <div class="bank-card" id="bank-bog" onclick="selectBank('BOG')">
             <input type="radio" name="preferred_bank" value="BOG" />
@@ -227,17 +227,17 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">העלאת דרכון (PDF) *</label>
-        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem;">יש להעלות צילום צבעוני של עמודים 2-3 הכוללים את הפרטים האישיים. קובץ PDF בלבד.</p>
+        <label class="form-label" data-he="העלאת דרכון (PDF) *" data-en="Upload Passport (PDF) *">העלאת דרכון (PDF) *</label>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem;" data-he="יש להעלות צילום צבעוני של עמודים 2-3 הכוללים את הפרטים האישיים. קובץ PDF בלבד." data-en="Upload a color scan of pages 2-3 with personal details. PDF only.">יש להעלות צילום צבעוני של עמודים 2-3 הכוללים את הפרטים האישיים. קובץ PDF בלבד.</p>
         <div class="upload-zone" id="passport-zone" onclick="document.getElementById('passport-file').click()">
           <span class="upload-icon">📄</span>
-          <div id="passport-zone-text">לחץ להעלאת קובץ PDF</div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;">עד 20MB</div>
+          <div id="passport-zone-text" data-he="לחץ להעלאת קובץ PDF" data-en="Click to upload PDF file">לחץ להעלאת קובץ PDF</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem;" data-he="עד 20MB" data-en="Up to 20MB">עד 20MB</div>
         </div>
         <input type="file" id="passport-file" accept=".pdf" style="display:none;" onchange="handleFileSelect(this,'passport-zone','passport-zone-text')" />
       </div>
 
-      <button class="btn btn-primary btn-full" onclick="submitRegister()" id="btn-register">
+      <button class="btn btn-primary btn-full" onclick="submitRegister()" id="btn-register" data-he="שלח ועבור לבדיקת נאותות" data-en="Submit &amp; Proceed to Verification">
         שלח ועבור לבדיקת נאותות
       </button>
     </div>
@@ -247,19 +247,19 @@
   <div class="panel-screen" id="screen-waiting-passport">
     <div class="waiting-screen">
       <div class="waiting-pulse">⏳</div>
-      <h2 class="section-title">הדרכון בבדיקה</h2>
+      <h2 class="section-title" data-he="הדרכון בבדיקה" data-en="Passport Under Review">הדרכון בבדיקה</h2>
       <div class="gold-line" style="margin:1rem auto;"></div>
-      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;">קיבלנו את הפרטים שלך ואת הדרכון.<br/>אנו עורכים בדיקת נאותות ונחזור אליך בהקדם עם תשובה.<br/>תקבל הודעה בוואטסאפ.</p>
+      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;" data-he="קיבלנו את הפרטים שלך ואת הדרכון.<br/>אנו עורכים בדיקת נאותות ונחזור אליך בהקדם עם תשובה.<br/>תקבל הודעה בוואטסאפ." data-en="We received your details and passport.<br/>We are conducting a due diligence check and will get back to you shortly.<br/>You will receive a WhatsApp notification.">קיבלנו את הפרטים שלך ואת הדרכון.<br/>אנו עורכים בדיקת נאותות ונחזור אליך בהקדם עם תשובה.<br/>תקבל הודעה בוואטסאפ.</p>
       <div class="alert alert-info" style="text-align:right;">
-        💡 <strong>בינתיים</strong> — תוכל להכין את מסמכי הנוטוריון ואת שאר המסמכים הנדרשים
+        <span data-he="💡 <strong>בינתיים</strong> — תוכל להכין את מסמכי הנוטוריון ואת שאר המסמכים הנדרשים" data-en="💡 <strong>Meanwhile</strong> — you can prepare notary documents and other required documents">💡 <strong>בינתיים</strong> — תוכל להכין את מסמכי הנוטוריון ואת שאר המסמכים הנדרשים</span>
       </div>
       <div style="margin-top:2rem;padding:1.5rem;border:1px solid var(--border);border-radius:var(--radius);">
-        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.5rem;">📱 תקבל עדכון לוואטסאפ</div>
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.5rem;" data-he="📱 תקבל עדכון לוואטסאפ" data-en="📱 You will receive a WhatsApp update">📱 תקבל עדכון לוואטסאפ</div>
         <div id="waiting-phone" style="font-size:1.1rem;color:var(--gold-light);font-weight:600;"></div>
       </div>
       <div style="margin-top:1.25rem;padding:1rem 1.25rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);font-size:0.88rem;line-height:1.7;color:var(--text-muted);">
-        <strong style="color:var(--gold-light);">💡 כיצד לחזור?</strong><br/>
-        כנס לאתר <span style="color:var(--gold-light);font-weight:600;">batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך.
+        <span data-he="<strong>💡 כיצד לחזור?</strong><br/>כנס לאתר <span style='color:var(--gold-light);font-weight:600;'>batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך." data-en="<strong>💡 How to return?</strong><br/>Visit <span style='color:var(--gold-light);font-weight:600;'>batumionline.biz</span> and enter your phone number — you'll go directly to your current step."><strong style="color:var(--gold-light);">💡 כיצד לחזור?</strong><br/>
+        כנס לאתר <span style="color:var(--gold-light);font-weight:600;">batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך.</span>
       </div>
     </div>
   </div>
@@ -267,69 +267,69 @@
   <!-- ========== SCREEN: PAYMENT (Step 3) ========== -->
   <div class="panel-screen" id="screen-payment">
     <div class="step-header" style="margin-top:1.5rem;">
-      <div class="step-tag">שלב ג׳</div>
-      <h2 class="step-title">תשלום</h2>
-      <p class="step-desc">הדרכון אושר! כעת יש לשלם את עלות השירות כדי להמשיך בתהליך.</p>
+      <div class="step-tag" data-he="שלב ג׳" data-en="Step 3">שלב ג׳</div>
+      <h2 class="step-title" data-he="תשלום" data-en="Payment">תשלום</h2>
+      <p class="step-desc" data-he="הדרכון אושר! כעת יש לשלם את עלות השירות כדי להמשיך בתהליך." data-en="Passport approved! Please pay the service fee to continue.">הדרכון אושר! כעת יש לשלם את עלות השירות כדי להמשיך בתהליך.</p>
     </div>
     <div class="card" style="text-align:center;">
-      <div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.5rem;">סכום לתשלום</div>
+      <div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.5rem;" data-he="סכום לתשלום" data-en="Amount Due">סכום לתשלום</div>
       <div style="font-family:'Playfair Display',serif;font-size:3.5rem;color:var(--gold-light);margin-bottom:0.5rem;" data-he="₪1,900" data-en="$599">₪1,900</div>
-      <div style="color:var(--text-muted);font-size:0.9rem;margin-bottom:2rem;">תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק</div>
+      <div style="color:var(--text-muted);font-size:0.9rem;margin-bottom:2rem;" data-he="תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק" data-en="One-time payment for the full bank account opening service">תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק</div>
       <div class="alert alert-info" style="text-align:right;margin-bottom:2rem;">
-        ✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה
+        <span data-he="✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה" data-en="✅ <strong>Includes:</strong> Full support, power of attorney, attorney in Georgia">✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה</span>
       </div>
       <div id="payment-link-area">
         <a href="https://mrng.to/x7zqJNO4Ff" target="_blank" class="btn btn-primary btn-full" style="padding:0.85rem;font-size:1.05rem;font-weight:700;text-decoration:none;display:block;text-align:center;">
-          💳 עבור לתשלום
+          <span data-he="💳 עבור לתשלום" data-en="💳 Proceed to Payment">💳 עבור לתשלום</span>
         </a>
-        <button class="btn btn-ghost btn-full" id="btn-pay" onclick="goToPayment()" style="margin-top:0.75rem;font-size:0.78rem;color:var(--text-muted);border-color:var(--border);padding:0.5rem;">
+        <button class="btn btn-ghost btn-full" id="btn-pay" onclick="goToPayment()" style="margin-top:0.75rem;font-size:0.78rem;color:var(--text-muted);border-color:var(--border);padding:0.5rem;" data-he="דלג לשלב הבא (בדיקות בלבד)" data-en="Skip to next step (testing only)">
           דלג לשלב הבא (בדיקות בלבד)
         </button>
       </div>
-      <div style="margin-top:1rem;font-size:0.8rem;color:var(--text-muted);">מאובטח על ידי Morning | חשבוניות ישראל</div>
+      <div style="margin-top:1rem;font-size:0.8rem;color:var(--text-muted);" data-he="מאובטח על ידי Morning | חשבוניות ישראל" data-en="Secured by Morning | Israel Invoicing">מאובטח על ידי Morning | חשבוניות ישראל</div>
     </div>
   </div>
 
   <!-- ========== SCREEN: NOTARY (Step 4+5) ========== -->
   <div class="panel-screen" id="screen-notary">
     <div class="step-header" style="margin-top:1.5rem;">
-      <div class="step-tag">שלב ד׳-ה׳</div>
-      <h2 class="step-title">שלב הנוטוריון</h2>
-      <p class="step-desc">כעת יש לגשת לנוטוריון בישראל ולהכין את המסמכים הנדרשים.</p>
+      <div class="step-tag" data-he="שלב ד׳-ה׳" data-en="Steps 4-5">שלב ד׳-ה׳</div>
+      <h2 class="step-title" data-he="שלב הנוטוריון" data-en="Notary Stage">שלב הנוטוריון</h2>
+      <p class="step-desc" data-he="כעת יש לגשת לנוטוריון בישראל ולהכין את המסמכים הנדרשים." data-en="Please visit a notary in Israel to prepare the required documents.">כעת יש לגשת לנוטוריון בישראל ולהכין את המסמכים הנדרשים.</p>
     </div>
     <div class="card">
       <div class="alert alert-info" style="margin-bottom:1.5rem;">
-        📥 <strong>הורד את טופס ייפוי הכח</strong> — זהו הטופס שתצטרך לחתום עליו אצל הנוטוריון
+        <span data-he="📥 <strong>הורד את טופס ייפוי הכח</strong> — זהו הטופס שתצטרך לחתום עליו אצל הנוטוריון" data-en="📥 <strong>Download the Power of Attorney form</strong> — this is the form you need to sign at the notary">📥 <strong>הורד את טופס ייפוי הכח</strong> — זהו הטופס שתצטרך לחתום עליו אצל הנוטוריון</span>
       </div>
-      <button class="btn btn-primary btn-full" onclick="downloadPOA()" style="margin-bottom:1.5rem;">
+      <button class="btn btn-primary btn-full" onclick="downloadPOA()" style="margin-bottom:1.5rem;" data-he="⬇️ הורדת טופס ייפוי כח (PDF)" data-en="⬇️ Download POA Form (PDF)">
         ⬇️ הורדת טופס ייפוי כח (PDF)
       </button>
       <hr class="divider" />
-      <h3 style="font-size:1.1rem;margin-bottom:1rem;color:var(--gold-light);">מה לעשות אצל הנוטוריון:</h3>
+      <h3 style="font-size:1.1rem;margin-bottom:1rem;color:var(--gold-light);" data-he="מה לעשות אצל הנוטוריון:" data-en="What to do at the notary:">מה לעשות אצל הנוטוריון:</h3>
       <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;">
         <div style="display:flex;gap:1rem;align-items:flex-start;">
           <span style="color:var(--gold);font-weight:700;flex-shrink:0;">1.</span>
-          <span style="color:var(--text-muted);">הבא את טופס ייפוי הכח המודפס + דרכון מקורי</span>
+          <span style="color:var(--text-muted);" data-he="הבא את טופס ייפוי הכח המודפס + דרכון מקורי" data-en="Bring the printed POA form + original passport">הבא את טופס ייפוי הכח המודפס + דרכון מקורי</span>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
           <span style="color:var(--gold);font-weight:700;flex-shrink:0;">2.</span>
-          <span style="color:var(--text-muted);">חתום על ייפוי הכח בפני הנוטוריון</span>
+          <span style="color:var(--text-muted);" data-he="חתום על ייפוי הכח בפני הנוטוריון" data-en="Sign the POA in front of the notary">חתום על ייפוי הכח בפני הנוטוריון</span>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
           <span style="color:var(--gold);font-weight:700;flex-shrink:0;">3.</span>
-          <span style="color:var(--text-muted);">בקש <strong>אפוסטיל</strong> — מסמך המאמת את חתימתך (מסמך ייחודי מהנוטוריון)</span>
+          <span style="color:var(--text-muted);" data-he="בקש <strong>אפוסטיל</strong> — מסמך המאמת את חתימתך (מסמך ייחודי מהנוטוריון)" data-en="Request an <strong>Apostille</strong> — a document verifying your signature (unique notary document)">בקש <strong>אפוסטיל</strong> — מסמך המאמת את חתימתך (מסמך ייחודי מהנוטוריון)</span>
         </div>
         <div style="display:flex;gap:1rem;align-items:flex-start;">
           <span style="color:var(--gold);font-weight:700;flex-shrink:0;">4.</span>
-          <span style="color:var(--text-muted);">הנוטוריון ישלים את שני המסמכים עם חותמת</span>
+          <span style="color:var(--text-muted);" data-he="הנוטוריון ישלים את שני המסמכים עם חותמת" data-en="The notary will complete both documents with their stamp">הנוטוריון ישלים את שני המסמכים עם חותמת</span>
         </div>
       </div>
       <div style="margin:1.5rem 0;padding:1.25rem 1.5rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:var(--radius-lg);text-align:center;">
         <div style="font-size:2rem;margin-bottom:0.5rem;animation:pulse-gentle 2.5s ease-in-out infinite;">&#128336;</div>
         <div style="color:var(--text-main);font-size:0.95rem;font-weight:600;line-height:1.7;">
-          אנחנו נחכה לך כאן עד להכנת המסמכים
+          <span data-he="אנחנו נחכה לך כאן עד להכנת המסמכים" data-en="We'll wait here for you until your documents are ready">אנחנו נחכה לך כאן עד להכנת המסמכים</span>
         </div>
-        <div style="color:var(--text-muted);font-size:0.82rem;margin-top:0.3rem;">קח את הזמן — כשהכל מוכן, לחץ למטה</div>
+        <div style="color:var(--text-muted);font-size:0.82rem;margin-top:0.3rem;" data-he="קח את הזמן — כשהכל מוכן, לחץ למטה" data-en="Take your time — when everything is ready, click below">קח את הזמן — כשהכל מוכן, לחץ למטה</div>
       </div>
       <style>
         @keyframes pulse-gentle {
@@ -338,10 +338,10 @@
         }
       </style>
       <hr class="divider" />
-      <h3 style="font-size:1rem;margin-bottom:1rem;">האם יש בידך 2 מסמכי נוטוריון חתומים?</h3>
+      <h3 style="font-size:1rem;margin-bottom:1rem;" data-he="האם יש בידך 2 מסמכי נוטוריון חתומים?" data-en="Do you have 2 signed notary documents?">האם יש בידך 2 מסמכי נוטוריון חתומים?</h3>
       <div style="display:flex;gap:1rem;">
-        <button class="btn btn-success" style="flex:1;" onclick="notaryDone()">✅ כן, יש בידי שני המסמכים</button>
-        <button class="btn btn-ghost" style="flex:1;" disabled>⏳ עדיין לא</button>
+        <button class="btn btn-success" style="flex:1;" onclick="notaryDone()" data-he="✅ כן, יש בידי שני המסמכים" data-en="✅ Yes, I have both documents">✅ כן, יש בידי שני המסמכים</button>
+        <button class="btn btn-ghost" style="flex:1;" disabled data-he="⏳ עדיין לא" data-en="⏳ Not yet">⏳ עדיין לא</button>
       </div>
     </div>
   </div>
@@ -349,50 +349,50 @@
   <!-- ========== SCREEN: CHECKLIST (Step 7) ========== -->
   <div class="panel-screen" id="screen-checklist">
     <div class="step-header" style="margin-top:1.5rem;">
-      <div class="step-tag">שלב ו׳</div>
-      <h2 class="step-title">רשימת מסמכים</h2>
-      <p class="step-desc">לפני העלאת המסמכים, וודא שכל המסמכים הבאים סרוקים ומוכנים כקובצי PDF.</p>
+      <div class="step-tag" data-he="שלב ו׳" data-en="Step 6">שלב ו׳</div>
+      <h2 class="step-title" data-he="רשימת מסמכים" data-en="Document Checklist">רשימת מסמכים</h2>
+      <p class="step-desc" data-he="לפני העלאת המסמכים, וודא שכל המסמכים הבאים סרוקים ומוכנים כקובצי PDF." data-en="Before uploading, make sure all the following documents are scanned and ready as PDF files.">לפני העלאת המסמכים, וודא שכל המסמכים הבאים סרוקים ומוכנים כקובצי PDF.</p>
     </div>
     <div class="card">
       <div class="alert alert-warning" style="margin-bottom:1.5rem;">
-        ⚠️ <strong>חשוב:</strong> יתקבלו רק קבצי PDF. אם יש לך 3 תלושי שכר — אחד אותם לקובץ אחד.
+        <span data-he="⚠️ <strong>חשוב:</strong> יתקבלו רק קבצי PDF. אם יש לך 3 תלושי שכר — אחד אותם לקובץ אחד." data-en="⚠️ <strong>Important:</strong> Only PDF files will be accepted. If you have 3 pay stubs — combine them into one file.">⚠️ <strong>חשוב:</strong> יתקבלו רק קבצי PDF. אם יש לך 3 תלושי שכר — אחד אותם לקובץ אחד.</span>
       </div>
 
       <div class="checklist-item" onclick="toggleCheck('chk-poa', event)">
         <input type="checkbox" id="chk-poa" onclick="event.stopPropagation()" onchange="toggleCheck('chk-poa')" />
-        <label><strong>ייפוי כח נוטוריוני חתום</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">הטופס שקיבלת מאיתנו, חתום ע"י ידך ועל ידי הנוטוריון</span></label>
+        <label><strong data-he="ייפוי כח נוטוריוני חתום" data-en="Signed Notarial Power of Attorney">ייפוי כח נוטוריוני חתום</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);" data-he="הטופס שקיבלת מאיתנו, חתום ע&quot;י ידך ועל ידי הנוטוריון" data-en="The form you received from us, signed by you and the notary">הטופס שקיבלת מאיתנו, חתום ע"י ידך ועל ידי הנוטוריון</span></label>
       </div>
       <div class="checklist-item" onclick="toggleCheck('chk-apostille', event)">
         <input type="checkbox" id="chk-apostille" onclick="event.stopPropagation()" onchange="toggleCheck('chk-apostille')" />
-        <label><strong>אפוסטיל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">מסמך ייחודי מהנוטוריון — הוכחת זיהוי וחתימה</span></label>
+        <label><strong data-he="אפוסטיל" data-en="Apostille">אפוסטיל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);" data-he="מסמך ייחודי מהנוטוריון — הוכחת זיהוי וחתימה" data-en="Unique notary document — proof of identity and signature">מסמך ייחודי מהנוטוריון — הוכחת זיהוי וחתימה</span></label>
       </div>
       <div class="checklist-item" onclick="toggleCheck('chk-payslips', event)">
         <input type="checkbox" id="chk-payslips" onclick="event.stopPropagation()" onchange="toggleCheck('chk-payslips')" />
-        <label><strong>שלושה תלושי שכר עדכניים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">סרוקים יחד לקובץ אחד</span></label>
+        <label><strong data-he="שלושה תלושי שכר עדכניים" data-en="Three Recent Pay Stubs">שלושה תלושי שכר עדכניים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);" data-he="סרוקים יחד לקובץ אחד" data-en="Scanned together in one file">סרוקים יחד לקובץ אחד</span></label>
       </div>
       <div class="checklist-item" onclick="toggleCheck('chk-passport', event)">
         <input type="checkbox" id="chk-passport" onclick="event.stopPropagation()" onchange="toggleCheck('chk-passport')" />
-        <label><strong>דרכון סרוק צבעוני (עמודים 2-3)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">העלה את המסמך שכבר שלחת לנו קודם</span></label>
+        <label><strong data-he="דרכון סרוק צבעוני (עמודים 2-3)" data-en="Color Scanned Passport (pages 2-3)">דרכון סרוק צבעוני (עמודים 2-3)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);" data-he="העלה את המסמך שכבר שלחת לנו קודם" data-en="The document you already sent us">העלה את המסמך שכבר שלחת לנו קודם</span></label>
       </div>
       <div class="checklist-item" onclick="toggleCheck('chk-bank-confirm', event)">
         <input type="checkbox" id="chk-bank-confirm" onclick="event.stopPropagation()" onchange="toggleCheck('chk-bank-confirm')" />
-        <label><strong>אישור ניהול חשבון בנק (באנגלית)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">כולל חותמת הבנק</span></label>
+        <label><strong data-he="אישור ניהול חשבון בנק (באנגלית)" data-en="Bank Account Management Certificate (in English)">אישור ניהול חשבון בנק (באנגלית)</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);" data-he="כולל חותמת הבנק" data-en="Including bank stamp">כולל חותמת הבנק</span></label>
       </div>
       <div class="checklist-item" onclick="toggleCheck('chk-statements', event)">
         <input type="checkbox" id="chk-statements" onclick="event.stopPropagation()" onchange="toggleCheck('chk-statements')" />
-        <label><strong>תדפיסי בנק 6 חודשים אחרונים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">עובר ושב</span></label>
+        <label><strong data-he="תדפיסי בנק 6 חודשים אחרונים" data-en="Bank Statements for Last 6 Months">תדפיסי בנק 6 חודשים אחרונים</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);" data-he="עובר ושב" data-en="Current account">עובר ושב</span></label>
       </div>
       <div class="checklist-item" onclick="toggleCheck('chk-address', event)">
         <input type="checkbox" id="chk-address" onclick="event.stopPropagation()" onchange="toggleCheck('chk-address')" />
-        <label><strong>הוכחת כתובת בישראל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);">חשבון חשמל / כבלים / טלפון / ארנונה עם שמך וכתובתך</span></label>
+        <label><strong data-he="הוכחת כתובת בישראל" data-en="Proof of Address in Israel">הוכחת כתובת בישראל</strong><br/><span style="font-size:0.85rem;color:var(--text-muted);" data-he="חשבון חשמל / כבלים / טלפון / ארנונה עם שמך וכתובתך" data-en="Electricity/cable/phone/municipal tax bill with your name and address">חשבון חשמל / כבלים / טלפון / ארנונה עם שמך וכתובתך</span></label>
       </div>
 
       <div style="margin-top:1.5rem;">
         <div id="checklist-progress-bar" style="background:var(--border);border-radius:50px;height:6px;margin-bottom:0.75rem;">
           <div id="checklist-fill" style="background:linear-gradient(90deg,var(--gold),var(--gold-light));height:100%;border-radius:50px;width:0%;transition:width 0.3s;"></div>
         </div>
-        <div id="checklist-count" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">0 מתוך 7 מסמכים מוכנים</div>
-        <button class="btn btn-primary btn-full" id="btn-checklist" onclick="submitChecklist()" disabled>
+        <div id="checklist-count" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;" data-he="0 מתוך 7 מסמכים מוכנים" data-en="0 of 7 documents ready">0 מתוך 7 מסמכים מוכנים</div>
+        <button class="btn btn-primary btn-full" id="btn-checklist" onclick="submitChecklist()" disabled data-he="המשך להעלאת מסמכים" data-en="Continue to Upload Documents">
           המשך להעלאת מסמכים
         </button>
       </div>
@@ -402,9 +402,9 @@
   <!-- ========== SCREEN: UPLOAD DOCS (Step 8) ========== -->
   <div class="panel-screen" id="screen-upload-docs">
     <div class="step-header" style="margin-top:1.5rem;">
-      <div class="step-tag">שלב ז׳</div>
-      <h2 class="step-title">העלאת מסמכים</h2>
-      <p class="step-desc">העלה את כל המסמכים הסרוקים. קבצי PDF בלבד, עד 20MB לקובץ.</p>
+      <div class="step-tag" data-he="שלב ז׳" data-en="Step 7">שלב ז׳</div>
+      <h2 class="step-title" data-he="העלאת מסמכים" data-en="Upload Documents">העלאת מסמכים</h2>
+      <p class="step-desc" data-he="העלה את כל המסמכים הסרוקים. קבצי PDF בלבד, עד 20MB לקובץ." data-en="Upload all scanned documents. PDF files only, up to 20MB per file.">העלה את כל המסמכים הסרוקים. קבצי PDF בלבד, עד 20MB לקובץ.</p>
     </div>
     <div class="card">
       <div id="upload-error" class="alert alert-error" style="display:none;"></div>
@@ -415,10 +415,10 @@
         <div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:0.5rem;">
           <div id="upload-fill" style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;transition:width 0.5s;width:0%;"></div>
         </div>
-        <div id="upload-status" style="font-size:0.85rem;color:var(--text-muted);">מעלה מסמכים...</div>
+        <div id="upload-status" style="font-size:0.85rem;color:var(--text-muted);" data-he="מעלה מסמכים..." data-en="Uploading documents...">מעלה מסמכים...</div>
       </div>
 
-      <button class="btn btn-primary btn-full" id="btn-upload-docs" onclick="submitDocs()">
+      <button class="btn btn-primary btn-full" id="btn-upload-docs" onclick="submitDocs()" data-he="📤 העלה את כל המסמכים" data-en="📤 Upload All Documents">
         📤 העלה את כל המסמכים
       </button>
     </div>
@@ -427,26 +427,26 @@
   <!-- ========== SCREEN: SHIPPING (Step 9) ========== -->
   <div class="panel-screen" id="screen-shipping">
     <div class="step-header" style="margin-top:1.5rem;">
-      <div class="step-tag">שלב ח׳</div>
-      <h2 class="step-title">שליחת המסמכים</h2>
-      <p class="step-desc">כעת יש לשלוח את המסמכים המקוריים בדואר מהיר לעורך הדין בגאורגיה.</p>
+      <div class="step-tag" data-he="שלב ח׳" data-en="Step 8">שלב ח׳</div>
+      <h2 class="step-title" data-he="שליחת המסמכים" data-en="Ship Documents">שליחת המסמכים</h2>
+      <p class="step-desc" data-he="כעת יש לשלוח את המסמכים המקוריים בדואר מהיר לעורך הדין בגאורגיה." data-en="Now send the original documents via express mail to the attorney in Georgia.">כעת יש לשלוח את המסמכים המקוריים בדואר מהיר לעורך הדין בגאורגיה.</p>
     </div>
     <div class="card">
       <div class="alert alert-info" style="margin-bottom:1.5rem;">
-        📍 <strong>כתובת השליחה:</strong><br/>
-        <span style="color:var(--gold-light);font-size:1.05rem;">תתקבל אצלך בהודעת וואטסאפ</span>
+        <span data-he="📍 <strong>כתובת השליחה:</strong>" data-en="📍 <strong>Shipping Address:</strong>">📍 <strong>כתובת השליחה:</strong></span><br/>
+        <span style="color:var(--gold-light);font-size:1.05rem;" data-he="תתקבל אצלך בהודעת וואטסאפ" data-en="Will be sent to you via WhatsApp">תתקבל אצלך בהודעת וואטסאפ</span>
       </div>
       <div class="alert alert-warning" style="margin-bottom:1.5rem;">
-        ⚠️ שלח <strong>רק דואר מהיר בינלאומי</strong> (DHL / FedEx / UPS / EMS) עם מעקב
+        <span data-he="⚠️ שלח <strong>רק דואר מהיר בינלאומי</strong> (DHL / FedEx / UPS / EMS) עם מעקב" data-en="⚠️ Send only <strong>international express mail</strong> (DHL / FedEx / UPS / EMS) with tracking">⚠️ שלח <strong>רק דואר מהיר בינלאומי</strong> (DHL / FedEx / UPS / EMS) עם מעקב</span>
       </div>
       <hr class="divider" />
-      <h3 style="font-size:1rem;margin-bottom:1.25rem;">לאחר השליחה — הזן את מספר המשלוח:</h3>
+      <h3 style="font-size:1rem;margin-bottom:1.25rem;" data-he="לאחר השליחה — הזן את מספר המשלוח:" data-en="After shipping — enter the tracking number:">לאחר השליחה — הזן את מספר המשלוח:</h3>
       <div class="form-group">
-        <label class="form-label">מספר משלוח</label>
+        <label class="form-label" data-he="מספר משלוח" data-en="Tracking Number">מספר משלוח</label>
         <input type="text" id="tracking-number" class="form-control" placeholder="לדוגמה: 1234567890" dir="ltr" />
       </div>
       <div class="form-group">
-        <label class="form-label">חברת שילוח</label>
+        <label class="form-label" data-he="חברת שילוח" data-en="Shipping Company">חברת שילוח</label>
         <div class="radio-group" id="shipping-company-group">
           <label class="radio-option" onclick="selectShipping(this,'DHL')"><input type="radio" name="shipper" value="DHL">DHL</label>
           <label class="radio-option" onclick="selectShipping(this,'FedEx')"><input type="radio" name="shipper" value="FedEx">FedEx</label>
@@ -455,7 +455,7 @@
         </div>
       </div>
       <div id="shipping-error" class="alert alert-error" style="display:none;"></div>
-      <button class="btn btn-primary btn-full" onclick="submitTracking()">שלח מספר מעקב</button>
+      <button class="btn btn-primary btn-full" onclick="submitTracking()" data-he="שלח מספר מעקב" data-en="Submit Tracking Number">שלח מספר מעקב</button>
     </div>
   </div>
 
@@ -463,15 +463,15 @@
   <div class="panel-screen" id="screen-waiting-delivery">
     <div class="waiting-screen">
       <div class="waiting-pulse">📦</div>
-      <h2 class="section-title">ממתינים לקבלת המסמכים</h2>
+      <h2 class="section-title" data-he="ממתינים לקבלת המסמכים" data-en="Waiting for Documents to Arrive">ממתינים לקבלת המסמכים</h2>
       <div class="gold-line" style="margin:1rem auto;"></div>
-      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;">המסמכים בדרך לגאורגיה!<br/>כשיגיעו, עורך הדין שלנו יעדכן אותך בהודעת וואטסאפ.</p>
+      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;" data-he="המסמכים בדרך לגאורגיה!<br/>כשיגיעו, עורך הדין שלנו יעדכן אותך בהודעת וואטסאפ." data-en="Documents are on their way to Georgia!<br/>When they arrive, our attorney will notify you via WhatsApp.">המסמכים בדרך לגאורגיה!<br/>כשיגיעו, עורך הדין שלנו יעדכן אותך בהודעת וואטסאפ.</p>
       <div class="alert alert-info" style="text-align:right;">
-        📦 <strong>מעקב משלוח:</strong> <span id="tracking-display" style="color:var(--gold-light);"></span>
+        <span data-he="📦 <strong>מעקב משלוח:</strong>" data-en="📦 <strong>Tracking:</strong>">📦 <strong>מעקב משלוח:</strong></span> <span id="tracking-display" style="color:var(--gold-light);"></span>
       </div>
       <div style="margin-top:1.25rem;padding:1rem 1.25rem;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);font-size:0.88rem;line-height:1.7;color:var(--text-muted);">
-        <strong style="color:var(--gold-light);">💡 כיצד לחזור?</strong><br/>
-        כנס לאתר <span style="color:var(--gold-light);font-weight:600;">batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך.
+        <span data-he="<strong>💡 כיצד לחזור?</strong><br/>כנס לאתר <span style='color:var(--gold-light);font-weight:600;'>batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך." data-en="<strong>💡 How to return?</strong><br/>Visit <span style='color:var(--gold-light);font-weight:600;'>batumionline.biz</span> and enter your phone number — you'll go directly to your current step."><strong style="color:var(--gold-light);">💡 כיצד לחזור?</strong><br/>
+        כנס לאתר <span style="color:var(--gold-light);font-weight:600;">batumionline.biz</span> והכנס את מספר הטלפון שלך — תגיע ישירות לשלב שלך.</span>
       </div>
     </div>
   </div>
@@ -480,11 +480,11 @@
   <div class="panel-screen" id="screen-bank-process">
     <div class="waiting-screen">
       <div class="waiting-pulse">🏛️</div>
-      <h2 class="section-title">עורך הדין בתהליך</h2>
+      <h2 class="section-title" data-he="עורך הדין בתהליך" data-en="Attorney Processing">עורך הדין בתהליך</h2>
       <div class="gold-line" style="margin:1rem auto;"></div>
-      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;">המסמכים הגיעו לגאורגיה!<br/>עורך הדין שלנו מגיש את המסמכים לבנק ופותח את חשבונך.<br/>תקבל עדכון בוואטסאפ כשהחשבון ייפתח.</p>
+      <p style="color:var(--text-muted);line-height:1.8;margin-bottom:2rem;" data-he="המסמכים הגיעו לגאורגיה!<br/>עורך הדין שלנו מגיש את המסמכים לבנק ופותח את חשבונך.<br/>תקבל עדכון בוואטסאפ כשהחשבון ייפתח." data-en="Documents arrived in Georgia!<br/>Our attorney is submitting the documents to the bank and opening your account.<br/>You'll receive a WhatsApp update when the account is opened.">המסמכים הגיעו לגאורגיה!<br/>עורך הדין שלנו מגיש את המסמכים לבנק ופותח את חשבונך.<br/>תקבל עדכון בוואטסאפ כשהחשבון ייפתח.</p>
       <div class="alert alert-success" style="text-align:right;">
-        ✅ המסמכים התקבלו בהצלחה
+        <span data-he="✅ המסמכים התקבלו בהצלחה" data-en="✅ Documents Received Successfully">✅ המסמכים התקבלו בהצלחה</span>
       </div>
     </div>
   </div>
@@ -493,27 +493,27 @@
   <div class="panel-screen" id="screen-feedback">
     <div style="text-align:center;margin:2rem 0;">
       <div class="success-check">🎉</div>
-      <h2 class="section-title">מזל טוב!</h2>
-      <p style="color:var(--text-muted);margin-bottom:0.5rem;">חשבון הבנק שלך בגאורגיה נפתח בהצלחה!</p>
+      <h2 class="section-title" data-he="מזל טוב!" data-en="Congratulations!">מזל טוב!</h2>
+      <p style="color:var(--text-muted);margin-bottom:0.5rem;" data-he="חשבון הבנק שלך בגאורגיה נפתח בהצלחה!" data-en="Your bank account in Georgia has been opened successfully!">חשבון הבנק שלך בגאורגיה נפתח בהצלחה!</p>
       <div class="gold-line" style="margin:1rem auto;"></div>
     </div>
     <div class="alert alert-info" style="margin-bottom:1.5rem;flex-direction:column;gap:0.5rem;">
-      <div>📱 <strong>הבנק ישלח אליך SMS</strong> עם פרטי הכניסה לחשבון.</div>
-      <div>ניתן להוריד את אפליקציית הבנק ולהתחיל לנהל את חשבונך.</div>
-      <div style="margin-top:0.25rem;">⚠️ <strong>שים לב:</strong> הכרטיס האשראי שלך ממתין לך בסניף הבנק. לא ניתן לשלוח אותו.</div>
+      <div data-he="📱 <strong>הבנק ישלח אליך SMS</strong> עם פרטי הכניסה לחשבון." data-en="📱 <strong>The bank will send you an SMS</strong> with your account login details.">📱 <strong>הבנק ישלח אליך SMS</strong> עם פרטי הכניסה לחשבון.</div>
+      <div data-he="ניתן להוריד את אפליקציית הבנק ולהתחיל לנהל את חשבונך." data-en="You can download the bank app and start managing your account.">ניתן להוריד את אפליקציית הבנק ולהתחיל לנהל את חשבונך.</div>
+      <div style="margin-top:0.25rem;" data-he="⚠️ <strong>שים לב:</strong> הכרטיס האשראי שלך ממתין לך בסניף הבנק. לא ניתן לשלוח אותו." data-en="⚠️ <strong>Note:</strong> Your credit card is waiting for you at the bank branch. It cannot be shipped.">⚠️ <strong>שים לב:</strong> הכרטיס האשראי שלך ממתין לך בסניף הבנק. לא ניתן לשלוח אותו.</div>
     </div>
     <div class="card">
-      <h3 style="margin-bottom:1.5rem;color:var(--gold-light);">שאלון משוב קצר (5 שאלות)</h3>
+      <h3 style="margin-bottom:1.5rem;color:var(--gold-light);" data-he="שאלון משוב קצר (5 שאלות)" data-en="Short Feedback Survey (5 questions)">שאלון משוב קצר (5 שאלות)</h3>
       <div id="feedback-error" class="alert alert-error" style="display:none;"></div>
 
       <div class="form-group">
-        <label class="form-label">הצהרה</label>
+        <label class="form-label" data-he="הצהרה" data-en="Declaration">הצהרה</label>
         <div class="radio-group">
           <label class="radio-option" id="declare-yes" onclick="selectDeclaration('yes')">
-            <input type="radio" name="account_opened" value="1" />✅ חשבון הבנק שלי נפתח
+            <input type="radio" name="account_opened" value="1" /><span data-he="✅ חשבון הבנק שלי נפתח" data-en="✅ My bank account is open">✅ חשבון הבנק שלי נפתח</span>
           </label>
           <label class="radio-option" id="declare-no" onclick="selectDeclaration('no')">
-            <input type="radio" name="account_opened" value="0" />⏳ טרם נפתח
+            <input type="radio" name="account_opened" value="0" /><span data-he="⏳ טרם נפתח" data-en="⏳ Not yet opened">⏳ טרם נפתח</span>
           </label>
         </div>
       </div>
@@ -521,7 +521,7 @@
       <hr class="divider" />
 
       <div class="rating-group">
-        <label style="font-size:0.9rem;flex:1;">שביעות רצון מהשירות</label>
+        <label style="font-size:0.9rem;flex:1;" data-he="שביעות רצון מהשירות" data-en="Service Satisfaction">שביעות רצון מהשירות</label>
         <div class="rating-stars" id="stars-service">
           <input type="radio" name="service_rating" value="5" id="s5"><label for="s5">★</label>
           <input type="radio" name="service_rating" value="4" id="s4"><label for="s4">★</label>
@@ -532,7 +532,7 @@
       </div>
 
       <div class="rating-group">
-        <label style="font-size:0.9rem;flex:1;">מענה בכל שלב</label>
+        <label style="font-size:0.9rem;flex:1;" data-he="מענה בכל שלב" data-en="Response at Each Stage">מענה בכל שלב</label>
         <div class="rating-stars">
           <input type="radio" name="response_rating" value="5" id="r5"><label for="r5">★</label>
           <input type="radio" name="response_rating" value="4" id="r4"><label for="r4">★</label>
@@ -543,7 +543,7 @@
       </div>
 
       <div class="rating-group">
-        <label style="font-size:0.9rem;flex:1;">נגישות ונוחות התהליך</label>
+        <label style="font-size:0.9rem;flex:1;" data-he="נגישות ונוחות התהליך" data-en="Process Accessibility &amp; Ease">נגישות ונוחות התהליך</label>
         <div class="rating-stars">
           <input type="radio" name="accessibility_rating" value="5" id="a5"><label for="a5">★</label>
           <input type="radio" name="accessibility_rating" value="4" id="a4"><label for="a4">★</label>
@@ -554,7 +554,7 @@
       </div>
 
       <div class="rating-group">
-        <label style="font-size:0.9rem;flex:1;">המלצה לאחרים</label>
+        <label style="font-size:0.9rem;flex:1;" data-he="המלצה לאחרים" data-en="Recommendation to Others">המלצה לאחרים</label>
         <div class="rating-stars">
           <input type="radio" name="recommend_rating" value="5" id="rec5"><label for="rec5">★</label>
           <input type="radio" name="recommend_rating" value="4" id="rec4"><label for="rec4">★</label>
@@ -565,11 +565,11 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">התרשמות בכמה מילים</label>
-        <textarea id="feedback-comment" class="form-control" rows="3" placeholder="ספר לנו..."></textarea>
+        <label class="form-label" data-he="התרשמות בכמה מילים" data-en="Your Impressions in a Few Words">התרשמות בכמה מילים</label>
+        <textarea id="feedback-comment" class="form-control" rows="3" placeholder="ספר לנו..." data-he-placeholder="ספר לנו..." data-en-placeholder="Tell us..."></textarea>
       </div>
 
-      <button class="btn btn-primary btn-full" onclick="submitFeedback()">שלח משוב 🙏</button>
+      <button class="btn btn-primary btn-full" onclick="submitFeedback()" data-he="שלח משוב 🙏" data-en="Send Feedback 🙏">שלח משוב 🙏</button>
     </div>
   </div>
 
@@ -577,10 +577,10 @@
   <div class="panel-screen" id="screen-complete">
     <div style="text-align:center;padding:4rem 0;">
       <div class="success-check" style="font-size:3rem;">🏦</div>
-      <h2 class="display-title" style="font-size:2rem;margin-bottom:1rem;">תהליך הסתיים!</h2>
-      <p style="color:var(--text-muted);line-height:1.8;">תודה שבחרת ב-Batumionline.<br/>חשבון הבנק שלך בגאורגיה מוכן לשימוש.</p>
+      <h2 class="display-title" style="font-size:2rem;margin-bottom:1rem;" data-he="תהליך הסתיים!" data-en="Process Complete!">תהליך הסתיים!</h2>
+      <p style="color:var(--text-muted);line-height:1.8;" data-he="תודה שבחרת ב-Batumionline.<br/>חשבון הבנק שלך בגאורגיה מוכן לשימוש." data-en="Thank you for choosing Batumionline.<br/>Your bank account in Georgia is ready to use.">תודה שבחרת ב-Batumionline.<br/>חשבון הבנק שלך בגאורגיה מוכן לשימוש.</p>
       <div class="gold-line" style="margin:2rem auto;"></div>
-      <p style="color:var(--text-muted);font-size:0.9rem;">לשאלות ועזרה נוספת, צור איתנו קשר בוואטסאפ</p>
+      <p style="color:var(--text-muted);font-size:0.9rem;" data-he="לשאלות ועזרה נוספת, צור איתנו קשר בוואטסאפ" data-en="For questions and further assistance, contact us on WhatsApp">לשאלות ועזרה נוספת, צור איתנו קשר בוואטסאפ</p>
     </div>
   </div>
 
@@ -593,15 +593,18 @@
    target="_blank"
    style="position:fixed;bottom:2rem;left:2rem;z-index:9999;background:#25D366;color:white;height:52px;border-radius:50px;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0 1.4rem;font-family:'Assistant',sans-serif;font-size:1rem;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 4px 20px rgba(37,211,102,0.45);">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-  סיוע מנציג
+  <span data-he="סיוע מנציג" data-en="Support">סיוע מנציג</span>
 </a>
 
 <script>
 (function() {
   var lang = localStorage.getItem('lang');
   if (lang && lang !== 'he') {
-    document.querySelectorAll('[data-he]').forEach(function(el) {
+    document.querySelectorAll('[data-' + lang + ']').forEach(function(el) {
       el.innerHTML = el.getAttribute('data-' + lang);
+    });
+    document.querySelectorAll('[data-' + lang + '-placeholder]').forEach(function(el) {
+      el.placeholder = el.getAttribute('data-' + lang + '-placeholder');
     });
   }
 })();

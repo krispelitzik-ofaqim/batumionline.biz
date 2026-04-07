@@ -242,7 +242,6 @@ async function notaryDone() {
     showLoading(false);
     if (data.success) {
       clientStep = data.current_step;
-      if (clientData) clientData.current_step = data.current_step;
       showProgress(5);
       showScreen('screen-checklist');
     } else {
@@ -316,6 +315,7 @@ async function submitChecklist() {
     }
   } catch (e) {
     showLoading(false);
+    alert('שגיאת תקשורת');
   }
 }
 
@@ -454,6 +454,7 @@ async function submitFeedback() {
     }
   } catch (e) {
     showLoading(false);
+    alert('שגיאת תקשורת');
   }
 }
 
