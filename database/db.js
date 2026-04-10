@@ -1,13 +1,16 @@
 const fs = require('fs');
 const path = require('path');
+const { DATA_DIR, UPLOADS_DIR } = require('../helpers/storage');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
 const DB_PATH = path.join(DATA_DIR, 'batumionline.json');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 const BACKUP_DIR = path.join(DATA_DIR, 'backups');
 if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
+
+const uploadsDir = path.join(UPLOADS_DIR, 'passports');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 function backupClient(client) {
   if (!client) return;
@@ -27,10 +30,6 @@ function backupClient(client) {
     }
   } catch (e) { console.warn('Backup error:', e.message); }
 }
-
-// Create uploads directories
-const uploadsDir = path.join(__dirname, '..', 'uploads', 'passports');
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 function load() {
   if (!fs.existsSync(DB_PATH)) return initEmpty();

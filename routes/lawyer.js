@@ -7,12 +7,13 @@ const { lawyerAuth } = require('../middleware/auth');
 const { clientsDB, docsDB } = require('../database/db');
 const { sendMessage, MESSAGES } = require('../services/whatsapp');
 const { uploadFile, createClientFolder } = require('../services/drive');
+const { UPLOADS_DIR } = require('../helpers/storage');
 
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
 const poaStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '..', 'uploads', 'temp');
+    const dir = path.join(UPLOADS_DIR, 'temp');
     fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
@@ -55,7 +56,7 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
     if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
     if (!req.file) return res.status(400).json({ error: 'לא נבחר קובץ' });
 
-    const localDir = path.join(__dirname, '..', 'uploads', 'poa');
+    const localDir = path.join(UPLOADS_DIR, 'poa');
     fs.mkdirSync(localDir, { recursive: true });
     const savedName = `poa_${client.id}_${Date.now()}.pdf`;
     const savedPath = path.join(localDir, savedName);

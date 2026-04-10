@@ -4,14 +4,36 @@ const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const { DATA_DIR, UPLOADS_DIR } = require('./helpers/storage');
 
-// Ensure required directories exist before anything else
+// Ensure required directories exist before anything else (on persistent disk when PERSIST_DIR set)
 const requiredDirs = [
-  path.join(__dirname, 'data'),
-  path.join(__dirname, 'uploads', 'passports'),
-  path.join(__dirname, 'uploads', 'temp')
+  DATA_DIR,
+  path.join(UPLOADS_DIR, 'passports'),
+  path.join(UPLOADS_DIR, 'temp'),
+  path.join(UPLOADS_DIR, 'poa')
 ];
 requiredDirs.forEach(dir => fs.mkdirSync(dir, { recursive: true }));
+
+// First-run seed: copy bundled data/uploads into persistent disk if empty
+(function seed() {
+  if (!process.env.PERSIST_DIR) return;
+  function copyIfMissing(srcDir, dstDir) {
+    if (!fs.existsSync(srcDir)) return;
+    for (const f of fs.readdirSync(srcDir)) {
+      const src = path.join(srcDir, f);
+      const dst = path.join(dstDir, f);
+      try {
+        const st = fs.statSync(src);
+        if (st.isFile() && !fs.existsSync(dst)) {
+          fs.copyFileSync(src, dst);
+          console.log('[seed]', f, '->', dstDir);
+        }
+      } catch (e) { console.warn('[seed skip]', f, e.message); }
+    }
+  }
+  copyIfMissing(path.join(__dirname, 'data'), DATA_DIR);
+})();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +54,7 @@ app.use('/api/', limiter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve uploaded files (passports etc) - admin only by URL
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(UPLOADS_DIR));
 
 // API Routes
 app.use('/api/client', require('./routes/client'));

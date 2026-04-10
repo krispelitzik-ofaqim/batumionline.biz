@@ -6,12 +6,13 @@ const fs = require('fs');
 const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB, backupClient } = require('../database/db');
 const { sendMessage, sendAdminNotification, MESSAGES } = require('../services/whatsapp');
 const { uploadFile, createClientFolder } = require('../services/drive');
+const { UPLOADS_DIR } = require('../helpers/storage');
 
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '..', 'uploads', 'temp');
+    const dir = path.join(UPLOADS_DIR, 'temp');
     fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
@@ -93,7 +94,7 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
 
     if (req.file) {
       // שמור קובץ דרכון מקומית
-      const localDir = path.join(__dirname, '..', 'uploads', 'passports');
+      const localDir = path.join(UPLOADS_DIR, 'passports');
       fs.mkdirSync(localDir, { recursive: true });
       const savedName = `passport_${newClient.id}_${Date.now()}.pdf`;
       const savedPath = path.join(localDir, savedName);
