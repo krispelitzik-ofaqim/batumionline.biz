@@ -249,12 +249,6 @@
 
 
 
-<!-- View Mode (admin only) -->
-<div style="display:flex;justify-content:center;gap:0.3rem;padding:0.5rem;opacity:0.35;">
-  <button onclick="setViewMode('desktop')" id="vm-desktop" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border:none;border-radius:20px;padding:0.2rem 0.6rem;font-family:'Assistant',sans-serif;font-size:0.65rem;cursor:pointer;">🖥️ מחשב</button>
-  <button onclick="setViewMode('tablet')" id="vm-tablet" style="background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:20px;padding:0.2rem 0.6rem;font-family:'Assistant',sans-serif;font-size:0.65rem;cursor:pointer;">📱 אייפד</button>
-  <button onclick="setViewMode('mobile')" id="vm-mobile" style="background:transparent;color:rgba(255,255,255,0.4);border:none;border-radius:20px;padding:0.2rem 0.6rem;font-family:'Assistant',sans-serif;font-size:0.65rem;cursor:pointer;">📲 נייד</button>
-</div>
 
 <!-- FOOTER -->
 <footer class="landing-footer">
@@ -273,8 +267,6 @@
       <div style="display:flex;gap:1rem;align-items:center;">
         <div style="display:flex;gap:0.75rem;align-items:center;">
           <a href="/client" class="btn btn-primary" style="padding:0.5rem 1.25rem;font-size:0.85rem;" data-he="🚀 כניסה ללקוחות" data-en="🚀 Client Portal">🚀 כניסה ללקוחות</a>
-          <span style="color:var(--border);font-size:1.2rem;">|</span>
-          <a href="/admin" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none;opacity:0.6;" title="פאנל ניהול">⚙️ ניהול</a>
         </div>
       </div>
     </div>
@@ -346,7 +338,7 @@ document.querySelectorAll('.benefit-card, .step-item, .prepare-item, .pricing-ca
 <!-- WhatsApp Floating Button -->
 <a href="#" onclick="openChatBot();return false;" id="wa-float"
    style="
-     position:fixed; bottom:2rem; left:2rem; z-index:9999;
+     position:fixed; bottom:0.75rem; left:1rem; z-index:9999;
      background:#25D366; color:white;
      height:52px; border-radius:50px;
      display:flex; align-items:center; justify-content:center;
