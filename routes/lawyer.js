@@ -32,10 +32,10 @@ const poaUpload = multer({
 
 router.use(lawyerAuth);
 
-// GET /api/lawyer/clients - get clients in relevant stages (step 9+)
+// GET /api/lawyer/clients - clients from passport-review stage onward (so the lawyer can review/approve passports too)
 router.get('/clients', (req, res) => {
   const allClients = clientsDB.getAll();
-  const relevantClients = allClients.filter(c => c.current_step >= 4 && !c.trashed && !c.archived);
+  const relevantClients = allClients.filter(c => c.current_step >= 2 && !c.trashed && !c.archived);
   // Enrich with docs info
   const enriched = relevantClients.map(c => {
     const docs = docsDB.getByClient(c.id);
@@ -47,6 +47,22 @@ router.get('/clients', (req, res) => {
     };
   });
   res.json({ success: true, clients: enriched });
+});
+
+// POST /api/lawyer/passport/approve - lawyer approves the passport (moves client to payment)
+router.post('/passport/approve', async (req, res) => {
+  const { client_id } = req.body;
+  const client = clientsDB.findById(client_id);
+  if (!client) return res.status(404).json({ error: 'Client not found' });
+
+  const token = req.headers['x-lawyer-token'];
+  const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
+  const paymentUrl = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
+
+  clientsDB.update(client.id, { passport_status: 'approved', current_step: 4, passport_approved_by: actor });
+  await sendMessage(client.phone, MESSAGES.PASSPORT_APPROVED(client.first_name, paymentUrl), client.id);
+
+  res.json({ success: true, message: 'Passport approved' });
 });
 
 // POST /api/lawyer/upload-poa/:clientId - upload POA document
