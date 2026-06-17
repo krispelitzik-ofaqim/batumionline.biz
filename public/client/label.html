@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>מדבקת כתובת — שליחת מסמכים</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: Arial, 'Assistant', sans-serif;
+    background:#525659; color:#111;
+    display:flex; flex-direction:column; align-items:center;
+    padding:24px 16px; min-height:100vh;
+  }
+  .toolbar { margin-bottom:18px; display:flex; gap:10px; }
+  .toolbar button {
+    font-family:inherit; font-size:16px; font-weight:700; cursor:pointer;
+    border:none; border-radius:10px; padding:12px 22px;
+  }
+  .print-btn { background:#1d4ed8; color:#fff; }
+  .close-btn { background:#e5e7eb; color:#222; }
+
+  /* The label itself — sized ~ 10x7cm shipping sticker */
+  .label {
+    width:100mm; max-width:100%;
+    background:#fff; color:#000;
+    border:2px solid #000; border-radius:6px;
+    padding:10mm 9mm;
+  }
+  .label .to {
+    font-size:13px; letter-spacing:.15em; text-transform:uppercase;
+    color:#444; margin-bottom:6px; font-weight:700;
+  }
+  .label .role { font-size:15px; font-weight:700; color:#000; margin-bottom:2px; }
+  .addr {
+    direction:ltr; text-align:left;
+    font-size:20px; line-height:1.5; font-weight:700; color:#000;
+  }
+  .addr .name { font-size:23px; }
+  .addr .lic { font-size:15px; font-weight:600; color:#333; }
+  .addr .line { margin-top:2px; }
+  .addr .contact { font-size:16px; font-weight:600; margin-top:8px; color:#222; }
+  hr { border:none; border-top:1px dashed #999; margin:10px 0; }
+
+  @media print {
+    body { background:#fff; padding:0; }
+    .toolbar { display:none; }
+    .label { border:1.5px solid #000; border-radius:0; }
+    @page { margin:12mm; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button class="print-btn" onclick="window.print()">🖨️ הדפס מדבקה</button>
+    <button class="close-btn" onclick="window.close()">סגור</button>
+  </div>
+
+  <div class="label">
+    <div class="to">📍 לכבוד / TO</div>
+    <div class="role">עורך דין · Attorney</div>
+    <div class="addr">
+      <div class="name">Qetevan Beridze</div>
+      <div class="lic">Lawyer License No. 8238</div>
+      <div class="line">Haidar Abashidze street, #60</div>
+      <div class="line">Batumi, Georgia 6010</div>
+      <hr/>
+      <div class="contact">📱 +995 592 130 450</div>
+      <div class="contact">✉️ Ms.ketiberidze@gmail.com</div>
+    </div>
+  </div>
+</body>
+</html>
