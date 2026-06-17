@@ -52,7 +52,7 @@
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
-          <span class="stat-num" data-he="₪1,900" data-en="$599">₪1,900</span>
+          <span class="stat-num" data-he="₪1,900" data-en="₪1,900">₪1,900</span>
           <span class="stat-label" data-he="עלות כוללת" data-en="Total Cost">עלות כוללת</span>
         </div>
       </div>
@@ -214,7 +214,8 @@
     <div class="pricing-compact">
       <div class="pricing-main-row">
         <div class="pricing-main-label" style="color:#ffffff !important;" data-he="שירות Batumionline" data-en="Batumionline Service">שירות Batumionline</div>
-        <div class="pricing-main-price" style="color:#ffffff !important;" data-he="₪1,900" data-en="$599">₪1,900</div>
+        <div class="pricing-main-price" style="color:#ffffff !important;" data-he="₪1,900" data-en="₪1,900">₪1,900</div>
+        <div id="usd-landing" dir="ltr" style="color:rgba(255,255,255,0.78);font-size:0.95rem;font-weight:700;margin-top:2px;">≈ $— USD</div>
         <div class="pricing-main-desc" style="color:#ffffff !important;" data-he="ליווי מלא · ייפוי כח · עו״ד בגאורגיה" data-en="Full support · Power of attorney · Attorney in Georgia">ליווי מלא · ייפוי כח · עו״ד בגאורגיה</div>
       </div>
       <div class="pricing-extras-row">
@@ -582,6 +583,18 @@ function handleQuick(label, action) {
     window.location.href = '/client';
   }
 }
+</script>
+
+<script>
+// Live ILS->USD on landing: USD equivalent of ₪1,900
+(function() {
+  var el = document.getElementById('usd-landing');
+  if (!el) return;
+  fetch('https://open.er-api.com/v6/latest/ILS')
+    .then(function(r){ return r.json(); })
+    .then(function(d){ var rate = d && d.rates && d.rates.USD; if (rate) el.textContent = '≈ $' + Math.round(1900 * rate) + ' USD'; })
+    .catch(function(){});
+})();
 </script>
 
 </body>
