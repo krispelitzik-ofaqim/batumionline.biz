@@ -171,11 +171,11 @@ function renderClients(clients) {
       +   '<label class="step-btn' + (s2 ? ' done' : '') + '">'
       +     '<span class="ico">' + (s2 ? '✓' : '📄') + '</span><span>' + (s2 ? 'POA Uploaded' : 'Upload POA') + ' ' + byLabel(s2 ? c.poa_uploaded_by : '') + '</span>'
       +     (s2 ? '' : '<input type="file" accept=".pdf" onchange="doUploadPOA(' + c.id + ', this)" />') + '</label>'
-      // Download Docs
-      +   '<button class="step-btn' + (sDl ? ' done' : '') + '" onclick="downloadDocs(' + c.id + ')">'
+      // Download Docs (enabled once the client uploaded documents)
+      +   '<button class="step-btn' + (sDl ? ' done' : '') + '"' + (c.current_step >= 9 ? '' : ' disabled') + ' onclick="downloadDocs(' + c.id + ')">'
       +     '<span class="ico">📥</span><span>Download Docs</span></button>'
-      // Docs Received
-      +   '<button class="step-btn' + (s3 ? ' done' : '') + '"' + (s3 ? ' disabled' : '') + ' onclick="doDocsReceived(' + c.id + ')">'
+      // Docs Received (enabled once documents are in transit)
+      +   '<button class="step-btn' + (s3 ? ' done' : '') + '"' + ((s3 || c.current_step < 10) ? ' disabled' : '') + ' onclick="doDocsReceived(' + c.id + ')">'
       +     '<span class="ico">' + (s3 ? '✓' : '📬') + '</span><span>' + (s3 ? 'Docs Received' : 'Docs Received') + ' ' + byLabel(s3 ? c.docs_received_by : '') + '</span></button>'
       // Account Opened
       +   '<button class="step-btn' + (s4 ? ' done' : '') + '"' + (!s3 || s4 ? ' disabled' : '') + ' onclick="doAccountOpened(' + c.id + ')">'
