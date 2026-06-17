@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@700;800;900&family=Assistant:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:512px;height:512px;overflow:hidden}
+  .card{width:512px;height:512px;position:relative;
+    background:radial-gradient(125% 110% at 32% 18%, #18356f 0%, #0f2044 48%, #0a1628 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  }
+  .card::after{content:"";position:absolute;inset:26px;border:2px solid rgba(232,188,58,.35);border-radius:36px;pointer-events:none}
+  .coin{width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:22px;
+    background:radial-gradient(120% 120% at 35% 25%, #f7dc84 0%, #e8bc3a 55%, #b8860b 100%);
+    box-shadow:0 14px 40px -8px rgba(0,0,0,.5), inset 0 -8px 20px rgba(120,80,0,.4), inset 0 6px 16px rgba(255,245,200,.6);}
+  .coin b{font-family:'Rubik',sans-serif;font-weight:900;font-size:104px;color:#5c3d05;line-height:1}
+  .brand{font-family:'Rubik',sans-serif;font-weight:900;font-size:52px;color:#f7dc84;letter-spacing:-.01em;margin-bottom:8px}
+  .tag{font-family:'Assistant',sans-serif;font-weight:700;font-size:25px;color:#dfe6ef;margin-bottom:20px}
+  .secure{font-family:'Assistant',sans-serif;font-weight:700;font-size:22px;color:#0a1628;
+    background:linear-gradient(135deg,#f7dc84,#e8bc3a);padding:9px 24px;border-radius:999px;display:inline-flex;gap:8px;align-items:center}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="coin"><b>B</b></div>
+    <div class="brand">Batumionline</div>
+    <div class="tag">פתיחת חשבון בנק בגאורגיה</div>
+    <div class="secure">🔒 תשלום מאובטח</div>
+  </div>
+</body>
+</html>
