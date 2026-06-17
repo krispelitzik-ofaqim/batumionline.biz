@@ -281,25 +281,36 @@
         <span data-he="✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה" data-en="✅ <strong>Includes:</strong> Full support, power of attorney, attorney in Georgia">✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה</span>
       </div>
       <div id="payment-link-area">
-        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;text-align:right;" data-he="בחר אחת מ-3 דרכי התשלום:" data-en="Choose one of 3 payment methods:">בחר אחת מ-3 דרכי התשלום:</p>
-        <div class="alert alert-info" style="margin-bottom:1rem;text-align:right;">
-          <div style="color:var(--gold-light);font-weight:700;font-size:1.05rem;margin-bottom:.25rem;">💜 ביט / Bit</div>
-          <div dir="ltr" style="text-align:right;font-size:1.15rem;font-weight:700;">054-537-0088</div>
+        <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:1rem;text-align:center;" data-he="בחר דרך תשלום:" data-en="Choose a payment method:">בחר דרך תשלום:</p>
+        <div style="display:flex;gap:0.6rem;margin-bottom:1.25rem;">
+          <button type="button" id="pm-bit" onclick="selectPay('bit')" style="flex:1;padding:0.9rem 0.3rem;border:1.5px solid var(--border);border-radius:14px;background:transparent;color:var(--text-main);font-family:'Assistant',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;line-height:1.5;" data-he="💜<br/>ביט" data-en="💜<br/>Bit">💜<br/>ביט</button>
+          <button type="button" id="pm-paypal" onclick="selectPay('paypal')" style="flex:1;padding:0.9rem 0.3rem;border:1.5px solid var(--border);border-radius:14px;background:transparent;color:var(--text-main);font-family:'Assistant',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;line-height:1.5;">🅿️<br/>PayPal</button>
+          <button type="button" id="pm-bank" onclick="selectPay('bank')" style="flex:1;padding:0.9rem 0.3rem;border:1.5px solid var(--border);border-radius:14px;background:transparent;color:var(--text-main);font-family:'Assistant',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;line-height:1.5;" data-he="🏦<br/>העברה" data-en="🏦<br/>Transfer">🏦<br/>העברה</button>
         </div>
-        <div class="alert alert-info" style="margin-bottom:1rem;text-align:right;">
-          <div style="color:var(--gold-light);font-weight:700;font-size:1.05rem;margin-bottom:.5rem;">🅿️ PayPal</div>
-          <a href="https://www.paypal.com/ncp/payment/LFW6T73DGSQN4" target="_blank" rel="noopener" class="btn btn-primary btn-full" style="text-decoration:none;display:block;text-align:center;padding:0.8rem;font-weight:800;" data-he="שלם ב-PayPal ←" data-en="Pay with PayPal ←">שלם ב-PayPal ←</a>
-          <div dir="ltr" style="text-align:right;font-size:0.82rem;margin-top:.4rem;color:var(--text-muted);">krispelitzik@gmail.com</div>
+
+        <div id="pd-bit" class="alert alert-info" style="display:none;text-align:center;">
+          <div style="color:var(--gold-light);font-weight:700;margin-bottom:.5rem;">💜 ביט / Bit</div>
+          <div dir="ltr" style="font-size:1.5rem;font-weight:800;margin-bottom:.7rem;">054-537-0088</div>
+          <button type="button" onclick="copyPay(this,'0545370088')" class="btn btn-primary btn-full" style="padding:0.75rem;font-weight:800;" data-he="📋 העתק מספר" data-en="📋 Copy number">📋 העתק מספר</button>
+          <div style="font-size:0.82rem;margin-top:.5rem;color:var(--text-muted);" data-he="פתח את אפליקציית ביט ושלח למספר זה" data-en="Open the Bit app and send to this number">פתח את אפליקציית ביט ושלח למספר זה</div>
         </div>
-        <div class="alert alert-info" style="margin-bottom:1rem;text-align:right;">
-          <div style="color:var(--gold-light);font-weight:700;font-size:1.05rem;margin-bottom:.4rem;" data-he="🏦 העברה בנקאית בינלאומית (דולר USD)" data-en="🏦 International Bank Transfer (USD)">🏦 העברה בנקאית בינלאומית (דולר USD)</div>
-          <div dir="ltr" style="text-align:right;font-size:0.98rem;line-height:1.75;">
-            Beneficiary: YIZHAK KRISPEL<br/>
-            IBAN: GE14TB7436145064400009<br/>
-            SWIFT: TBCBGE22<br/>
-            Bank: TBC Bank, Tbilisi
+
+        <div id="pd-paypal" class="alert alert-info" style="display:none;text-align:right;">
+          <div style="color:var(--gold-light);font-weight:700;margin-bottom:.6rem;">🅿️ PayPal</div>
+          <a href="https://www.paypal.com/ncp/payment/LFW6T73DGSQN4" target="_blank" rel="noopener" class="btn btn-primary btn-full" style="text-decoration:none;display:block;text-align:center;padding:0.85rem;font-weight:800;" data-he="שלם ב-PayPal ←" data-en="Pay with PayPal ←">שלם ב-PayPal ←</a>
+        </div>
+
+        <div id="pd-bank" class="alert alert-info" style="display:none;text-align:right;">
+          <div style="color:var(--gold-light);font-weight:700;margin-bottom:.6rem;" data-he="🏦 העברה בנקאית בינלאומית (USD)" data-en="🏦 International Bank Transfer (USD)">🏦 העברה בנקאית בינלאומית (USD)</div>
+          <div dir="ltr" style="text-align:left;font-size:1rem;line-height:2.1;">
+            <span style="display:inline-flex;align-items:center;gap:.5rem;flex-wrap:wrap;"><b>IBAN:</b> GE14TB7436145064400009 <button type="button" onclick="copyPay(this,'GE14TB7436145064400009')" style="background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#2a1f05;border:none;border-radius:8px;padding:.25rem .7rem;font-weight:700;font-size:.78rem;cursor:pointer;" data-he="העתק" data-en="Copy">העתק</button></span><br/>
+            <b>SWIFT:</b> TBCBGE22<br/>
+            <b>Beneficiary:</b> YIZHAK KRISPEL
           </div>
         </div>
+      </div>
+      <div id="i-paid-wrap" style="display:none;margin:0.5rem 0;">
+        <button type="button" id="i-paid-btn" onclick="paymentDone(this)" class="btn btn-success btn-full" style="padding:0.9rem;font-weight:800;font-size:1.05rem;" data-he="✅ ביצעתי את התשלום" data-en="✅ I have paid">✅ ביצעתי את התשלום</button>
       </div>
       <div class="alert alert-warning" style="text-align:right;margin-top:0.5rem;">
         <span data-he="📌 <strong>לאחר התשלום</strong> — נאמת ונאשר ידנית, ותקבל הודעת וואטסאפ עם המשך התהליך." data-en="📌 <strong>After payment</strong> — we verify and confirm manually, and you'll receive a WhatsApp with the next steps.">📌 <strong>לאחר התשלום</strong> — נאמת ונאשר ידנית, ותקבל הודעת וואטסאפ עם המשך התהליך.</span>
@@ -646,6 +657,49 @@
     .then(function(d){ var rate = d && d.rates && d.rates.USD; if (rate) el.textContent = '≈ $' + Math.round(1900 * rate) + ' USD'; })
     .catch(function(){});
 })();
+</script>
+<script>
+// Payment method selector + copy + "I paid" notification
+function selectPay(m) {
+  ['bit','paypal','bank'].forEach(function(x) {
+    var d = document.getElementById('pd-' + x);
+    if (d) d.style.display = (x === m) ? 'block' : 'none';
+    var b = document.getElementById('pm-' + x);
+    if (b) {
+      if (x === m) { b.style.borderColor = 'var(--gold)'; b.style.background = 'rgba(232,188,58,0.12)'; b.style.color = 'var(--gold-light)'; }
+      else { b.style.borderColor = 'var(--border)'; b.style.background = 'transparent'; b.style.color = 'var(--text-main)'; }
+    }
+  });
+  var ip = document.getElementById('i-paid-wrap');
+  if (ip) ip.style.display = 'block';
+}
+function copyPay(btn, txt) {
+  var done = function() {
+    var lang = localStorage.getItem('lang');
+    var o = btn.innerHTML;
+    btn.innerHTML = (lang && lang !== 'he') ? '✓ Copied' : '✓ הועתק';
+    setTimeout(function() { btn.innerHTML = o; }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(done).catch(function(){});
+  }
+}
+function paymentDone(btn) {
+  var lang = localStorage.getItem('lang');
+  btn.disabled = true;
+  btn.innerHTML = (lang && lang !== 'he') ? 'Sending…' : 'שולח…';
+  fetch('/api/client/payment-reported', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone: (typeof clientPhone !== 'undefined' ? clientPhone : '') })
+  }).then(function(r){ return r.json(); }).then(function() {
+    btn.innerHTML = (lang && lang !== 'he') ? '✅ Recorded — awaiting confirmation' : '✅ נקלט — ממתין לאישור';
+    btn.style.opacity = '0.85';
+  }).catch(function() {
+    btn.disabled = false;
+    btn.innerHTML = (lang && lang !== 'he') ? '✅ I have paid' : '✅ ביצעתי את התשלום';
+  });
+}
 </script>
 </body>
 </html>

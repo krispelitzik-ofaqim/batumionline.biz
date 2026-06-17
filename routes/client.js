@@ -117,12 +117,17 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
     clientsDB.update(newClient.id, { current_step: 2, passport_status: 'reviewing' });
     sendMessage(phone, MESSAGES.STEP1_RECEIVED(first_name), newClient.id).catch(e => console.warn('WA:', e.message));
 
+    // Client name in English (from passport) — used in both notifications so the lawyer never sees Hebrew
+    const enFirst = (passport_name_en || '').trim();
+    const enLast = (passport_surname_en || '').trim();
+    const enName = (enFirst + ' ' + enLast).trim() || `${first_name} ${last_name}`;
+
     // Notify admin about new lead
     const now = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
-    sendAdminNotification(`🔔 ליד חדש!\nשם: ${first_name} ${last_name}\nטלפון: ${phone}\nבנק מועדף: ${preferred_bank || '-'}\nנרשם: ${now}\n\nיש לאשר את הדרכון בפאנל הניהול.`).catch(e => console.warn('Admin WA:', e.message));
+    sendAdminNotification(`🔔 ליד חדש!\nשם: ${enName}\nטלפון: ${phone}\nבנק מועדף: ${preferred_bank || '-'}\nנרשם: ${now}\n\nיש לאשר את הדרכון בפאנל הניהול.`).catch(e => console.warn('Admin WA:', e.message));
 
     // Notify the Georgia attorney (English) to review the passport validity
-    sendLawyerNotification(MESSAGES.NEW_LEAD_LAWYER(first_name, last_name, phone, preferred_bank, passportLink, now)).catch(e => console.warn('Lawyer WA:', e.message));
+    sendLawyerNotification(MESSAGES.NEW_LEAD_LAWYER(enFirst || first_name, enLast || last_name, phone, preferred_bank, passportLink, now)).catch(e => console.warn('Lawyer WA:', e.message));
 
     return res.json({ success: true, message: 'הפרטים התקבלו', client_id: newClient.id, current_step: 2 });
   } catch (err) {
@@ -150,6 +155,22 @@ router.post('/temp-pay', async (req, res) => {
     res.json({ success: true, message: 'תשלום אושר (זמני)', current_step: 5 });
   } catch (err) {
     console.error('Temp-pay error:', err);
+    res.status(500).json({ error: 'שגיאת שרת' });
+  }
+});
+
+// POST /api/client/payment-reported — client reports they paid; notify admin to verify (does NOT mark paid)
+router.post('/payment-reported', async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const client = phone ? clientsDB.findByPhone(phone) : null;
+    const name = client ? `${client.first_name} ${client.last_name}` : 'לקוח';
+    const ph = client ? client.phone : (phone || '-');
+    const now = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
+    sendAdminNotification(`💰 הלקוח דיווח על תשלום!\nשם: ${name}\nטלפון: ${ph}\nזמן: ${now}\n\nבדוק שהכסף התקבל ולחץ "אשר תשלום ידנית" בפאנל הניהול.`).catch(e => console.warn('Admin WA:', e.message));
+    res.json({ success: true });
+  } catch (err) {
+    console.error('payment-reported error:', err);
     res.status(500).json({ error: 'שגיאת שרת' });
   }
 });
