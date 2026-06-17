@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { clientsDB, docsDB, checklistDB, feedbackDB, settingsDB, backupClient } = require('../database/db');
-const { sendMessage, sendAdminNotification, MESSAGES } = require('../services/whatsapp');
+const { sendMessage, sendAdminNotification, sendLawyerNotification, MESSAGES } = require('../services/whatsapp');
 const { uploadFile, createClientFolder } = require('../services/drive');
 const { UPLOADS_DIR } = require('../helpers/storage');
 
@@ -92,6 +92,7 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
 
     const newClient = clientsDB.findById(result.lastInsertRowid);
 
+    let passportLink = '';
     if (req.file) {
       // שמור קובץ דרכון מקומית
       const localDir = path.join(UPLOADS_DIR, 'passports');
@@ -100,6 +101,7 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
       const savedPath = path.join(localDir, savedName);
       fs.renameSync(req.file.path, savedPath);
       const localUrl = `/uploads/passports/${savedName}`;
+      passportLink = `${APP_URL}${localUrl}`;
       docsDB.add({ client_id: newClient.id, doc_type: 'passport', original_name: req.file.originalname, drive_file_id: null, drive_url: localUrl });
 
       // נסה גם Google Drive (אופציונלי)
@@ -118,6 +120,9 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
     // Notify admin about new lead
     const now = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
     sendAdminNotification(`🔔 ליד חדש!\nשם: ${first_name} ${last_name}\nטלפון: ${phone}\nבנק מועדף: ${preferred_bank || '-'}\nנרשם: ${now}\n\nיש לאשר את הדרכון בפאנל הניהול.`).catch(e => console.warn('Admin WA:', e.message));
+
+    // Notify the Georgia attorney (English) to review the passport validity
+    sendLawyerNotification(MESSAGES.NEW_LEAD_LAWYER(first_name, last_name, phone, preferred_bank, passportLink, now)).catch(e => console.warn('Lawyer WA:', e.message));
 
     return res.json({ success: true, message: 'הפרטים התקבלו', client_id: newClient.id, current_step: 2 });
   } catch (err) {

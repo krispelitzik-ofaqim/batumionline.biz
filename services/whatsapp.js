@@ -24,7 +24,9 @@ const MESSAGES = {
   
   ACCOUNT_OPENED: (name, link) => `שלום ${name} 🎉\n\nמזל טוב! חשבון הבנק שלך בגאורגיה נפתח בהצלחה!\n\nהבנק ישלח אליך הודעת SMS עם פרטי הכניסה.\nניתן להוריד את אפליקציית הבנק ולנהל את חשבונך.\n\n👉 לחץ להמשך:\n${link}\n\n*Batumionline* 🏦`,
 
-  CONGRATULATIONS: (name) => `🎉 מזל טוב ${name}! תהליך פתיחת חשבון הבנק שלך בגאורגיה הושלם בהצלחה! 🏦\n\nחשבון הבנק שלך פעיל ומוכן לשימוש.\nאנחנו שמחים שבחרת ב-Batumionline ומאחלים לך הצלחה רבה!\n\nלשאלות נוספות — תמיד כאן בשבילך 💛\nצוות Batumionline`
+  CONGRATULATIONS: (name) => `🎉 מזל טוב ${name}! תהליך פתיחת חשבון הבנק שלך בגאורגיה הושלם בהצלחה! 🏦\n\nחשבון הבנק שלך פעיל ומוכן לשימוש.\nאנחנו שמחים שבחרת ב-Batumionline ומאחלים לך הצלחה רבה!\n\nלשאלות נוספות — תמיד כאן בשבילך 💛\nצוות Batumionline`,
+
+  NEW_LEAD_LAWYER: (first, last, phone, bank, link, when) => `🔔 New Lead — Passport Review Needed\n\n👤 Name: ${first} ${last}\n📱 Phone: ${phone}\n🏦 Preferred bank: ${bank || '-'}\n🕒 Registered: ${when}\n\n📄 View passport:\n${link || '(uploaded to the system)'}\n\nPlease verify the passport validity.\n\n— Batumionline`
 };
 
 async function sendMessage(phone, message, clientId = null) {
@@ -70,4 +72,11 @@ async function sendAdminNotification(message) {
   return sendMessage(adminPhone, message);
 }
 
-module.exports = { sendMessage, sendAdminNotification, MESSAGES };
+// Notify the Georgia attorney (Qetevan Beridze). Number can be overridden via LAWYER_PHONE env.
+async function sendLawyerNotification(message) {
+  const lawyerPhone = process.env.LAWYER_PHONE || '995592130450';
+  if (!lawyerPhone) return;
+  return sendMessage(lawyerPhone, message);
+}
+
+module.exports = { sendMessage, sendAdminNotification, sendLawyerNotification, MESSAGES };
