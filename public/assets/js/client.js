@@ -39,7 +39,7 @@ function showScreen(id) {
 
 function showProgress(visualStep) {
   document.getElementById('progress-bar').style.display = 'block';
-  const allDone = visualStep >= 7;
+  const allDone = visualStep > 7;
   for (let i = 1; i <= 7; i++) {
     const el = document.getElementById(`ps-${i}`);
     el.classList.remove('active', 'completed');
@@ -127,13 +127,13 @@ function routeToStep(step, data = {}) {
     document.getElementById('tracking-display').textContent = data.tracking_number || '';
     showScreen('screen-waiting-delivery');
   } else if (step === 11) {
-    showProgress(7);
+    showProgress(7); // dot 7 "Complete" shows active (ring) — not lit until account opened
     showScreen('screen-bank-process');
   } else if (step === 12) {
-    showProgress(7);
+    showProgress(8); // account opened → dot 7 fully lit
     showScreen('screen-feedback');
   } else if (step >= 13) {
-    showProgress(7);
+    showProgress(8);
     showScreen('screen-complete');
   }
 }
