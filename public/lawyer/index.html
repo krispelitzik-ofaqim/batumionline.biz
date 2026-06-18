@@ -44,8 +44,9 @@
     .completed-msg { text-align: center; padding: 0.75rem; color: #2ecc71; font-weight: 700; font-size: 0.95rem; margin-top: 0.5rem; }
     .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
     .empty-state div { font-size: 3rem; margin-bottom: 1rem; }
-    .stage { border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem; margin-top: 0.85rem; }
-    .stage.done { border-color: rgba(46,204,113,0.4); background: rgba(46,204,113,0.05); }
+    .stage { background: var(--navy); border: 1.5px solid var(--border); border-radius: 16px; padding: 1.15rem; margin-top: 1.1rem; box-shadow: 0 3px 14px rgba(0,0,0,0.22); }
+    .stage:first-of-type { margin-top: 1.25rem; }
+    .stage.done { border-color: rgba(46,204,113,0.45); background: rgba(46,204,113,0.06); }
     .stage-head { display: flex; align-items: flex-start; gap: 0.7rem; margin-bottom: 0.75rem; }
     .stage-num { flex-shrink: 0; width: 1.9rem; height: 1.9rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.95rem; background: rgba(232,188,58,0.15); color: var(--gold-light); border: 1.5px solid rgba(232,188,58,0.4); }
     .stage.done .stage-num { background: rgba(46,204,113,0.18); color: #2ecc71; border-color: rgba(46,204,113,0.5); }
@@ -182,10 +183,13 @@ function renderClients(clients) {
     var btnApprove = '<button class="step-btn' + (s1 ? ' done' : '') + '"' + (s1 ? ' disabled' : '') + ' onclick="doApprove(' + c.id + ')">'
       + '<span class="ico">' + (s1 ? '✓' : '✅') + '</span><span class="lbl"><span>' + (s1 ? 'Passport Approved' : 'Approve Passport') + '</span>' + (s1 ? subLine(c.passport_approved_by, c.passport_approved_at) : '') + '</span></button>';
     var rejected = c.passport_status === 'rejected';
-    var btnReject = '<button class="step-btn reject' + (rejected ? ' is-rejected' : '') + '"' + (s1 ? ' disabled' : '') + ' onclick="doReject(' + c.id + ')">'
-      + '<span class="ico">' + (rejected ? '⛔' : '❌') + '</span><span class="lbl"><span>' + (rejected ? 'Passport Rejected' : 'Reject Passport') + '</span></span></button>';
+    function rejectBtn(reason, label) {
+      return '<button class="step-btn reject' + (rejected ? ' is-rejected' : '') + '"' + (s1 ? ' disabled' : '') + ' onclick="doReject(' + c.id + ',\'' + reason + '\')">'
+        + '<span class="ico">❌</span><span class="lbl"><span>' + label + '</span></span></button>';
+    }
+    var btnReject = rejectBtn('scan', 'Reject — Invalid Scan') + rejectBtn('expired', 'Reject — Passport Expired');
     var btnUploadPOA = '<label class="step-btn' + (s2 ? ' done' : '') + '">'
-      + '<span class="ico">' + (s2 ? '✓' : '📄') + '</span><span class="lbl"><span>' + (s2 ? 'POA Uploaded' : 'Upload POA') + '</span>' + (s2 ? subLine(c.poa_uploaded_by, c.poa_uploaded_at) : '') + '</span>'
+      + '<span class="ico">' + (s2 ? '✓' : '📄') + '</span><span class="lbl"><span>' + (s2 ? 'Notarial POA Uploaded' : 'Upload the notarial Power of Attorney with the client’s details') + '</span>' + (s2 ? subLine(c.poa_uploaded_by, c.poa_uploaded_at) : '') + '</span>'
       + (s2 ? '' : '<input type="file" accept=".pdf" onchange="doUploadPOA(' + c.id + ', this)" />') + '</label>';
     var btnDownload = '<button class="step-btn' + (sDl ? ' done' : '') + '"' + (c.current_step >= 9 ? '' : ' disabled') + ' onclick="downloadDocs(' + c.id + ')">'
       + '<span class="ico">' + (sDl ? '✓' : '📥') + '</span><span class="lbl"><span>Download Scans</span>' + (sDl ? subLine(c.docs_downloaded_by, c.docs_downloaded_at) : '') + '</span></button>';
@@ -237,10 +241,13 @@ async function doApprove(clientId) {
   } catch (e) { alert('Error'); }
 }
 
-async function doReject(clientId) {
-  if (!confirm('Reject this passport? The client will be notified and may try again later.')) return;
+async function doReject(clientId, reason) {
+  var msg = reason === 'scan'
+    ? 'Reject this passport for an INVALID SCAN? The client will be asked to re-scan and upload again.'
+    : 'Reject this passport — PASSPORT EXPIRED/INVALID? The client will be told to retry in 60 days.';
+  if (!confirm(msg)) return;
   try {
-    var res = await fetch('/api/lawyer/passport/reject', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ client_id: clientId }) });
+    var res = await fetch('/api/lawyer/passport/reject', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ client_id: clientId, reason: reason }) });
     var data = await res.json();
     alert(data.message || 'Rejected');
     loadClients();

@@ -11,6 +11,8 @@ const MESSAGES = {
   PASSPORT_APPROVED: (name, link) => `שלום ${name} ✅\n\nבדיקת הנאותות אושרה בהצלחה!\nכעת תוכל להמשיך לשלב התשלום.\n\n👉 לחץ כאן להמשך:\n${link}\n\n*Batumionline* 🏦`,
   
   PASSPORT_REJECTED: (name) => `שלום ${name} ❌\n\nלצערנו, הדרכון שהעלית לא אושר.\nניתן לנסות שוב בעוד 60 יום עם דרכון בתוקף.\n\nלשאלות ניתן לפנות אלינו.\n\n*Batumionline* 🏦`,
+
+  PASSPORT_REJECTED_SCAN: (name, link) => `שלום ${name} ❌\n\nהדרכון נפסל בשל סריקה לא תקינה.\nאנא סרוק את הדרכון מחדש — צבעוני, ברור וקריא (עמודים 2-3) — והעלה שוב.\n\n👉 להעלאה מחדש:\n${link}\n\n*Batumionline* 🏦`,
   
   PAYMENT_RECEIVED: (name, link) => `שלום ${name} 💳\n\nהתשלום התקבל בהצלחה!\nאנו מכינים את מסמכי ייפוי הכוח עבורך.\n\n👉 לחץ כאן להמשך:\n${link}\n\n*Batumionline* 🏦`,
   

@@ -66,13 +66,20 @@ router.post('/passport/approve', async (req, res) => {
 });
 
 // POST /api/lawyer/passport/reject - lawyer rejects the passport (client notified, may retry later)
+// reason: 'scan' (bad scan — ask to re-upload) | 'expired' (invalid passport — retry in 60 days)
 router.post('/passport/reject', async (req, res) => {
-  const { client_id } = req.body;
+  const { client_id, reason } = req.body;
   const client = clientsDB.findById(client_id);
   if (!client) return res.status(404).json({ error: 'Client not found' });
 
   clientsDB.update(client.id, { passport_status: 'rejected', current_step: 2 });
-  await sendMessage(client.phone, MESSAGES.PASSPORT_REJECTED(client.first_name), client.id);
+
+  if (reason === 'scan') {
+    const uploadUrl = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
+    await sendMessage(client.phone, MESSAGES.PASSPORT_REJECTED_SCAN(client.first_name, uploadUrl), client.id);
+  } else {
+    await sendMessage(client.phone, MESSAGES.PASSPORT_REJECTED(client.first_name), client.id);
+  }
 
   res.json({ success: true, message: 'Passport rejected' });
 });
