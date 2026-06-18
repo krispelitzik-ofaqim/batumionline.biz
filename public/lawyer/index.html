@@ -17,8 +17,17 @@
     .lawyer-wrap { max-width: 700px; margin: 0 auto; padding: 1.5rem; }
     .lawyer-header { text-align: center; padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
     .lawyer-header h1 { font-size: 1.4rem; color: var(--gold-light); margin-top: 0.75rem; }
-    .client-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem; transition: border-color 0.2s; }
-    .client-card:hover { border-color: rgba(232,188,58,0.3); }
+    .client-card { background: transparent; border: none; padding: 0; margin-bottom: 0.85rem; }
+    .client-head { cursor: pointer; padding: 1.05rem 1.2rem; border-radius: 14px; border: 1.5px solid var(--border); background: var(--navy-mid); transition: all 0.2s; }
+    .client-head:hover { border-color: rgba(232,188,58,0.35); }
+    .client-head-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .client-head.done { border-color: #2ecc71; background: rgba(46,204,113,0.16); box-shadow: 0 0 22px rgba(46,204,113,0.45); }
+    .client-head-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .client-head.done .client-head-sub { color: #6effa6; }
+    .client-chevron { flex-shrink: 0; color: var(--text-muted); font-size: 0.8rem; transition: transform 0.25s; }
+    .client-card.open .client-chevron { transform: rotate(180deg); }
+    .client-body { display: none; padding: 0.25rem 0.3rem 0.5rem; }
+    .client-card.open .client-body { display: block; }
     .client-name { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem; }
     .client-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 0.85rem; font-size: 0.82rem; color: var(--text-muted); }
     .client-actions { display: flex; flex-direction: column; gap: 0.55rem; }
@@ -227,21 +236,36 @@ function renderClients(clients) {
         + '<div class="client-actions">' + buttons + '</div></div>';
     }
 
-    return '<div class="client-card">'
-      + '<div class="client-name">' + enName + '</div>'
-      + '<div class="client-meta">'
-      +   '<span>' + c.phone + '</span>'
-      +   '<span>· ' + (STEP_LABELS[c.current_step] || ('Step ' + c.current_step)) + '</span>'
-      +   (c.tracking_number ? '<span>📦 ' + (c.shipping_company || '') + ' ' + c.tracking_number + '</span>' : '')
+    var doneCount = [s1 && s2, sDl, s3, s4].filter(Boolean).length;
+    var statusText = allDone ? '✅ Completed' : ('In progress · ' + doneCount + '/4 stages');
+
+    return '<div class="client-card" id="cc-' + c.id + '">'
+      + '<div class="client-head' + (allDone ? ' done' : '') + '" onclick="toggleClient(' + c.id + ')">'
+      +   '<div class="client-head-top">'
+      +     '<div><div class="client-name">' + enName + '</div>'
+      +       '<div class="client-head-sub">' + c.phone + ' · ' + statusText + '</div></div>'
+      +     '<span class="client-chevron">▼</span>'
+      +   '</div>'
+      +   progressBar([s1 && s2, sDl, s3, s4])
       + '</div>'
-      + progressBar([s1 && s2, sDl, s3, s4])
-      + stage(1, s1, 'Passport &amp; Power of Attorney', 'View the client’s passport, approve or reject it, then upload the signed notarial Power of Attorney bearing the client’s name.', btnViewPassport + btnApprove + btnReject + btnUploadPOA)
-      + stage(2, sDl, 'Download Documents', 'Download the documents the client sent. These are copies only — the originals will arrive by mail.', btnDownload)
-      + stage(3, s3, 'Originals Received', 'Mark here once the client’s mail has reached you and the original documents are physically in your hands.', btnReceived)
-      + stage(4, s4, 'Account Opened', 'The bank account was opened successfully. The client will receive an SMS from the bank with login details.', btnAccount)
-      + (allDone ? '<div class="completed-msg">✅ Case completed</div>' : '')
+      + '<div class="client-body">'
+      +   '<div class="client-meta">'
+      +     '<span>· ' + (STEP_LABELS[c.current_step] || ('Step ' + c.current_step)) + '</span>'
+      +     (c.tracking_number ? '<span>📦 ' + (c.shipping_company || '') + ' ' + c.tracking_number + '</span>' : '')
+      +   '</div>'
+      +   stage(1, s1, 'Passport &amp; Power of Attorney', 'View the client’s passport, approve or reject it, then upload the signed notarial Power of Attorney bearing the client’s name.', btnViewPassport + btnApprove + btnReject + btnUploadPOA)
+      +   stage(2, sDl, 'Download Documents', 'Download the documents the client sent. These are copies only — the originals will arrive by mail.', btnDownload)
+      +   stage(3, s3, 'Originals Received', 'Mark here once the client’s mail has reached you and the original documents are physically in your hands.', btnReceived)
+      +   stage(4, s4, 'Account Opened', 'The bank account was opened successfully. The client will receive an SMS from the bank with login details.', btnAccount)
+      +   (allDone ? '<div class="completed-msg">✅ Case completed</div>' : '')
+      + '</div>'
       + '</div>';
   }).join('');
+}
+
+function toggleClient(id) {
+  var el = document.getElementById('cc-' + id);
+  if (el) el.classList.toggle('open');
 }
 
 async function doViewPassport(clientId) {
