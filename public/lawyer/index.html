@@ -30,7 +30,8 @@
       font-size: 0.98rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: left;
     }
     .step-btn:hover:not(:disabled) { border-color: rgba(232,188,58,0.45); background: rgba(232,188,58,0.07); }
-    .step-btn:disabled { opacity: 0.32; cursor: not-allowed; }
+    .step-btn:disabled { cursor: not-allowed; }
+    .step-btn:disabled:not(.done) { opacity: 0.32; }
     .step-btn.done { border: 2px solid #2ecc71; background: linear-gradient(135deg, rgba(46,204,113,0.38), rgba(46,204,113,0.22)); color: #aaffcf; box-shadow: 0 0 26px rgba(46,204,113,0.8), inset 0 0 16px rgba(46,204,113,0.25); }
     .step-btn.done .ico { color: #6effa6; }
     .step-btn .ico { font-size: 1.35rem; flex-shrink: 0; width: 1.8rem; text-align: center; }
