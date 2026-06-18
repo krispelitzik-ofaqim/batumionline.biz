@@ -276,7 +276,7 @@
       <div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.5rem;" data-he="סכום לתשלום" data-en="Amount Due">סכום לתשלום</div>
       <div style="font-family:'Playfair Display',serif;font-size:3.5rem;color:var(--gold-light);margin-bottom:0.25rem;" data-he="₪1,900" data-en="₪1,900">₪1,900</div>
       <div id="usd-equiv" dir="ltr" style="color:var(--text-muted);font-size:1.05rem;font-weight:700;margin-bottom:0.5rem;">≈ $— USD</div>
-      <div style="color:var(--text-muted);font-size:0.9rem;margin-bottom:2rem;" data-he="תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק" data-en="One-time payment for the full bank account opening service">תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק</div>
+      <div style="color:var(--text-muted);font-size:0.9rem;margin-bottom:2rem;" data-he="תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק (לא כולל נוטוריון ושילוח בינלאומי)" data-en="One-time payment for the full bank account opening service (excluding notary and international shipping)">תשלום חד פעמי עבור כל שירות פתיחת חשבון הבנק (לא כולל נוטוריון ושילוח בינלאומי)</div>
       <div class="alert alert-info" style="text-align:right;margin-bottom:2rem;">
         <span data-he="✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה" data-en="✅ <strong>Includes:</strong> Full support, power of attorney, attorney in Georgia">✅ <strong>כולל:</strong> ליווי מלא, ייפוי כח, עורך דין בגאורגיה</span>
       </div>
@@ -289,6 +289,8 @@
       <div class="alert alert-warning" style="text-align:right;margin-top:0.5rem;">
         <span data-he="📌 <strong>לאחר התשלום</strong> — האישור מתקבל אוטומטית, ותקבל הודעת וואטסאפ עם המשך התהליך." data-en="📌 <strong>After payment</strong> — confirmation is automatic, and you'll receive a WhatsApp with the next steps.">📌 <strong>לאחר התשלום</strong> — האישור מתקבל אוטומטית, ותקבל הודעת וואטסאפ עם המשך התהליך.</span>
       </div>
+      <!-- TEMP TEST-ONLY skip button — REMOVE before going live -->
+      <button type="button" id="btn-pay" onclick="goToPayment()" style="margin-top:1rem;width:100%;padding:0.95rem;border:none;border-radius:14px;background:#ff1744;color:#fff;font-family:'Assistant',sans-serif;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 18px rgba(255,23,68,0.45);" data-he="⏭️ דלג על התשלום (בדיקות בלבד)" data-en="⏭️ Skip payment (testing only)">⏭️ דלג על התשלום (בדיקות בלבד)</button>
     </div>
   </div>
 
