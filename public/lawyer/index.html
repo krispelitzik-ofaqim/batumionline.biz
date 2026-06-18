@@ -21,24 +21,37 @@
     .client-card:hover { border-color: rgba(232,188,58,0.3); }
     .client-name { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem; }
     .client-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 0.85rem; font-size: 0.82rem; color: var(--text-muted); }
-    .client-actions { display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+    .client-actions { display: flex; flex-direction: column; gap: 0.55rem; }
     .step-btn {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      flex: 1 1 30%; min-width: 90px;
-      padding: 0.7rem 0.4rem; border-radius: 10px; border: 1.5px solid var(--border);
+      display: flex; flex-direction: row; align-items: center; justify-content: flex-start;
+      width: 100%; gap: 0.8rem;
+      padding: 0.9rem 1rem; border-radius: 12px; border: 1.5px solid var(--border);
       background: rgba(255,255,255,0.04); color: var(--text-main);
-      font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; gap: 0.25rem;
+      font-size: 0.98rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: left;
     }
     .step-btn:hover:not(:disabled) { border-color: rgba(232,188,58,0.45); background: rgba(232,188,58,0.07); }
-    .step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .step-btn.done { border-color: rgba(46,204,113,0.45); background: rgba(46,204,113,0.08); color: #2ecc71; }
-    .step-btn .ico { font-size: 1.15rem; }
-    .step-btn .by { font-size: 0.6rem; font-weight: 400; opacity: 0.8; }
-    .step-btn label { cursor: pointer; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+    .step-btn:disabled { opacity: 0.32; cursor: not-allowed; }
+    .step-btn.done { border-color: rgba(46,204,113,0.55); background: rgba(46,204,113,0.12); color: #2ecc71; }
+    .step-btn .ico { font-size: 1.35rem; flex-shrink: 0; width: 1.8rem; text-align: center; }
+    .step-btn.done .ico { color: #2ecc71; }
+    .step-btn.reject:hover:not(:disabled) { border-color: rgba(231,76,60,0.55); background: rgba(231,76,60,0.1); color: #e74c3c; }
+    .step-btn.is-rejected { border-color: rgba(231,76,60,0.55); background: rgba(231,76,60,0.12); color: #e74c3c; }
+    .step-btn .lbl { display: flex; flex-direction: column; gap: 0.12rem; line-height: 1.25; }
+    .step-btn .lbl-sub { font-size: 0.7rem; font-weight: 500; opacity: 0.9; }
+    .step-btn .by { opacity: 0.85; }
+    .step-btn label { cursor: pointer; margin: 0; display: flex; flex-direction: row; align-items: center; gap: 0.8rem; width: 100%; }
     .step-btn label input[type="file"] { display: none; }
     .completed-msg { text-align: center; padding: 0.75rem; color: #2ecc71; font-weight: 700; font-size: 0.95rem; margin-top: 0.5rem; }
     .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
     .empty-state div { font-size: 3rem; margin-bottom: 1rem; }
+    .stage { border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem; margin-top: 0.85rem; }
+    .stage.done { border-color: rgba(46,204,113,0.4); background: rgba(46,204,113,0.05); }
+    .stage-head { display: flex; align-items: flex-start; gap: 0.7rem; margin-bottom: 0.75rem; }
+    .stage-num { flex-shrink: 0; width: 1.9rem; height: 1.9rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.95rem; background: rgba(232,188,58,0.15); color: var(--gold-light); border: 1.5px solid rgba(232,188,58,0.4); }
+    .stage.done .stage-num { background: rgba(46,204,113,0.18); color: #2ecc71; border-color: rgba(46,204,113,0.5); }
+    .stage-title { font-size: 1rem; font-weight: 800; color: var(--text-main); line-height: 1.3; }
+    .stage-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; line-height: 1.45; }
+    .stage .client-actions { gap: 0.5rem; }
   </style>
 </head>
 <body>
@@ -136,7 +149,17 @@ async function loadClients() {
   }
 }
 
-function byLabel(by) { return by ? '<span class="by">(' + by + ')</span>' : ''; }
+function fmtTime(iso) {
+  if (!iso) return '';
+  var d = new Date(iso); if (isNaN(d.getTime())) return '';
+  var p = function(n){ return (n < 10 ? '0' : '') + n; };
+  return p(d.getDate()) + '/' + p(d.getMonth() + 1) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+function subLine(by, at) {
+  var parts = []; if (by) parts.push(by);
+  var t = fmtTime(at); if (t) parts.push(t);
+  return parts.length ? '<span class="lbl-sub">✓ ' + parts.join(' · ') + '</span>' : '';
+}
 
 function renderClients(clients) {
   var container = document.getElementById('clients-list');
@@ -153,6 +176,31 @@ function renderClients(clients) {
     var s4 = c.account_opened ? true : false;
     var allDone = s1 && s2 && s3 && s4;
 
+    // Buttons reused inside the 4 stages below
+    var btnViewPassport = '<button class="step-btn" onclick="doViewPassport(' + c.id + ')">'
+      + '<span class="ico">🔍</span><span class="lbl"><span>View Passport</span></span></button>';
+    var btnApprove = '<button class="step-btn' + (s1 ? ' done' : '') + '"' + (s1 ? ' disabled' : '') + ' onclick="doApprove(' + c.id + ')">'
+      + '<span class="ico">' + (s1 ? '✓' : '✅') + '</span><span class="lbl"><span>' + (s1 ? 'Passport Approved' : 'Approve Passport') + '</span>' + (s1 ? subLine(c.passport_approved_by, c.passport_approved_at) : '') + '</span></button>';
+    var rejected = c.passport_status === 'rejected';
+    var btnReject = '<button class="step-btn reject' + (rejected ? ' is-rejected' : '') + '"' + (s1 ? ' disabled' : '') + ' onclick="doReject(' + c.id + ')">'
+      + '<span class="ico">' + (rejected ? '⛔' : '❌') + '</span><span class="lbl"><span>' + (rejected ? 'Passport Rejected' : 'Reject Passport') + '</span></span></button>';
+    var btnUploadPOA = '<label class="step-btn' + (s2 ? ' done' : '') + '">'
+      + '<span class="ico">' + (s2 ? '✓' : '📄') + '</span><span class="lbl"><span>' + (s2 ? 'POA Uploaded' : 'Upload POA') + '</span>' + (s2 ? subLine(c.poa_uploaded_by, c.poa_uploaded_at) : '') + '</span>'
+      + (s2 ? '' : '<input type="file" accept=".pdf" onchange="doUploadPOA(' + c.id + ', this)" />') + '</label>';
+    var btnDownload = '<button class="step-btn' + (sDl ? ' done' : '') + '"' + (c.current_step >= 9 ? '' : ' disabled') + ' onclick="downloadDocs(' + c.id + ')">'
+      + '<span class="ico">' + (sDl ? '✓' : '📥') + '</span><span class="lbl"><span>Download Scans</span>' + (sDl ? subLine(c.docs_downloaded_by, c.docs_downloaded_at) : '') + '</span></button>';
+    var btnReceived = '<button class="step-btn' + (s3 ? ' done' : '') + '"' + ((s3 || c.current_step < 10) ? ' disabled' : '') + ' onclick="doDocsReceived(' + c.id + ')">'
+      + '<span class="ico">' + (s3 ? '✓' : '📬') + '</span><span class="lbl"><span>' + (s3 ? 'Originals Received' : 'Mail Arrived') + '</span>' + (s3 ? subLine(c.docs_received_by, c.docs_received_at) : '') + '</span></button>';
+    var btnAccount = '<button class="step-btn' + (s4 ? ' done' : '') + '"' + (!s3 || s4 ? ' disabled' : '') + ' onclick="doAccountOpened(' + c.id + ')">'
+      + '<span class="ico">' + (s4 ? '✓' : '🏦') + '</span><span class="lbl"><span>Account Opened</span>' + (s4 ? subLine(c.account_opened_by, c.account_opened_at) : '') + '</span></button>';
+
+    function stage(num, done, title, desc, buttons) {
+      return '<div class="stage' + (done ? ' done' : '') + '">'
+        + '<div class="stage-head"><span class="stage-num">' + (done ? '✓' : num) + '</span>'
+        + '<div><div class="stage-title">' + title + '</div><div class="stage-desc">' + desc + '</div></div></div>'
+        + '<div class="client-actions">' + buttons + '</div></div>';
+    }
+
     return '<div class="client-card">'
       + '<div class="client-name">' + enName + '</div>'
       + '<div class="client-meta">'
@@ -160,27 +208,10 @@ function renderClients(clients) {
       +   '<span>· ' + (STEP_LABELS[c.current_step] || ('Step ' + c.current_step)) + '</span>'
       +   (c.tracking_number ? '<span>📦 ' + (c.shipping_company || '') + ' ' + c.tracking_number + '</span>' : '')
       + '</div>'
-      + '<div class="client-actions">'
-      // View Passport
-      +   '<button class="step-btn" onclick="doViewPassport(' + c.id + ')">'
-      +     '<span class="ico">🔍</span><span>View Passport</span></button>'
-      // Approve Passport
-      +   '<button class="step-btn' + (s1 ? ' done' : '') + '"' + (s1 ? ' disabled' : '') + ' onclick="doApprove(' + c.id + ')">'
-      +     '<span class="ico">' + (s1 ? '✓' : '✅') + '</span><span>' + (s1 ? 'Passport Approved' : 'Approve Passport') + ' ' + byLabel(s1 ? c.passport_approved_by : '') + '</span></button>'
-      // Upload POA
-      +   '<label class="step-btn' + (s2 ? ' done' : '') + '">'
-      +     '<span class="ico">' + (s2 ? '✓' : '📄') + '</span><span>' + (s2 ? 'POA Uploaded' : 'Upload POA') + ' ' + byLabel(s2 ? c.poa_uploaded_by : '') + '</span>'
-      +     (s2 ? '' : '<input type="file" accept=".pdf" onchange="doUploadPOA(' + c.id + ', this)" />') + '</label>'
-      // Download Docs (enabled once the client uploaded documents)
-      +   '<button class="step-btn' + (sDl ? ' done' : '') + '"' + (c.current_step >= 9 ? '' : ' disabled') + ' onclick="downloadDocs(' + c.id + ')">'
-      +     '<span class="ico">📥</span><span>Download Scans</span></button>'
-      // Originals Received (the physical signed documents arrived by mail/courier)
-      +   '<button class="step-btn' + (s3 ? ' done' : '') + '"' + ((s3 || c.current_step < 10) ? ' disabled' : '') + ' onclick="doDocsReceived(' + c.id + ')">'
-      +     '<span class="ico">' + (s3 ? '✓' : '📬') + '</span><span>' + (s3 ? 'Originals Received' : 'Mail Arrived') + ' ' + byLabel(s3 ? c.docs_received_by : '') + '</span></button>'
-      // Account Opened
-      +   '<button class="step-btn' + (s4 ? ' done' : '') + '"' + (!s3 || s4 ? ' disabled' : '') + ' onclick="doAccountOpened(' + c.id + ')">'
-      +     '<span class="ico">' + (s4 ? '✓' : '🏦') + '</span><span>' + (s4 ? 'Account Opened' : 'Account Opened') + ' ' + byLabel(s4 ? c.account_opened_by : '') + '</span></button>'
-      + '</div>'
+      + stage(1, s1, 'Passport &amp; Power of Attorney', 'View the client’s passport, approve or reject it, then upload the signed notarial Power of Attorney bearing the client’s name.', btnViewPassport + btnApprove + btnReject + btnUploadPOA)
+      + stage(2, sDl, 'Download Documents', 'Download the documents the client sent. These are copies only — the originals will arrive by mail.', btnDownload)
+      + stage(3, s3, 'Originals Received', 'Mark here once the client’s mail has reached you and the original documents are physically in your hands.', btnReceived)
+      + stage(4, s4, 'Account Opened', 'The bank account was opened successfully. The client will receive an SMS from the bank with login details.', btnAccount)
       + (allDone ? '<div class="completed-msg">✅ Case completed</div>' : '')
       + '</div>';
   }).join('');
@@ -202,6 +233,16 @@ async function doApprove(clientId) {
     var res = await fetch('/api/lawyer/passport/approve', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ client_id: clientId }) });
     var data = await res.json();
     alert(data.message || 'Approved');
+    loadClients();
+  } catch (e) { alert('Error'); }
+}
+
+async function doReject(clientId) {
+  if (!confirm('Reject this passport? The client will be notified and may try again later.')) return;
+  try {
+    var res = await fetch('/api/lawyer/passport/reject', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ client_id: clientId }) });
+    var data = await res.json();
+    alert(data.message || 'Rejected');
     loadClients();
   } catch (e) { alert('Error'); }
 }

@@ -26,7 +26,7 @@ const poaUpload = multer({
   limits: { fileSize: 20 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/pdf') cb(null, true);
-    else cb(new Error('רק קבצי PDF מותרים'));
+    else cb(new Error('Only PDF files allowed'));
   }
 });
 
@@ -59,18 +59,30 @@ router.post('/passport/approve', async (req, res) => {
   const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
   const paymentUrl = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
 
-  clientsDB.update(client.id, { passport_status: 'approved', current_step: 4, passport_approved_by: actor });
+  clientsDB.update(client.id, { passport_status: 'approved', current_step: 4, passport_approved_by: actor, passport_approved_at: new Date().toISOString() });
   await sendMessage(client.phone, MESSAGES.PASSPORT_APPROVED(client.first_name, paymentUrl), client.id);
 
   res.json({ success: true, message: 'Passport approved' });
+});
+
+// POST /api/lawyer/passport/reject - lawyer rejects the passport (client notified, may retry later)
+router.post('/passport/reject', async (req, res) => {
+  const { client_id } = req.body;
+  const client = clientsDB.findById(client_id);
+  if (!client) return res.status(404).json({ error: 'Client not found' });
+
+  clientsDB.update(client.id, { passport_status: 'rejected', current_step: 2 });
+  await sendMessage(client.phone, MESSAGES.PASSPORT_REJECTED(client.first_name), client.id);
+
+  res.json({ success: true, message: 'Passport rejected' });
 });
 
 // POST /api/lawyer/upload-poa/:clientId - upload POA document
 router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, res) => {
   try {
     const client = clientsDB.findById(req.params.clientId);
-    if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
-    if (!req.file) return res.status(400).json({ error: 'לא נבחר קובץ' });
+    if (!client) return res.status(404).json({ error: 'Client not found' });
+    if (!req.file) return res.status(400).json({ error: 'No file selected' });
 
     const localDir = path.join(UPLOADS_DIR, 'poa');
     fs.mkdirSync(localDir, { recursive: true });
@@ -93,11 +105,12 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
       }
     } catch (e) { console.warn('Drive POA upload skipped:', e.message); }
 
-    res.json({ success: true, message: 'ייפוי כח הועלה', localUrl, driveUrl });
+    clientsDB.update(client.id, { poa_uploaded_at: new Date().toISOString() });
+    res.json({ success: true, message: 'Power of Attorney uploaded', localUrl, driveUrl });
   } catch (err) {
     console.error('POA upload error:', err);
     if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-    res.status(500).json({ error: 'שגיאת שרת' });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -105,8 +118,8 @@ router.post('/upload-poa/:clientId', poaUpload.single('poa_file'), async (req, r
 router.post('/mark-step', (req, res) => {
   const { client_id, step } = req.body;
   const client = clientsDB.findById(client_id);
-  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
-  if (step < 1 || step > 4) return res.status(400).json({ error: 'שלב לא תקין' });
+  if (!client) return res.status(404).json({ error: 'Client not found' });
+  if (step < 1 || step > 4) return res.status(400).json({ error: 'Invalid step' });
 
   const update = {};
   update['lawyer_step' + step] = 1;
@@ -118,32 +131,32 @@ router.post('/mark-step', (req, res) => {
 router.post('/docs-received', async (req, res) => {
   const { client_id } = req.body;
   const client = clientsDB.findById(client_id);
-  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+  if (!client) return res.status(404).json({ error: 'Client not found' });
 
   const token = req.headers['x-lawyer-token'];
   const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
-  clientsDB.update(client.id, { docs_received: 1, current_step: 11, lawyer_step3: 1, docs_received_by: actor });
+  clientsDB.update(client.id, { docs_received: 1, current_step: 11, lawyer_step3: 1, docs_received_by: actor, docs_received_at: new Date().toISOString() });
 
   const link = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
   await sendMessage(client.phone, MESSAGES.DOCS_ARRIVED(client.first_name, link), client.id);
 
-  res.json({ success: true, message: 'עודכן - מסמכים הגיעו' });
+  res.json({ success: true, message: 'Updated — originals received' });
 });
 
 // POST /api/lawyer/account-opened - mark account as opened
 router.post('/account-opened', async (req, res) => {
   const { client_id } = req.body;
   const client = clientsDB.findById(client_id);
-  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+  if (!client) return res.status(404).json({ error: 'Client not found' });
 
   const token = req.headers['x-lawyer-token'];
   const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
-  clientsDB.update(client.id, { account_opened: 1, current_step: 12, lawyer_step4: 1, account_opened_by: actor });
+  clientsDB.update(client.id, { account_opened: 1, current_step: 12, lawyer_step4: 1, account_opened_by: actor, account_opened_at: new Date().toISOString() });
 
   const link = `${APP_URL}/client?phone=${encodeURIComponent(client.phone)}`;
   await sendMessage(client.phone, MESSAGES.ACCOUNT_OPENED(client.first_name, link), client.id);
 
-  res.json({ success: true, message: 'עודכן - חשבון נפתח! הלקוח קיבל הודעה' });
+  res.json({ success: true, message: 'Updated — account opened! Client notified' });
 });
 
 // GET /api/lawyer/client/:id/docs - get client docs
@@ -156,13 +169,13 @@ router.get('/client/:id/docs', (req, res) => {
 router.get('/client/:id/download-docs', (req, res) => {
   const archiver = require('archiver');
   const client = clientsDB.findById(req.params.id);
-  if (!client) return res.status(404).json({ error: 'לקוח לא נמצא' });
+  if (!client) return res.status(404).json({ error: 'Client not found' });
 
   const docs = docsDB.getByClient(client.id);
   const localDocs = docs.filter(d => d.drive_url && d.drive_url.startsWith('/uploads/'));
 
   if (localDocs.length === 0) {
-    return res.status(404).json({ error: 'אין מסמכים להורדה' });
+    return res.status(404).json({ error: 'No documents to download' });
   }
 
   const zipName = `docs_${client.first_name}_${client.last_name}_${client.id}.zip`;
@@ -187,7 +200,7 @@ router.get('/client/:id/download-docs', (req, res) => {
   // Mark docs as downloaded
   const token = req.query.token || req.headers['x-lawyer-token'];
   const actor = token === process.env.ADMIN_PASSWORD ? 'admin' : 'lawyer';
-  clientsDB.update(client.id, { docs_downloaded: 1, docs_downloaded_by: actor });
+  clientsDB.update(client.id, { docs_downloaded: 1, docs_downloaded_by: actor, docs_downloaded_at: new Date().toISOString() });
 });
 
 module.exports = router;
