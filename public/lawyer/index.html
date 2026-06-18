@@ -53,6 +53,15 @@
     .stage-title { font-size: 1rem; font-weight: 800; color: var(--text-main); line-height: 1.3; }
     .stage-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; line-height: 1.45; }
     .stage .client-actions { gap: 0.5rem; }
+    .prog { display: flex; align-items: flex-start; margin: 1rem 0 0.25rem; }
+    .prog-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+    .prog-dot { width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; background: var(--navy-mid); border: 2px solid var(--border); color: var(--text-muted); z-index: 1; transition: all 0.3s; }
+    .prog-step.done .prog-dot { background: #2ecc71; border-color: #2ecc71; color: #0a1628; }
+    .prog-line { position: absolute; top: 1rem; right: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+    .prog-step.done .prog-line { background: #2ecc71; }
+    .prog-step:first-child .prog-line { display: none; }
+    .prog-lbl { font-size: 0.62rem; margin-top: 0.35rem; color: var(--text-muted); text-align: center; line-height: 1.2; }
+    .prog-step.done .prog-lbl { color: #2ecc71; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -161,6 +170,18 @@ function subLine(by, at) {
   var t = fmtTime(at); if (t) parts.push(t);
   return parts.length ? '<span class="lbl-sub">✓ ' + parts.join(' · ') + '</span>' : '';
 }
+function progressBar(flags) {
+  var labels = ['Passport &amp; POA', 'Documents', 'Originals', 'Account'];
+  var html = '<div class="prog">';
+  for (var i = 0; i < 4; i++) {
+    var done = !!flags[i];
+    html += '<div class="prog-step' + (done ? ' done' : '') + '">'
+      + (i > 0 ? '<div class="prog-line"></div>' : '')
+      + '<div class="prog-dot">' + (done ? '✓' : (i + 1)) + '</div>'
+      + '<div class="prog-lbl">' + labels[i] + '</div></div>';
+  }
+  return html + '</div>';
+}
 
 function renderClients(clients) {
   var container = document.getElementById('clients-list');
@@ -212,6 +233,7 @@ function renderClients(clients) {
       +   '<span>· ' + (STEP_LABELS[c.current_step] || ('Step ' + c.current_step)) + '</span>'
       +   (c.tracking_number ? '<span>📦 ' + (c.shipping_company || '') + ' ' + c.tracking_number + '</span>' : '')
       + '</div>'
+      + progressBar([s1 && s2, sDl, s3, s4])
       + stage(1, s1, 'Passport &amp; Power of Attorney', 'View the client’s passport, approve or reject it, then upload the signed notarial Power of Attorney bearing the client’s name.', btnViewPassport + btnApprove + btnReject + btnUploadPOA)
       + stage(2, sDl, 'Download Documents', 'Download the documents the client sent. These are copies only — the originals will arrive by mail.', btnDownload)
       + stage(3, s3, 'Originals Received', 'Mark here once the client’s mail has reached you and the original documents are physically in your hands.', btnReceived)
