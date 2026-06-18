@@ -170,7 +170,7 @@ function subLine(by, at) {
   return parts.length ? '<span class="lbl-sub">✓ ' + parts.join(' · ') + '</span>' : '';
 }
 function progressBar(flags) {
-  var labels = ['Passport', 'Documents', 'Originals', 'Account'];
+  var labels = ['Passport &amp; POA', 'Documents', 'Originals', 'Account'];
   var html = '<div class="prog">';
   for (var i = 0; i < 4; i++) {
     var done = !!flags[i];
