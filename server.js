@@ -60,6 +60,7 @@ app.use('/uploads', express.static(UPLOADS_DIR));
 app.use('/api/client', require('./routes/client'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/lawyer', require('./routes/lawyer'));
+app.use('/api/paypal', require('./routes/paypal'));
 
 // Payment webhook from Morning
 app.post('/webhook/payment', (req, res) => {
