@@ -137,8 +137,9 @@ router.post('/register', upload.single('passport_file'), async (req, res) => {
   }
 });
 
-// POST /api/client/temp-pay — temporary: skip payment until Morning is configured
+// POST /api/client/temp-pay — DISABLED for production launch (was: skip payment for testing)
 router.post('/temp-pay', async (req, res) => {
+  return res.status(410).json({ error: 'לא זמין' });
   try {
     const { phone } = req.body;
     if (!phone) return res.status(400).json({ error: 'מספר טלפון חסר' });
