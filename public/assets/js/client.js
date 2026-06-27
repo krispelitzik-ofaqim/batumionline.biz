@@ -185,6 +185,14 @@ async function submitRegister() {
     btn.innerHTML = 'שלח ועבור לבדיקת נאותות';
 
     if (data.success) {
+      // Google Ads conversion — a new lead was submitted
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-18239819893/NO-zCNThpMYcEPWgtvlD',
+          'value': 1.0,
+          'currency': 'ILS'
+        });
+      }
       document.getElementById('client-phone-display').textContent = `📱 ${clientPhone}`;
       document.getElementById('waiting-phone').textContent = clientPhone;
       showProgress(2);
