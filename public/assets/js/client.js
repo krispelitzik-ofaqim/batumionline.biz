@@ -1,6 +1,7 @@
 // ===== STATE =====
 let clientPhone = '';
 let clientStep = 1;
+let continueName = '';
 let selectedBank = '';
 let selectedShipper = '';
 let checklistChecked = 0;
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Check URL params
   const params = new URLSearchParams(window.location.search);
   const phoneParam = params.get('phone');
+  continueName = params.get('name') || '';
 
   if (phoneParam) {
     clientPhone = formatPhone(phoneParam);
@@ -50,6 +52,45 @@ function showProgress(visualStep) {
 
 function showLoading(show) {
   document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
+}
+
+// ===== SOFT LEAD (name + phone, before passport) =====
+function prefillName(fullName) {
+  if (!fullName) return;
+  const parts = String(fullName).trim().split(/\s+/);
+  const fn = document.getElementById('r-fname');
+  const ln = document.getElementById('r-lname');
+  if (fn && !fn.value) fn.value = parts[0] || '';
+  if (ln && !ln.value) ln.value = parts.slice(1).join(' ') || '';
+}
+
+async function submitLead() {
+  const name = document.getElementById('lead-name').value.trim();
+  const phoneRaw = document.getElementById('lead-phone').value.trim();
+  if (!name || !phoneRaw) {
+    showError('lead-error', 'נא למלא שם וטלפון');
+    return;
+  }
+  clientPhone = formatPhone(phoneRaw);
+
+  const btn = document.getElementById('btn-lead');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> ממשיך...';
+
+  // Fire-and-forget: capture the lead, but never block the user from continuing
+  fetch('/api/client/soft-lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, phone: clientPhone })
+  }).catch(function () {});
+
+  // Prefill the passport form and move on
+  document.getElementById('r-phone').value = phoneRaw;
+  prefillName(name);
+  btn.disabled = false;
+  btn.innerHTML = orig;
+  showScreen('screen-register');
 }
 
 // ===== PHONE CHECK =====
@@ -83,6 +124,7 @@ async function checkPhone(phone) {
     if (!data.exists) {
       showScreen('screen-register');
       document.getElementById('r-phone').value = p;
+      prefillName(continueName);
       return;
     }
 

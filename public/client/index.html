@@ -97,7 +97,7 @@
     <div class="card" style="text-align:center;padding:2rem;">
       <div style="font-size:1.2rem;font-weight:700;color:var(--text-main);margin-bottom:0.5rem;" data-he="פעם ראשונה כאן? 👋" data-en="First time here? 👋">פעם ראשונה כאן? 👋</div>
       <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;" data-he="התחל את תהליך פתיחת חשבון הבנק שלך בגאורגיה" data-en="Start your Georgian bank account opening process">התחל את תהליך פתיחת חשבון הבנק שלך בגאורגיה</p>
-      <button class="btn btn-primary btn-full" style="padding:1rem;font-size:1.1rem;font-weight:700;" onclick="showScreen('screen-register')" data-he="🚀 התחל תהליך חדש" data-en="🚀 Start New Process">🚀 התחל תהליך חדש</button>
+      <button class="btn btn-primary btn-full" style="padding:1rem;font-size:1.1rem;font-weight:700;" onclick="showScreen('screen-lead')" data-he="🚀 התחל תהליך חדש" data-en="🚀 Start New Process">🚀 התחל תהליך חדש</button>
     </div>
 
     <!-- Divider -->
@@ -116,6 +116,27 @@
         <button class="btn btn-ghost" style="padding:0.6rem 1.25rem;white-space:nowrap;" onclick="checkPhone()" data-he="המשך ←" data-en="Continue ←">המשך ←</button>
       </div>
       <div id="phone-error" class="alert alert-error" style="display:none;margin-top:0.75rem;"></div>
+    </div>
+  </div>
+
+  <!-- ========== SCREEN: LEAD (name + phone — low-friction first step) ========== -->
+  <div class="panel-screen" id="screen-lead">
+    <div class="step-header" style="text-align:center;margin-top:1.5rem;">
+      <div style="font-size:2.5rem;margin-bottom:0.75rem;">👋</div>
+      <h2 class="step-title" data-he="נעים להכיר!" data-en="Nice to meet you!">נעים להכיר!</h2>
+      <p class="step-desc" data-he="רק שם וטלפון כדי שנשמור לך את המקום. נמשיך משם — בלי למלא שוב." data-en="Just your name and phone to save your spot. We'll continue from there.">רק שם וטלפון כדי שנשמור לך את המקום. נמשיך משם — בלי למלא שוב.</p>
+    </div>
+    <div class="card">
+      <div id="lead-error" class="alert alert-error" style="display:none;"></div>
+      <div class="form-group">
+        <label class="form-label" data-he="שם מלא *" data-en="Full Name *">שם מלא *</label>
+        <input type="text" id="lead-name" class="form-control" placeholder="ישראל ישראלי" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-he="טלפון נייד *" data-en="Mobile Phone *">טלפון נייד *</label>
+        <input type="tel" id="lead-phone" class="form-control" placeholder="05X-XXXXXXX" />
+      </div>
+      <button class="btn btn-primary btn-full" id="btn-lead" style="padding:0.95rem;font-size:1.05rem;font-weight:700;margin-top:0.5rem;" onclick="submitLead()" data-he="המשך ←" data-en="Continue ←">המשך ←</button>
     </div>
   </div>
 

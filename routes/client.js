@@ -57,6 +57,33 @@ router.get('/status', (req, res) => {
   });
 });
 
+// POST /api/client/soft-lead — capture name+phone early (before passport).
+// Alerts the ADMIN only (never the lawyer); sends the visitor a continue link. No DB record.
+router.post('/soft-lead', async (req, res) => {
+  try {
+    const { name, phone } = req.body || {};
+    if (!phone || !name || !String(name).trim()) return res.status(400).json({ error: 'שם וטלפון נדרשים' });
+
+    let formattedPhone = String(phone).replace(/\D/g, '');
+    if (formattedPhone.startsWith('0')) formattedPhone = '972' + formattedPhone.slice(1);
+    const cleanName = String(name).trim();
+    const firstName = cleanName.split(/\s+/)[0];
+    const now = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' });
+
+    // Alert admin ONLY (not the lawyer) — early lead, passport not yet submitted
+    sendAdminNotification(`🌱 ליד חדש (התחיל, טרם השלים)\nשם: ${cleanName}\nטלפון: ${formattedPhone}\nזמן: ${now}\n\nעדיין לא העלה דרכון — אפשר לחזור אליו.`).catch(e => console.warn('Admin WA:', e.message));
+
+    // Send the visitor a WhatsApp with a direct continue link
+    const link = `${APP_URL}/client?phone=${encodeURIComponent(formattedPhone)}&name=${encodeURIComponent(cleanName)}`;
+    sendMessage(formattedPhone, `שלום ${firstName} 👋\n\nהתחלת את תהליך פתיחת חשבון הבנק בגאורגיה עם *Batumionline*.\nנשאר רק להשלים פרטים והעלאת דרכון.\n\n👉 להמשך מהמקום שעצרת:\n${link}`, null).catch(e => console.warn('WA:', e.message));
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Soft-lead error:', err);
+    res.status(500).json({ error: 'שגיאת שרת' });
+  }
+});
+
 // POST /api/client/register
 router.post('/register', upload.single('passport_file'), async (req, res) => {
   try {
