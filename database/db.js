@@ -44,8 +44,8 @@ function save(data) {
 function initEmpty() {
   return {
     clients: [], documents: [], checklist: [],
-    feedback: [], whatsapp_log: [],
-    _seq: { clients: 1, documents: 1, checklist: 1, feedback: 1, whatsapp_log: 1 }
+    feedback: [], whatsapp_log: [], leads: [],
+    _seq: { clients: 1, documents: 1, checklist: 1, feedback: 1, whatsapp_log: 1, leads: 1 }
   };
 }
 
@@ -163,6 +163,27 @@ const whatsappLogDB = {
   }
 };
 
+const leadsDB = {
+  create(fields) {
+    const id = nextId('leads');
+    const data = load();
+    if (!data.leads) data.leads = [];
+    const lead = { id, ...fields, source: fields.source || 'guide-lp', followup_sent: 0, created_at: now() };
+    data.leads.push(lead);
+    save(data);
+    return lead;
+  },
+  getAll() { return load().leads || []; },
+  update(id, fields) {
+    const data = load();
+    if (!data.leads) data.leads = [];
+    const idx = data.leads.findIndex(l => l.id == id);
+    if (idx === -1) return;
+    data.leads[idx] = { ...data.leads[idx], ...fields };
+    save(data);
+  }
+};
+
 const settingsDB = {
   get(key) {
     const data = load();
@@ -179,4 +200,4 @@ const settingsDB = {
 
 const db = { pragma: () => {}, exec: () => {} };
 
-module.exports = { db, clientsDB, docsDB, checklistDB, feedbackDB, whatsappLogDB, settingsDB, backupClient };
+module.exports = { db, clientsDB, docsDB, checklistDB, feedbackDB, whatsappLogDB, leadsDB, settingsDB, backupClient };

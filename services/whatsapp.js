@@ -28,7 +28,13 @@ const MESSAGES = {
 
   CONGRATULATIONS: (name) => `🎉 מזל טוב ${name}! תהליך פתיחת חשבון הבנק שלך בגאורגיה הושלם בהצלחה! 🏦\n\nחשבון הבנק שלך פעיל ומוכן לשימוש.\nאנחנו שמחים שבחרת ב-Batumionline ומאחלים לך הצלחה רבה!\n\nלשאלות נוספות — תמיד כאן בשבילך 💛\nצוות Batumionline`,
 
-  NEW_LEAD_LAWYER: (first, last, phone, bank, link, when) => `🔔 New Lead — Passport Review Needed\n\n👤 Name: ${first} ${last}\n📱 Phone: ${phone}\n🏦 Preferred bank: ${bank || '-'}\n🕒 Registered: ${when}\n\n📄 View passport:\n${link || '(uploaded to the system)'}\n\nPlease verify the passport validity.\n\n— Batumionline`
+  NEW_LEAD_LAWYER: (first, last, phone, bank, link, when) => `🔔 New Lead — Passport Review Needed\n\n👤 Name: ${first} ${last}\n📱 Phone: ${phone}\n🏦 Preferred bank: ${bank || '-'}\n🕒 Registered: ${when}\n\n📄 View passport:\n${link || '(uploaded to the system)'}\n\nPlease verify the passport validity.\n\n— Batumionline`,
+
+  GUIDE_SENT: (name) => `שלום ${name} 👋\n\nתודה שהשארת פרטים! הנה המדריך המלא לפתיחת חשבון בנק בגאורגיה — ללא נסיעה:\n\n📘 https://www.batumionline.biz/guide-bank-georgia.pdf\n\nיש שאלה? פשוט השב/י כאן ונשמח לעזור.\n\n*Batumionline* 🏦`,
+
+  GUIDE_FOLLOWUP: (name) => `שלום ${name} 😊\n\nהספקת לעיין במדריך? אנחנו יכולים להתחיל עבורך את פתיחת החשבון — הכל מהבית, בעברית, בליווי מלא.\n\n👉 להתחלת התהליך:\nhttps://www.batumionline.biz\n\nבדיקת התאמה חינם — לא נפתח חשבון, הכסף מוחזר.\n\n*Batumionline* 🏦`,
+
+  GUIDE_LEAD_ADMIN: (name, phone, when) => `🔔 ליד חדש — מדריך חשבון בנק\n\n👤 שם: ${name}\n📱 טלפון: ${phone}\n🕒 ${when}\n\nהמדריך נשלח אוטומטית ב-WhatsApp. מעקב יישלח בעוד 48 שעות.\n\n— Batumionline`
 };
 
 async function sendMessage(phone, message, clientId = null) {

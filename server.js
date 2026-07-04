@@ -61,6 +61,7 @@ app.use('/api/client', require('./routes/client'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/lawyer', require('./routes/lawyer'));
 app.use('/api/paypal', require('./routes/paypal'));
+app.use('/api/lead', require('./routes/lead'));
 
 // Payment webhook from Morning
 app.post('/webhook/payment', (req, res) => {
@@ -120,6 +121,26 @@ function runDailyCleanup() {
   if (count > 0) console.log(`🗑️ Auto-cleanup: ${count} stale clients moved to trash`);
 }
 
+// Guide-lead follow-up: 48h after signup, send one WhatsApp nudge
+function runLeadFollowups() {
+  try {
+    const { leadsDB } = require('./database/db');
+    const { sendMessage, MESSAGES } = require('./services/whatsapp');
+    const now = Date.now();
+    leadsDB.getAll().forEach(l => {
+      if (l.followup_sent) return;
+      const created = new Date((l.created_at || '').replace(' ', 'T')).getTime();
+      if (!created) return;
+      const hours = (now - created) / (1000 * 60 * 60);
+      if (hours >= 48) {
+        sendMessage(l.phone, MESSAGES.GUIDE_FOLLOWUP((l.name || '').split(' ')[0] || l.name), null).catch(() => {});
+        leadsDB.update(l.id, { followup_sent: 1 });
+        console.log(`📨 Lead follow-up sent to ${l.phone}`);
+      }
+    });
+  } catch (e) { console.warn('Lead follow-up error:', e.message); }
+}
+
 app.listen(PORT, () => {
   console.log(`\n🏦 Batumionline BIZ Server running on port ${PORT}`);
   console.log(`🌐 http://localhost:${PORT}`);
@@ -130,4 +151,8 @@ app.listen(PORT, () => {
   // Run cleanup on startup and every 24 hours
   runDailyCleanup();
   setInterval(runDailyCleanup, 24 * 60 * 60 * 1000);
+
+  // Check guide-lead follow-ups on startup and hourly
+  runLeadFollowups();
+  setInterval(runLeadFollowups, 60 * 60 * 1000);
 });

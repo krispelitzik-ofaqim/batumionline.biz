@@ -1,0 +1,198 @@
+<!doctype html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>המדריך לפתיחת חשבון בנק בגאורגיה — חינם</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700&display=swap&subset=hebrew" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a1628; --navy2:#0e1e38; --card:#122442;
+    --gold:#e8bc3a; --gold2:#f4d06b; --ink:#eaf1fb; --muted:#9fb2cf;
+    --line:rgba(232,188,58,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--navy);color:var(--ink);font-family:'Assistant',system-ui,-apple-system,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased}
+  body{overflow-x:hidden}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  a{color:inherit;text-decoration:none}
+
+  /* top bar */
+  header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,22,40,.85);backdrop-filter:blur(10px);z-index:20}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:11px}
+  .coin{width:38px;height:38px;border-radius:50%;background:conic-gradient(from 220deg,#f4d06b,#e8bc3a,#b8892a,#f4d06b);display:grid;place-items:center;box-shadow:0 0 0 1px rgba(244,208,107,.5),0 6px 18px rgba(232,188,58,.25)}
+  .coin span{font-weight:700;color:#0a1628;font-size:20px}
+  .brand b{font-weight:600;letter-spacing:.5px}
+  .brand small{display:block;color:var(--muted);font-size:11px;font-weight:300;letter-spacing:2px}
+
+  /* hero */
+  .hero{padding:64px 0 30px;position:relative}
+  .glow{position:absolute;inset:0;background:radial-gradient(600px 300px at 78% 8%,rgba(232,188,58,.16),transparent 60%);pointer-events:none}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;position:relative}
+  .tag{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);color:var(--gold2);font-size:13px;font-weight:500;padding:7px 14px;border-radius:100px;letter-spacing:.5px}
+  h1{font-size:clamp(30px,5vw,50px);font-weight:200;line-height:1.12;margin:20px 0 14px;letter-spacing:-.5px}
+  h1 b{font-weight:700;color:var(--gold)}
+  .sub{color:var(--muted);font-size:18px;font-weight:300;line-height:1.6;max-width:520px}
+
+  /* guide cover */
+  .cover{position:relative;justify-self:center}
+  .book{width:270px;aspect-ratio:1/1.32;border-radius:14px;background:linear-gradient(160deg,#0e1e38,#0a1628);border:1px solid var(--line);box-shadow:0 30px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(244,208,107,.15);padding:30px 26px;display:flex;flex-direction:column;transform:rotate(-3deg)}
+  .book .coin{width:52px;height:52px;margin-bottom:auto}.book .coin span{font-size:26px}
+  .book .kick{color:var(--gold2);font-size:12px;letter-spacing:3px;font-weight:600;margin-bottom:8px}
+  .book h3{font-size:25px;font-weight:300;line-height:1.25}
+  .book h3 b{font-weight:700;color:var(--gold)}
+  .book .free{margin-top:14px;align-self:flex-start;background:var(--gold);color:#0a1628;font-weight:700;font-size:13px;padding:5px 12px;border-radius:6px}
+  .ribbon{position:absolute;top:-14px;right:-14px;background:var(--gold);color:#0a1628;font-weight:700;font-size:12px;padding:8px 14px;border-radius:8px;box-shadow:0 8px 20px rgba(232,188,58,.35);transform:rotate(4deg)}
+
+  /* form */
+  .form{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;max-width:480px}
+  .form label{display:block;font-size:13px;color:var(--muted);margin:0 2px 6px}
+  .form input{width:100%;background:#0a1628;border:1px solid rgba(159,178,207,.25);color:var(--ink);border-radius:10px;padding:13px 14px;font-size:16px;font-family:inherit;margin-bottom:12px;direction:rtl}
+  .form input#phone{direction:ltr;text-align:right}
+  .form input:focus{outline:none;border-color:var(--gold)}
+  .cta{width:100%;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#0a1628;font-weight:700;font-size:17px;border:none;border-radius:10px;padding:15px;cursor:pointer;letter-spacing:.3px;box-shadow:0 10px 26px rgba(232,188,58,.28)}
+  .cta:hover{filter:brightness(1.05)}
+  .reassure{color:var(--muted);font-size:12.5px;text-align:center;margin-top:10px}
+
+  /* section */
+  section.block{padding:52px 0;border-top:1px solid var(--line)}
+  .eyebrow{color:var(--gold2);font-size:13px;font-weight:600;letter-spacing:3px;text-align:center}
+  h2{font-size:clamp(24px,3.4vw,34px);font-weight:200;text-align:center;margin:10px 0 34px}
+  h2 b{font-weight:700;color:var(--gold)}
+
+  /* cost compare */
+  .compare{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+  .col{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px}
+  .col.diy{opacity:.96}
+  .col.us{border-color:var(--gold);box-shadow:0 20px 50px rgba(232,188,58,.14);background:linear-gradient(180deg,#14284a,#0e1e38)}
+  .col h4{font-weight:600;font-size:15px;letter-spacing:1px;margin-bottom:4px}
+  .col.us h4{color:var(--gold)}
+  .col .lead{color:var(--muted);font-size:13px;margin-bottom:18px}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed rgba(159,178,207,.18);font-size:15px}
+  .row:last-of-type{border-bottom:none}
+  .row .n{color:var(--muted);font-weight:300}
+  .row .v{font-weight:600}
+  .tot{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+  .tot .big{font-size:30px;font-weight:700}
+  .diy .tot .big{color:#ff8f6b}
+  .us .tot .big{color:var(--gold)}
+  .vs{align-self:center;color:var(--gold2);font-weight:700;font-size:18px;border:1px solid var(--line);border-radius:50%;width:52px;height:52px;display:grid;place-items:center}
+  .us .chip{display:inline-block;background:var(--gold);color:#0a1628;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;margin-bottom:10px}
+
+  /* guide contents */
+  .items{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:820px;margin:0 auto}
+  .item{display:flex;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px 18px}
+  .item .num{flex:none;width:30px;height:30px;border-radius:8px;background:rgba(232,188,58,.12);color:var(--gold);font-weight:700;display:grid;place-items:center;font-size:14px}
+  .item p{font-size:15px;line-height:1.5}
+  .item p b{font-weight:600;color:var(--gold2)}
+
+  footer{padding:40px 0;text-align:center;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+
+  @media(max-width:820px){
+    .hero-grid{grid-template-columns:1fr;gap:30px}
+    .cover{order:-1}
+    .compare{grid-template-columns:1fr}
+    .vs{transform:rotate(90deg);justify-self:center}
+    .items{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <div class="brand">
+      <div class="coin"><span>B</span></div>
+      <div><b>Batumi Online</b><small>GEORGIA · BUSINESS</small></div>
+    </div>
+    <a class="tag" href="#form">קבלו את המדריך ←</a>
+  </div>
+</header>
+
+<main class="hero">
+  <div class="glow"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag">● מדריך חינם 2026</span>
+      <h1>המדריך לפתיחת חשבון בנק בגאורגיה — <b>ללא נסיעה.</b></h1>
+      <p class="sub">כל מה שצריך לדעת לפני שאתם קונים טיסה: איזה בנק, אילו מסמכים, ואיך עושים את זה מרחוק בלי לטוס ובלי כאב ראש.</p>
+
+      <form class="form" id="form">
+        <div id="formFields">
+          <label for="name">שם מלא</label>
+          <input id="name" type="text" placeholder="ישראל ישראלי" autocomplete="name" required>
+          <label for="phone">טלפון</label>
+          <input id="phone" type="tel" placeholder="050-000-0000" autocomplete="tel" required>
+          <button class="cta" type="submit" id="submitBtn">שלחו לי את המדריך בחינם</button>
+          <p class="reassure">ללא התחייבות · המדריך נשלח מיד ל-WhatsApp</p>
+        </div>
+        <div id="thanks" style="display:none;text-align:center;padding:14px 6px">
+          <div style="font-size:40px">✅</div>
+          <h3 style="color:var(--gold);font-weight:700;font-size:22px;margin:8px 0">קיבלנו! המדריך בדרך אליך ל-WhatsApp</h3>
+          <p style="color:var(--muted);font-size:15px;margin-bottom:14px">אפשר גם להוריד אותו כאן עכשיו:</p>
+          <a href="/guide-bank-georgia.pdf" target="_blank" class="cta" style="display:inline-block;width:auto;padding:13px 34px;text-decoration:none">הורדת המדריך (PDF)</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="cover">
+      <span class="ribbon">PDF · חינם</span>
+      <div class="book">
+        <div class="coin"><span>B</span></div>
+        <div class="kick">המדריך המלא</div>
+        <h3>פתיחת חשבון בנק <b>בגאורגיה</b> — צעד אחר צעד</h3>
+        <span class="free">2026 · מהדורה מעודכנת</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section class="block">
+  <div class="wrap">
+    <div class="eyebrow">מה יש במדריך</div>
+    <h2>5 הפרקים ש<b>חוסכים לכם טעויות</b></h2>
+    <p style="text-align:center;color:var(--muted);font-size:16px;font-weight:300;max-width:560px;margin:-22px auto 30px;line-height:1.6">כל מה שצריך לדעת לפני שמתחילים — בעברית פשוטה, בלי ז'רגון משפטי.</p>
+    <div class="items">
+      <div class="item"><div class="num">1</div><p><b>איזה בנק מתאים לכם</b> — Bank of Georgia מול TBC, ומה עדיף לישראלי</p></div>
+      <div class="item"><div class="num">2</div><p><b>אילו מסמכים צריך</b> — הרשימה המלאה, בלי הפתעות ברגע האחרון</p></div>
+      <div class="item"><div class="num">3</div><p><b>מרחוק מול טיסה</b> — כולל חישוב העלות האמיתית של לעשות לבד</p></div>
+      <div class="item"><div class="num">4</div><p><b>הטעויות שגורמות לסירוב</b> — ואיך להימנע מהן מראש</p></div>
+      <div class="item"><div class="num">5</div><p><b>איך עושים הכל מהבית</b> — התהליך המלא איתנו, ב-$600 שקוף</p></div>
+    </div>
+    <div style="text-align:center;margin-top:30px">
+      <a class="cta" href="#form" style="display:inline-block;width:auto;padding:15px 40px">קבלו את המדריך בחינם ←</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Batumi Online · פתיחת חשבון בנק בגאורגיה לישראלים · <a href="#form" style="color:var(--gold2)">batumionline.biz</a></div>
+</footer>
+<script>
+  document.getElementById('form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var name = document.getElementById('name').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var btn = document.getElementById('submitBtn');
+    if (!name || phone.replace(/\D/g, '').length < 9) { alert('נא למלא שם וטלפון תקין'); return; }
+    btn.disabled = true; btn.textContent = 'שולח...';
+    try {
+      var r = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, phone: phone, source: 'guide-lp' })
+      });
+      var j = await r.json();
+      if (j && j.success) {
+        document.getElementById('formFields').style.display = 'none';
+        document.getElementById('thanks').style.display = 'block';
+      } else { throw new Error((j && j.error) || 'error'); }
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'שלחו לי את המדריך בחינם';
+      alert('אירעה תקלה, נסו שוב בעוד רגע');
+    }
+  });
+</script>
+</body>
+</html>
